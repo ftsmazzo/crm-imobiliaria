@@ -2,10 +2,11 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-COPY package*.json ./
+# Build context no EasyPanel = raiz do repo (não a pasta backend)
+COPY backend/package*.json ./
 RUN npm install
 
-COPY . .
+COPY backend/ .
 RUN npx prisma generate
 RUN npm run build
 
