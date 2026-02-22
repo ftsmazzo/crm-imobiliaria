@@ -60,6 +60,20 @@ NEXT_PUBLIC_API_URL=https://api.seudominio.com.br
 
 ---
 
+## Como criar os serviços no EasyPanel
+
+Um aplicativo (repo **crm-imobiliaria**), **3 serviços** — você cria cada serviço e define o **contexto** (pasta) onde está o Dockerfile:
+
+| Serviço      | Pasta / Build context | Dockerfile           |
+|--------------|------------------------|----------------------|
+| Backend      | `backend`              | `backend/Dockerfile` |
+| Painel CRM   | `crm-web`              | `crm-web/Dockerfile` |
+| Site imóveis | `site-imoveis`         | `site-imoveis/Dockerfile` |
+
+O EasyPanel não cria os 3 sozinhos: crie cada serviço, apontando o mesmo repositório e a pasta correspondente.
+
+---
+
 ## Observações
 
 - **PostgreSQL:** Pode ser um banco gerenciado (Supabase, Neon, etc.) ou um container no próprio EasyPanel; use o connection string que eles fornecerem em `DATABASE_URL`.
