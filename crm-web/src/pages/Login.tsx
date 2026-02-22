@@ -16,7 +16,7 @@ export default function Login() {
     setErro('');
     setLoading(true);
     try {
-      const data = await login(email, senha);
+      const data = await login(email, senha) as { access_token: string; usuario: { id: string; email: string; nome: string; role: string } };
       setAuth(data.access_token, data.usuario);
       navigate('/', { replace: true });
     } catch (err) {

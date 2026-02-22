@@ -83,25 +83,25 @@ export default function Imoveis() {
     setSaving(true);
     setErro('');
     try {
-      const payload = {
+      const payload: Partial<Imovel> = {
         tipo: String(form.tipo),
-        rua: form.rua || undefined,
-        numero: form.numero || undefined,
-        bairro: form.bairro || undefined,
-        cidade: form.cidade || undefined,
-        cep: form.cep || undefined,
+        rua: form.rua != null ? String(form.rua) : undefined,
+        numero: form.numero != null ? String(form.numero) : undefined,
+        bairro: form.bairro != null ? String(form.bairro) : undefined,
+        cidade: form.cidade != null ? String(form.cidade) : undefined,
+        cep: form.cep != null ? String(form.cep) : undefined,
         valorVenda: form.valorVenda != null ? Number(form.valorVenda) : undefined,
         valorAluguel: form.valorAluguel != null ? Number(form.valorAluguel) : undefined,
         status: String(form.status),
-        codigo: form.codigo || undefined,
-        descricao: form.descricao || undefined,
+        codigo: form.codigo != null ? String(form.codigo) : undefined,
+        descricao: form.descricao != null ? String(form.descricao) : undefined,
         qtdQuartos: form.qtdQuartos != null ? Number(form.qtdQuartos) : undefined,
         qtdBanheiros: form.qtdBanheiros != null ? Number(form.qtdBanheiros) : undefined,
         area: form.area != null ? Number(form.area) : undefined,
       };
       if (modal === 'novo') {
         await createImovel(payload);
-      } else {
+      } else if (modal && modal !== 'novo') {
         await updateImovel(modal.id, payload);
       }
       setModal(null);
