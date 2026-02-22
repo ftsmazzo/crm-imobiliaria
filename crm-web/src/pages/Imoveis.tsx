@@ -2,6 +2,12 @@ import { useEffect, useState } from 'react';
 import { getImoveis, createImovel, updateImovel, deleteImovel } from '../api';
 import type { Imovel } from '../types';
 import { buscarPorCep } from '../viacep';
+import {
+  parseCsvImoveis,
+  gerarModeloCsv,
+  rowToPayload,
+  type ResultadoParse,
+} from '../csv-imoveis';
 import AppLayout from '../components/AppLayout';
 import './Imoveis.css';
 
@@ -45,6 +51,11 @@ export default function Imoveis() {
   const [saving, setSaving] = useState(false);
   const [cepLoading, setCepLoading] = useState(false);
   const [cepMsg, setCepMsg] = useState<'ok' | 'not_found' | null>(null);
+  const [importModalOpen, setImportModalOpen] = useState(false);
+  const [importFile, setImportFile] = useState<File | null>(null);
+  const [importResult, setImportResult] = useState<ResultadoParse | null>(null);
+  const [importing, setImporting] = useState(false);
+  const [importProgress, setImportProgress] = useState({ current: 0, total: 0, ok: 0, errors: 0 });
 
   async function load() {
     setLoading(true);
@@ -162,6 +173,75 @@ export default function Imoveis() {
     }
   }
 
+  function downloadModeloCsv() {
+    const csv = gerarModeloCsv();
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'modelo-imoveis.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function openImportModal() {
+    setImportModalOpen(true);
+    setImportFile(null);
+    setImportResult(null);
+    setImportProgress({ current: 0, total: 0, ok: 0, errors: 0 });
+  }
+
+  function closeImportModal() {
+    if (!importing) {
+      setImportModalOpen(false);
+      setImportFile(null);
+      setImportResult(null);
+    }
+  }
+
+  function handleImportFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImportFile(file);
+    setImportResult(null);
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const text = String(reader.result ?? '');
+        const result = parseCsvImoveis(text);
+        setImportResult(result);
+      } catch {
+        setImportResult({ rows: [], headers: [], mapaColunas: {}, errosLinha: [{ linha: 1, mensagem: 'Erro ao ler o CSV' }] });
+      }
+    };
+    reader.readAsText(file, 'UTF-8');
+  }
+
+  async function runImport() {
+    if (!importResult?.rows.length) return;
+    setImporting(true);
+    setErro('');
+    let ok = 0;
+    let errors = 0;
+    const total = importResult.rows.length;
+    for (let i = 0; i < total; i++) {
+      setImportProgress({ current: i + 1, total, ok, errors });
+      try {
+        const payload = rowToPayload(importResult.rows[i]);
+        await createImovel(payload as Partial<Imovel>);
+        ok++;
+      } catch {
+        errors++;
+      }
+    }
+    setImportProgress({ current: total, total, ok, errors });
+    setImporting(false);
+    load();
+    setImportFile(null);
+    setImportResult(null);
+    setImportModalOpen(false);
+  }
+
   if (loading) return <AppLayout><div className="imoveis-loading">Carregando...</div></AppLayout>;
 
   return (
@@ -171,7 +251,9 @@ export default function Imoveis() {
         <p className="lead">Cadastre e gerencie imóveis para venda e locação.</p>
         {erro && <p className="imoveis-erro">{erro}</p>}
         <div className="imoveis-toolbar">
-          <span />
+          <button type="button" className="imoveis-btn-import" onClick={openImportModal}>
+            Importar CSV
+          </button>
           <button type="button" className="imoveis-btn-new" onClick={openNew}>
             + Novo imóvel
           </button>
@@ -417,6 +499,97 @@ export default function Imoveis() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {importModalOpen && (
+        <div className="imoveis-modal-overlay" onClick={closeImportModal}>
+          <div className="imoveis-import-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="imoveis-import-header">
+              <h2>Importar imóveis (CSV)</h2>
+              <button type="button" className="imoveis-import-close" onClick={closeImportModal} aria-label="Fechar">
+                ×
+              </button>
+            </div>
+            <div className="imoveis-import-body">
+              <p className="imoveis-import-lead">
+                Use um CSV com as colunas do modelo ou nomes parecidos (rua, logradouro, bairro, cidade, CEP, etc.). O sistema reconhece as colunas automaticamente.
+              </p>
+              <div className="imoveis-import-actions-top">
+                <button type="button" className="imoveis-btn-modelo" onClick={downloadModeloCsv}>
+                  Baixar modelo CSV
+                </button>
+                <label className="imoveis-btn-escolher">
+                  <input type="file" accept=".csv,text/csv" onChange={handleImportFileChange} style={{ display: 'none' }} />
+                  {importFile ? importFile.name : 'Escolher arquivo CSV'}
+                </label>
+              </div>
+
+              {importResult && (
+                <>
+                  {importResult.errosLinha.length > 0 && (
+                    <div className="imoveis-import-erros">
+                      <strong>Avisos:</strong>
+                      <ul>
+                        {importResult.errosLinha.slice(0, 5).map((e, i) => (
+                          <li key={i}>Linha {e.linha}: {e.mensagem}</li>
+                        ))}
+                        {importResult.errosLinha.length > 5 && (
+                          <li>… e mais {importResult.errosLinha.length - 5} aviso(s)</li>
+                        )}
+                      </ul>
+                    </div>
+                  )}
+                  <p className="imoveis-import-preview-title">
+                    {importResult.rows.length} imóvel(is) detectado(s). Prévia (até 5 linhas):
+                  </p>
+                  <div className="imoveis-import-table-wrap">
+                    <table className="imoveis-import-table">
+                      <thead>
+                        <tr>
+                          <th>Tipo</th>
+                          <th>Endereço</th>
+                          <th>Valores</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {importResult.rows.slice(0, 5).map((row, i) => (
+                          <tr key={i}>
+                            <td>{row.tipo ?? '–'}</td>
+                            <td>{[row.rua, row.numero, row.bairro, row.cidade].filter(Boolean).join(', ') || '–'}</td>
+                            <td>
+                              {row.valorVenda != null && `Venda ${formatValor(row.valorVenda)} `}
+                              {row.valorAluguel != null && `Aluguel ${formatValor(row.valorAluguel)}`}
+                              {row.valorVenda == null && row.valorAluguel == null && '–'}
+                            </td>
+                            <td>{row.status ?? '–'}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  {!importing ? (
+                    <div className="imoveis-import-actions-bottom">
+                      <button type="button" className="secondary" onClick={closeImportModal}>
+                        Cancelar
+                      </button>
+                      <button type="button" className="primary" onClick={runImport}>
+                        Importar {importResult.rows.length} imóvel(is)
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="imoveis-import-progress">
+                      <p>Importando… {importProgress.current} / {importProgress.total}</p>
+                      <p className="imoveis-import-result-mini">
+                        {importProgress.ok} ok, {importProgress.errors} erro(s)
+                      </p>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         </div>
       )}
