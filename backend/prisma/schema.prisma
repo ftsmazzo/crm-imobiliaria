@@ -69,6 +69,8 @@ model ImovelFoto {
   ordem     Int      @default(0)
   criadoEm  DateTime @default(now()) @map("criado_em")
   imovel    Imovel   @relation(fields: [imovelId], references: [id], onDelete: Cascade)
+
+  @@map("imovel_foto")
 }
 
 model Tarefa {
