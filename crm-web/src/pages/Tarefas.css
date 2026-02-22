@@ -13,22 +13,29 @@
 }
 
 .tarefas-toolbar {
-  margin-bottom: var(--crm-space-6);
+  margin-bottom: 1.5rem;
+  padding: 1.25rem 1.5rem;
+  background: #fff;
+  border-radius: 0.75rem;
+  border: 1px solid var(--crm-border);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
 }
 
 .tarefas-btn-new {
-  padding: var(--crm-space-2) var(--crm-space-4);
-  font-size: var(--crm-text-sm);
-  font-weight: var(--crm-font-medium);
+  padding: 0.65rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
   color: #fff;
   background: var(--crm-accent);
   border: none;
-  border-radius: var(--crm-radius);
+  border-radius: 0.5rem;
   cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
 }
 
 .tarefas-btn-new:hover {
   background: var(--crm-accent-hover);
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
 }
 
 .tarefas-list {
@@ -40,12 +47,17 @@
 .tarefa-item {
   display: flex;
   align-items: flex-start;
-  gap: var(--crm-space-4);
-  background: var(--crm-surface);
-  border-radius: var(--crm-radius);
-  padding: var(--crm-space-4);
+  gap: 1rem;
+  background: #fff;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
   border: 1px solid var(--crm-border);
-  box-shadow: var(--crm-shadow);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+  transition: box-shadow 0.2s;
+}
+
+.tarefa-item:hover {
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
 }
 
 .tarefa-item.concluida {
@@ -118,25 +130,29 @@
   position: fixed;
   inset: 0;
   background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(2px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 200;
-  padding: var(--crm-space-4);
+  padding: 1rem;
 }
 
 .tarefas-modal {
-  background: var(--crm-surface);
-  border-radius: var(--crm-radius-lg);
-  padding: var(--crm-space-6);
+  background: #fff;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
   width: 100%;
   max-width: 400px;
-  box-shadow: var(--crm-shadow-lg);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.15);
+  border: 1px solid var(--crm-border);
 }
 
 .tarefas-modal h2 {
-  margin: 0 0 var(--crm-space-4);
-  font-size: var(--crm-text-xl);
+  margin: 0 0 1.25rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .tarefas-form {

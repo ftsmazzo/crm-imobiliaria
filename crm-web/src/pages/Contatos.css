@@ -1,15 +1,5 @@
-.contatos-page h1 {
-  margin: 0 0 var(--crm-space-2);
-  font-size: var(--crm-text-2xl);
-  font-weight: var(--crm-font-bold);
-  color: var(--crm-text);
-  letter-spacing: -0.02em;
-}
-
-.contatos-page .lead {
-  margin: 0 0 var(--crm-space-6);
-  font-size: var(--crm-text-base);
-  color: var(--crm-text-muted);
+.contatos-page {
+  margin-bottom: 2rem;
 }
 
 .contatos-toolbar {
@@ -17,32 +7,38 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--crm-space-4);
-  margin-bottom: var(--crm-space-6);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1.25rem 1.5rem;
+  background: #fff;
+  border-radius: 0.75rem;
+  border: 1px solid var(--crm-border);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
 }
 
 .contatos-btn-new {
-  padding: var(--crm-space-2) var(--crm-space-4);
-  font-size: var(--crm-text-sm);
-  font-weight: var(--crm-font-medium);
+  padding: 0.65rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
   color: #fff;
   background: var(--crm-accent);
   border: none;
-  border-radius: var(--crm-radius);
+  border-radius: 0.5rem;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, box-shadow 0.2s;
 }
 
 .contatos-btn-new:hover {
   background: var(--crm-accent-hover);
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
 }
 
 .contatos-table-wrap {
-  background: var(--crm-surface);
-  border-radius: var(--crm-radius-xl);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: #fff;
+  border-radius: 0.75rem;
+  border: 1px solid var(--crm-border);
   overflow: hidden;
-  box-shadow: var(--crm-shadow);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
 }
 
 .contatos-table {
@@ -52,17 +48,18 @@
 
 .contatos-table th,
 .contatos-table td {
-  padding: var(--crm-space-3) var(--crm-space-4);
+  padding: 1rem 1.25rem;
   text-align: left;
   border-bottom: 1px solid var(--crm-border);
 }
 
 .contatos-table th {
-  font-size: var(--crm-text-xs);
-  font-weight: var(--crm-font-semibold);
+  font-size: 0.75rem;
+  font-weight: 600;
   color: var(--crm-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  background: var(--crm-bg);
 }
 
 .contatos-table tr:last-child td {
@@ -70,7 +67,7 @@
 }
 
 .contatos-table tr:hover td {
-  background: var(--crm-bg-subtle);
+  background: var(--crm-bg);
 }
 
 .contatos-table .estagio {
@@ -114,25 +111,29 @@
   position: fixed;
   inset: 0;
   background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(2px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 200;
-  padding: var(--crm-space-4);
+  padding: 1rem;
 }
 
 .contatos-modal {
-  background: var(--crm-surface);
-  border-radius: var(--crm-radius-lg);
-  padding: var(--crm-space-6);
+  background: #fff;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
   width: 100%;
   max-width: 420px;
-  box-shadow: var(--crm-shadow-lg);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.15);
+  border: 1px solid var(--crm-border);
 }
 
 .contatos-modal h2 {
-  margin: 0 0 var(--crm-space-4);
-  font-size: var(--crm-text-xl);
+  margin: 0 0 1.25rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .contatos-form {

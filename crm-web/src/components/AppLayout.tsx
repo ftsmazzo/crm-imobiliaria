@@ -74,7 +74,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
             </button>
           </header>
           <main className="app-main">
-            {children}
+            <div className="app-main-inner">{children}</div>
           </main>
         </div>
       </div>

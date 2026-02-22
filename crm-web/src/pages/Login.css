@@ -1,66 +1,66 @@
-/* Login – tela única, fluida e responsiva */
+/* Login – tela de entrada profissional */
 
 .login-page {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--crm-space-4);
-  background: linear-gradient(160deg, var(--crm-bg-subtle) 0%, var(--crm-bg) 50%, var(--crm-accent-light) 100%);
+  padding: 1.5rem;
+  background: linear-gradient(160deg, var(--crm-bg) 0%, #e2e8f0 50%, var(--crm-accent-light) 100%);
 }
 
 .login-card {
   width: 100%;
   max-width: 400px;
-  background: var(--crm-surface);
-  border-radius: var(--crm-radius-xl);
-  box-shadow: var(--crm-shadow-lg);
-  padding: var(--crm-space-8);
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.12);
+  padding: 2.5rem;
   border: 1px solid var(--crm-border);
 }
 
 .login-logo {
   text-align: center;
-  margin-bottom: var(--crm-space-6);
+  margin-bottom: 2rem;
 }
 
 .login-logo h1 {
   margin: 0;
-  font-size: var(--crm-text-2xl);
-  font-weight: var(--crm-font-bold);
+  font-size: 1.75rem;
+  font-weight: 700;
   color: var(--crm-primary);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
 }
 
 .login-logo p {
-  margin: var(--crm-space-1) 0 0;
-  font-size: var(--crm-text-sm);
+  margin: 0.35rem 0 0;
+  font-size: 0.9rem;
   color: var(--crm-text-muted);
 }
 
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: var(--crm-space-4);
+  gap: 1.25rem;
 }
 
 .login-form label {
   display: block;
-  font-size: var(--crm-text-sm);
-  font-weight: var(--crm-font-medium);
+  font-size: 0.9rem;
+  font-weight: 500;
   color: var(--crm-text);
-  margin-bottom: var(--crm-space-2);
+  margin-bottom: 0.35rem;
 }
 
 .login-input {
   width: 100%;
-  padding: var(--crm-space-3) var(--crm-space-4);
-  font-size: var(--crm-text-base);
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
   line-height: 1.5;
   color: var(--crm-text);
-  background: var(--crm-surface);
+  background: #fff;
   border: 1px solid var(--crm-border);
-  border-radius: var(--crm-radius);
+  border-radius: 0.5rem;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
@@ -80,29 +80,31 @@
 
 .login-erro {
   margin: 0;
-  font-size: var(--crm-text-sm);
+  font-size: 0.9rem;
   color: var(--crm-error);
-  padding: var(--crm-space-2) var(--crm-space-3);
-  background: #fef2f2;
-  border-radius: var(--crm-radius);
+  padding: 0.75rem 1rem;
+  background: var(--crm-error-light);
+  border-radius: 0.5rem;
+  border: 1px solid rgba(220, 38, 38, 0.2);
 }
 
 .login-btn {
   width: 100%;
-  padding: var(--crm-space-3) var(--crm-space-4);
-  font-size: var(--crm-text-base);
-  font-weight: var(--crm-font-semibold);
+  padding: 0.85rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
   color: #fff;
   background: var(--crm-accent);
   border: none;
-  border-radius: var(--crm-radius);
+  border-radius: 0.5rem;
   cursor: pointer;
-  transition: background 0.2s, transform 0.05s;
-  margin-top: var(--crm-space-2);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.05s;
+  margin-top: 0.5rem;
 }
 
 .login-btn:hover:not(:disabled) {
   background: var(--crm-accent-hover);
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.35);
 }
 
 .login-btn:active:not(:disabled) {
@@ -116,9 +118,9 @@
 
 @media (max-width: 480px) {
   .login-page {
-    padding: var(--crm-space-4);
+    padding: 1rem;
   }
   .login-card {
-    padding: var(--crm-space-6);
+    padding: 1.75rem;
   }
 }

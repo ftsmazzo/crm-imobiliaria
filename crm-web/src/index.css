@@ -7,6 +7,7 @@
 html {
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
@@ -40,4 +41,43 @@ a {
 a:hover {
   color: var(--crm-accent-hover);
   text-decoration: underline;
+}
+
+/* ========== Layout de página (todas as telas do CRM) ========== */
+[class$="-page"] h1 {
+  margin: 0 0 0.35rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--crm-text);
+  letter-spacing: -0.04em;
+  line-height: 1.2;
+}
+
+[class$="-page"] .lead {
+  margin: 0 0 1.5rem;
+  font-size: 1rem;
+  color: var(--crm-text-muted);
+  line-height: 1.5;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--crm-border);
+}
+
+/* Botão primário padrão (Novo, Salvar, etc.) */
+[class$="-page"] .btn-primary-style,
+[class$="-page"] button[class*="btn-new"] {
+  padding: 0.65rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--crm-accent);
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+[class$="-page"] .btn-primary-style:hover,
+[class$="-page"] button[class*="btn-new"]:hover {
+  background: var(--crm-accent-hover);
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
 }

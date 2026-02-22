@@ -1,4 +1,4 @@
-/* Design system – CRM Imobiliário */
+/* Design system – CRM Imobiliário (visual profissional) */
 
 :root {
   /* Paleta */
@@ -8,17 +8,17 @@
   --crm-accent-hover: #0f766e;
   --crm-accent-light: #ccfbf1;
   --crm-surface: #ffffff;
-  --crm-bg: #f8fafc;
-  --crm-bg-subtle: #f1f5f9;
+  --crm-bg: #f1f5f9;
+  --crm-bg-subtle: #e2e8f0;
   --crm-text: #0f172a;
   --crm-text-muted: #64748b;
-  --crm-border: #e2e8f0;
+  --crm-border: #cbd5e1;
   --crm-error: #dc2626;
   --crm-error-light: #fef2f2;
   --crm-success: #059669;
 
-  /* Tipografia */
-  --crm-font: 'Inter', system-ui, -apple-system, sans-serif;
+  /* Tipografia – Plus Jakarta Sans */
+  --crm-font: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   --crm-text-xs: 0.75rem;
   --crm-text-sm: 0.875rem;
   --crm-text-base: 1rem;

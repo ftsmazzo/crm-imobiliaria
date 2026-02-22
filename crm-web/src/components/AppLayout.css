@@ -1,9 +1,10 @@
-/* Shell do app – sidebar + header + conteúdo, responsivo */
+/* Shell do app – visual profissional */
 
 .app-layout {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: var(--crm-bg);
 }
 
 .app-layout-body {
@@ -12,47 +13,48 @@
   min-height: 0;
 }
 
-/* Sidebar */
+/* Sidebar – destaque e clareza */
 .app-sidebar {
   width: var(--crm-sidebar-w);
-  background: var(--crm-primary);
+  background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
   color: #fff;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.08);
 }
 
 .app-sidebar-logo {
-  padding: var(--crm-space-5) var(--crm-space-6);
-  font-size: var(--crm-text-lg);
-  font-weight: var(--crm-font-bold);
-  letter-spacing: -0.02em;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 1.5rem 1.5rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .app-sidebar-nav {
-  padding: var(--crm-space-4);
+  padding: 1rem 0.75rem;
   display: flex;
   flex-direction: column;
-  gap: var(--crm-space-1);
+  gap: 0.25rem;
 }
 
 .app-sidebar-nav a {
   display: flex;
   align-items: center;
-  gap: var(--crm-space-3);
-  padding: var(--crm-space-3) var(--crm-space-4);
-  border-radius: var(--crm-radius);
-  color: rgba(255, 255, 255, 0.88);
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  color: rgba(255, 255, 255, 0.85);
   text-decoration: none;
-  font-size: var(--crm-text-sm);
-  font-weight: var(--crm-font-medium);
+  font-size: 0.9rem;
+  font-weight: 500;
   transition: background 0.15s, color 0.15s;
 }
 
 .app-sidebar-nav a:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.1);
   color: #fff;
   text-decoration: none;
 }
@@ -60,20 +62,21 @@
 .app-sidebar-nav a.active {
   background: var(--crm-accent);
   color: #fff;
+  font-weight: 600;
 }
 
-/* Header – estilo Kenlo */
+/* Header */
 .app-header {
-  height: var(--crm-header-h);
-  background: var(--crm-surface);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  height: 3.5rem;
+  background: #fff;
+  border-bottom: 1px solid var(--crm-border);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 var(--crm-space-6);
+  padding: 0 1.5rem;
   flex-shrink: 0;
-  gap: var(--crm-space-4);
+  gap: 1rem;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
 }
 
 .app-header-menu-btn {
@@ -124,12 +127,17 @@
   background: var(--crm-bg-subtle);
 }
 
-/* Main content */
+/* Main content – área delimitada e respirável */
 .app-main {
   flex: 1;
   overflow: auto;
-  padding: var(--crm-space-6);
+  padding: 2rem;
   background: var(--crm-bg);
+}
+
+.app-main-inner {
+  max-width: 1280px;
+  margin: 0 auto;
 }
 
 /* Mobile */

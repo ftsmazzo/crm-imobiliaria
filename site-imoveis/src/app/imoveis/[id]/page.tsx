@@ -33,9 +33,10 @@ export default async function ImovelPage({ params }: { params: Promise<{ id: str
   const endereco = [imovel.rua, imovel.numero, imovel.bairro, imovel.cidade].filter(Boolean).join(', ') || '–';
   const valorVenda = imovel.valorVenda ? formatValor(imovel.valorVenda) : null;
   const valorAluguel = imovel.valorAluguel ? formatValor(imovel.valorAluguel) : null;
-  const temFotos = imovel.fotos && imovel.fotos.length > 0;
-  const fotoCapa = temFotos ? imovel.fotos[0] : null;
-  const fotosRestantes = temFotos && imovel.fotos.length > 1 ? imovel.fotos.slice(1) : [];
+  const fotos = imovel.fotos ?? [];
+  const temFotos = fotos.length > 0;
+  const fotoCapa = temFotos ? fotos[0] : null;
+  const fotosRestantes = fotos.length > 1 ? fotos.slice(1) : [];
 
   return (
     <div className="container">
