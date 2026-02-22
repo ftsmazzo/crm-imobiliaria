@@ -7,14 +7,84 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Modelos serão adicionados na Etapa E1
 model Usuario {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  senhaHash    String    @map("senha_hash")
+  nome         String
+  role         String    @default("corretor")
+  ativo        Boolean   @default(true)
+  criadoEm     DateTime  @default(now()) @map("criado_em")
+  atualizadoEm DateTime  @updatedAt @map("atualizado_em")
+  contatos     Contato[]
+  imoveis      Imovel[]
+  tarefas      Tarefa[]
+}
+
+model Contato {
+  id                  String    @id @default(uuid())
+  nome                String
+  email               String
+  telefone            String?
+  origem              String?
+  observacoes         String?   @map("observacoes")
+  estagio             String    @default("novo") // novo, qualificado, visita, proposta, fechado
+  usuarioResponsavelId String?  @map("usuario_responsavel_id")
+  criadoEm            DateTime  @default(now()) @map("criado_em")
+  atualizadoEm        DateTime  @updatedAt @map("atualizado_em")
+  usuarioResponsavel  Usuario?  @relation(fields: [usuarioResponsavelId], references: [id])
+  interesses          Interesse[]
+  tarefas             Tarefa[]
+}
+
+model Imovel {
+  id                  String    @id @default(uuid())
+  tipo                String    // casa, apartamento, terreno, etc.
+  rua                 String?
+  numero              String?
+  bairro              String?
+  cidade              String?
+  cep                 String?
+  valorVenda          Decimal?  @map("valor_venda") @db.Decimal(14, 2)
+  valorAluguel        Decimal?  @map("valor_aluguel") @db.Decimal(14, 2)
+  status              String    @default("disponivel") // disponivel, reservado, vendido, alugado
+  codigo              String?
+  descricao           String?
+  qtdQuartos          Int?      @map("qtd_quartos")
+  qtdBanheiros        Int?      @map("qtd_banheiros")
+  area                Decimal?  @db.Decimal(10, 2)
+  usuarioResponsavelId String?  @map("usuario_responsavel_id")
+  criadoEm            DateTime  @default(now()) @map("criado_em")
+  atualizadoEm        DateTime  @updatedAt @map("atualizado_em")
+  usuarioResponsavel  Usuario?  @relation(fields: [usuarioResponsavelId], references: [id])
+  interesses         Interesse[]
+  tarefas             Tarefa[]
+}
+
+model Tarefa {
+  id           String    @id @default(uuid())
+  titulo       String
+  descricao    String?
+  dataPrevista DateTime? @map("data_prevista") @db.Date
+  concluida    Boolean   @default(false)
+  usuarioId    String    @map("usuario_id")
+  contatoId    String?   @map("contato_id")
+  imovelId     String?   @map("imovel_id")
+  criadoEm     DateTime  @default(now()) @map("criado_em")
+  usuario     Usuario   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  contato     Contato?  @relation(fields: [contatoId], references: [id], onDelete: SetNull)
+  imovel      Imovel?   @relation(fields: [imovelId], references: [id], onDelete: SetNull)
+}
+
+model Interesse {
   id        String   @id @default(uuid())
-  email     String   @unique
-  senhaHash String   @map("senha_hash")
-  nome      String
-  role      String   @default("corretor") // corretor | gestor
-  ativo     Boolean  @default(true)
+  tipo      String   @default("interesse") // interesse, proposta
+  valor     Decimal? @db.Decimal(14, 2)
+  status    String?  // enviada, aceita, recusada
+  observacao String?
+  contatoId String   @map("contato_id")
+  imovelId  String   @map("imovel_id")
   criadoEm  DateTime @default(now()) @map("criado_em")
-  atualizadoEm DateTime @updatedAt @map("atualizado_em")
+  contato   Contato  @relation(fields: [contatoId], references: [id], onDelete: Cascade)
+  imovel    Imovel   @relation(fields: [imovelId], references: [id], onDelete: Cascade)
 }
