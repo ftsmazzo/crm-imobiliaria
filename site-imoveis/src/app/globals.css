@@ -252,117 +252,223 @@ label {
   background: var(--site-bg);
 }
 
+/* Página Imóveis – cabeçalho e filtros (estilo Kenlo) */
+.imoveis-page-header {
+  margin-bottom: 1.75rem;
+}
+
+.imoveis-page-title {
+  margin: 0 0 0.35rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--site-text);
+  letter-spacing: -0.03em;
+}
+
+.imoveis-page-lead {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--site-muted);
+  line-height: 1.5;
+}
+
+.imoveis-loading,
+.imoveis-empty-msg {
+  color: var(--site-muted);
+  font-size: 0.95rem;
+  margin: 1rem 0;
+}
+
+.filtros-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+  padding: 1.25rem;
+  background: var(--site-surface);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+.filtros-form .form-group {
+  margin-bottom: 0;
+}
+
+.filtros-form label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--site-muted);
+  margin-bottom: 0.35rem;
+}
+
+.filtros-form input,
+.filtros-form select {
+  border-radius: 0.5rem;
+  border-color: var(--site-border);
+  font-size: 0.9rem;
+}
+
+.filtros-form input:focus,
+.filtros-form select:focus {
+  border-color: var(--site-accent);
+}
+
 /* Grid e cards */
 .imovel-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.75rem;
+  margin-top: 0.5rem;
 }
 
 .imovel-card {
   background: var(--site-surface);
-  border-radius: var(--site-radius-lg);
+  border-radius: 1rem;
   overflow: hidden;
-  border: 1px solid var(--site-border);
-  box-shadow: var(--site-shadow);
-  transition: box-shadow 0.2s;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+  transition: box-shadow 0.25s ease, transform 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+  display: block;
 }
 
 .imovel-card:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
+  transform: translateY(-2px);
   text-decoration: none;
+  color: inherit;
 }
 
-.imovel-card-image {
-  height: 160px;
-  background: var(--site-border);
-  display: flex;
-  align-items: flex-start;
-  padding: 0.75rem;
+/* Capa do card: foto com moldura arredondada e borda suave */
+.imovel-card-capa {
   position: relative;
+  height: 200px;
   overflow: hidden;
+  border-radius: 0.75rem 0.75rem 0 0;
+  margin: 0.75rem 0.75rem 0;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
 }
 
-.imovel-card-img {
-  position: absolute;
-  inset: 0;
+.imovel-card-capa-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
+}
+
+.imovel-card-capa-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(145deg, #e2e8f0 0%, #cbd5e1 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imovel-card-capa-icon {
+  font-size: 3rem;
+  opacity: 0.6;
 }
 
 .imovel-card-tipo {
-  position: relative;
+  position: absolute;
+  bottom: 0.5rem;
+  left: 0.5rem;
   z-index: 1;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 600;
   text-transform: uppercase;
-  background: var(--site-accent);
+  letter-spacing: 0.03em;
+  background: rgba(13, 148, 136, 0.92);
   color: #fff;
-  padding: 0.25rem 0.5rem;
-  border-radius: var(--site-radius);
+  padding: 0.35rem 0.6rem;
+  border-radius: 0.5rem;
+  backdrop-filter: blur(4px);
 }
 
 .imovel-card-body {
-  padding: 1rem;
+  padding: 1.125rem 1.25rem 1.25rem;
 }
 
 .imovel-card-valor {
   margin: 0 0 0.25rem;
-  font-size: 1.125rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--site-accent);
+  letter-spacing: -0.02em;
 }
 
 .imovel-card-subtipo {
   margin: 0 0 0.5rem;
   font-size: 0.75rem;
   color: var(--site-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .imovel-card-endereco {
   margin: 0;
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   color: var(--site-text);
+  line-height: 1.4;
 }
 
 .imovel-card-meta {
-  margin: 0.5rem 0 0;
-  font-size: 0.75rem;
+  margin: 0.75rem 0 0;
+  font-size: 0.8rem;
   color: var(--site-muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
-.imovel-card-meta span + span {
-  margin-left: 0.5rem;
+.imovel-card-meta span:not(:last-child)::after {
+  content: ' · ';
+  color: var(--site-border);
+  margin-left: 0.25rem;
 }
 
-/* Filtros */
-.filtros-form {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1rem;
+/* Voltar (detalhe) */
+.imovel-voltar {
+  margin: 0 0 1.25rem;
+  font-size: 0.9rem;
 }
 
-/* Detalhe imóvel */
+.imovel-voltar a {
+  color: var(--site-muted);
+  text-decoration: none;
+}
+
+.imovel-voltar a:hover {
+  color: var(--site-accent);
+  text-decoration: none;
+}
+
+/* Detalhe imóvel – estilo Kenlo: limpo, capa em destaque, bordas suaves */
 .imovel-detalhe {
   background: var(--site-surface);
-  border-radius: var(--site-radius-lg);
+  border-radius: 1rem;
   overflow: hidden;
-  border: 1px solid var(--site-border);
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .imovel-detalhe-header {
   display: flex;
+  align-items: center;
   gap: 0.75rem;
-  padding: 1rem 1.5rem;
+  padding: 1.25rem 1.5rem;
   border-bottom: 1px solid var(--site-border);
 }
 
 .imovel-detalhe-tipo {
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 600;
   text-transform: capitalize;
+  color: var(--site-text);
 }
 
 .imovel-detalhe-codigo {
@@ -370,67 +476,127 @@ label {
   color: var(--site-muted);
 }
 
-.imovel-detalhe-imagem {
-  height: 280px;
-  background: var(--site-border);
+/* Capa: foto principal em destaque, moldura arredondada e borda suave */
+.imovel-detalhe-capa {
+  margin: 1rem 1rem 0;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  aspect-ratio: 16/10;
+  max-height: 420px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
 }
 
+.imovel-detalhe-capa-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.imovel-detalhe-capa-placeholder {
+  width: 100%;
+  height: 100%;
+  min-height: 280px;
+  background: linear-gradient(145deg, #e2e8f0 0%, #cbd5e1 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imovel-detalhe-capa-icon {
+  font-size: 4rem;
+  opacity: 0.5;
+}
+
+/* Galeria: fotos adicionais em grid */
 .imovel-detalhe-galeria {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 0.5rem;
-  padding: 0.5rem;
-  background: var(--site-border);
+  padding: 1rem 1rem 0;
 }
 
 .imovel-detalhe-galeria-img {
   width: 100%;
   aspect-ratio: 4/3;
   object-fit: cover;
-  border-radius: var(--site-radius);
+  border-radius: 0.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .imovel-detalhe-body {
-  padding: 1.5rem;
+  padding: 1.75rem 1.5rem 2rem;
 }
 
 .imovel-detalhe-valores {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: var(--site-accent);
   margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
 }
 
 .imovel-detalhe-valores span + span {
-  margin-left: 1rem;
+  margin-left: 1.25rem;
 }
 
 .imovel-detalhe-endereco {
-  margin: 0 0 1rem;
+  margin: 0 0 1.25rem;
+  font-size: 0.95rem;
   color: var(--site-muted);
+  line-height: 1.5;
 }
 
 .imovel-detalhe-meta {
   list-style: none;
-  margin: 0 0 1.5rem;
+  margin: 0 0 1.75rem;
   padding: 0;
   display: flex;
-  gap: 1rem;
-  font-size: 0.875rem;
+  flex-wrap: wrap;
+  gap: 0 1.25rem;
+  font-size: 0.9rem;
+  color: var(--site-text);
+}
+
+.imovel-detalhe-meta li {
+  position: relative;
+}
+
+.imovel-detalhe-meta li + li::before {
+  content: '';
+  position: absolute;
+  left: -0.7rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--site-muted);
+  opacity: 0.6;
 }
 
 .imovel-detalhe-descricao h3,
 .imovel-detalhe-form h3 {
   margin: 0 0 0.75rem;
-  font-size: 1rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--site-text);
 }
 
 .imovel-detalhe-descricao {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.75rem;
+}
+
+.imovel-detalhe-descricao p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--site-text);
 }
 
 .imovel-detalhe-form {
-  padding-top: 1.5rem;
+  padding-top: 1.75rem;
   border-top: 1px solid var(--site-border);
 }
 

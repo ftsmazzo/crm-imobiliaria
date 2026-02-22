@@ -69,12 +69,12 @@ export default function ImoveisClient({ imoveisIniciais }: { imoveisIniciais: Im
         </div>
       </div>
 
-      {loading && <p style={{ color: 'var(--site-muted)' }}>Buscando…</p>}
+      {loading && <p className="imoveis-loading">Buscando…</p>}
       {!loading && imoveis.length === 0 && (
-        <p style={{ color: 'var(--site-muted)' }}>Nenhum imóvel encontrado com os filtros informados.</p>
+        <p className="imoveis-empty-msg">Nenhum imóvel encontrado com os filtros informados.</p>
       )}
       {!loading && imoveis.length > 0 && (
-        <div className="imovel-grid" style={{ marginTop: '1.5rem' }}>
+        <div className="imovel-grid">
           {imoveis.map((i) => (
             <ImovelCard key={i.id} imovel={i} />
           ))}

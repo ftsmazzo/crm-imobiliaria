@@ -12,12 +12,17 @@ export default function ImovelCard({ imovel }: { imovel: ImovelPublic }) {
   const valor = imovel.valorVenda ? formatValor(imovel.valorVenda) : imovel.valorAluguel ? formatValor(imovel.valorAluguel) : '';
   const subtipo = imovel.valorVenda && imovel.valorAluguel ? 'Venda e locação' : imovel.valorVenda ? 'Venda' : 'Locação';
   const endereco = [imovel.bairro, imovel.cidade].filter(Boolean).join(', ') || '–';
+  const fotoCapa = imovel.fotos?.[0]?.url;
   return (
     <Link href={`/imoveis/${imovel.id}`} className="imovel-card">
-      <div className="imovel-card-image">
-        {imovel.fotos?.[0]?.url ? (
-          <img src={imovel.fotos[0].url} alt="" className="imovel-card-img" />
-        ) : null}
+      <div className="imovel-card-capa">
+        {fotoCapa ? (
+          <img src={fotoCapa} alt="" className="imovel-card-capa-img" />
+        ) : (
+          <div className="imovel-card-capa-placeholder" aria-hidden>
+            <span className="imovel-card-capa-icon">🏠</span>
+          </div>
+        )}
         <span className="imovel-card-tipo">{imovel.tipo}</span>
       </div>
       <div className="imovel-card-body">

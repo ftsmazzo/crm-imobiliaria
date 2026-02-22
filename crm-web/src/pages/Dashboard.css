@@ -49,10 +49,15 @@
 
 .dashboard-card {
   background: var(--crm-surface);
-  border-radius: var(--crm-radius-lg);
-  border: 1px solid var(--crm-border);
+  border-radius: var(--crm-radius-xl);
+  border: 1px solid rgba(0, 0, 0, 0.06);
   padding: var(--crm-space-5);
   box-shadow: var(--crm-shadow);
+  transition: box-shadow 0.2s;
+}
+
+.dashboard-card:hover {
+  box-shadow: var(--crm-shadow-md);
 }
 
 .dashboard-card h2 {

@@ -33,26 +33,39 @@ export default async function ImovelPage({ params }: { params: Promise<{ id: str
   const endereco = [imovel.rua, imovel.numero, imovel.bairro, imovel.cidade].filter(Boolean).join(', ') || '–';
   const valorVenda = imovel.valorVenda ? formatValor(imovel.valorVenda) : null;
   const valorAluguel = imovel.valorAluguel ? formatValor(imovel.valorAluguel) : null;
+  const temFotos = imovel.fotos && imovel.fotos.length > 0;
+  const fotoCapa = temFotos ? imovel.fotos[0] : null;
+  const fotosRestantes = temFotos && imovel.fotos.length > 1 ? imovel.fotos.slice(1) : [];
 
   return (
     <div className="container">
-      <p style={{ marginBottom: '0.5rem' }}>
+      <p className="imovel-voltar">
         <Link href="/imoveis">← Voltar aos imóveis</Link>
       </p>
       <article className="imovel-detalhe">
-        <div className="imovel-detalhe-header">
+        <header className="imovel-detalhe-header">
           <span className="imovel-detalhe-tipo">{imovel.tipo}</span>
           {imovel.codigo && <span className="imovel-detalhe-codigo">Cód. {imovel.codigo}</span>}
+        </header>
+
+        <div className="imovel-detalhe-capa">
+          {fotoCapa ? (
+            <img src={fotoCapa.url} alt="" className="imovel-detalhe-capa-img" />
+          ) : (
+            <div className="imovel-detalhe-capa-placeholder">
+              <span className="imovel-detalhe-capa-icon" aria-hidden>🏠</span>
+            </div>
+          )}
         </div>
-        {(imovel.fotos && imovel.fotos.length > 0) ? (
+
+        {fotosRestantes.length > 0 && (
           <div className="imovel-detalhe-galeria">
-            {imovel.fotos.map((f) => (
+            {fotosRestantes.map((f) => (
               <img key={f.id} src={f.url} alt="" className="imovel-detalhe-galeria-img" />
             ))}
           </div>
-        ) : (
-          <div className="imovel-detalhe-imagem" />
         )}
+
         <div className="imovel-detalhe-body">
           <div className="imovel-detalhe-valores">
             {valorVenda && <span>Venda: {valorVenda}</span>}
@@ -62,7 +75,7 @@ export default async function ImovelPage({ params }: { params: Promise<{ id: str
           <ul className="imovel-detalhe-meta">
             {imovel.qtdQuartos != null && <li>{imovel.qtdQuartos} quartos</li>}
             {imovel.qtdBanheiros != null && <li>{imovel.qtdBanheiros} banheiros</li>}
-            {imovel.area && <li>{imovel.area} m²</li>}
+            {imovel.area != null && <li>{imovel.area} m²</li>}
           </ul>
           {imovel.descricao && (
             <div className="imovel-detalhe-descricao">

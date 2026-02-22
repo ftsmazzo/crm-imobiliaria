@@ -11,11 +11,11 @@ export default async function ImoveisPage() {
   const imoveisIniciais = await getImoveis({ status: 'disponivel' });
   return (
     <div className="container">
-      <h1>Imóveis</h1>
-      <p className="lead" style={{ marginBottom: '1.5rem', color: 'var(--site-muted)' }}>
-        Filtre por tipo, cidade e bairro.
-      </p>
-      <Suspense fallback={<p>Carregando…</p>}>
+      <header className="imoveis-page-header">
+        <h1 className="imoveis-page-title">Imóveis</h1>
+        <p className="imoveis-page-lead">Encontre o imóvel ideal. Filtre por tipo, cidade e bairro.</p>
+      </header>
+      <Suspense fallback={<p className="imoveis-loading">Carregando…</p>}>
         <ImoveisClient imoveisIniciais={imoveisIniciais} />
       </Suspense>
     </div>

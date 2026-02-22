@@ -44,7 +44,7 @@
   gap: var(--crm-space-3);
   padding: var(--crm-space-3) var(--crm-space-4);
   border-radius: var(--crm-radius);
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.88);
   text-decoration: none;
   font-size: var(--crm-text-sm);
   font-weight: var(--crm-font-medium);
@@ -62,11 +62,12 @@
   color: #fff;
 }
 
-/* Header */
+/* Header – estilo Kenlo */
 .app-header {
   height: var(--crm-header-h);
   background: var(--crm-surface);
-  border-bottom: 1px solid var(--crm-border);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
   display: flex;
   align-items: center;
   justify-content: space-between;
