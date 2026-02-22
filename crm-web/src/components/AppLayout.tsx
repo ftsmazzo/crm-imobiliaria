@@ -37,6 +37,18 @@ export default function AppLayout({ children }: AppLayoutProps) {
             <Link to="/" onClick={closeSidebar} className={location.pathname === '/' ? 'active' : ''}>
               Início
             </Link>
+            <Link to="/pipeline" onClick={closeSidebar} className={location.pathname === '/pipeline' ? 'active' : ''}>
+              Pipeline
+            </Link>
+            <Link to="/contatos" onClick={closeSidebar} className={location.pathname === '/contatos' ? 'active' : ''}>
+              Contatos
+            </Link>
+            <Link to="/imoveis" onClick={closeSidebar} className={location.pathname === '/imoveis' ? 'active' : ''}>
+              Imóveis
+            </Link>
+            <Link to="/tarefas" onClick={closeSidebar} className={location.pathname === '/tarefas' ? 'active' : ''}>
+              Tarefas
+            </Link>
           </nav>
         </aside>
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>

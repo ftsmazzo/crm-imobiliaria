@@ -1,0 +1,199 @@
+.imoveis-page h1 {
+  margin: 0 0 var(--crm-space-2);
+  font-size: var(--crm-text-2xl);
+  font-weight: var(--crm-font-bold);
+  color: var(--crm-text);
+  letter-spacing: -0.02em;
+}
+
+.imoveis-page .lead {
+  margin: 0 0 var(--crm-space-6);
+  font-size: var(--crm-text-base);
+  color: var(--crm-text-muted);
+}
+
+.imoveis-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--crm-space-6);
+}
+
+.imoveis-btn-new {
+  padding: var(--crm-space-2) var(--crm-space-4);
+  font-size: var(--crm-text-sm);
+  font-weight: var(--crm-font-medium);
+  color: #fff;
+  background: var(--crm-accent);
+  border: none;
+  border-radius: var(--crm-radius);
+  cursor: pointer;
+}
+
+.imoveis-btn-new:hover {
+  background: var(--crm-accent-hover);
+}
+
+.imoveis-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--crm-space-4);
+}
+
+.imovel-card {
+  background: var(--crm-surface);
+  border-radius: var(--crm-radius-lg);
+  border: 1px solid var(--crm-border);
+  padding: var(--crm-space-4);
+  box-shadow: var(--crm-shadow);
+}
+
+.imovel-card-tipo {
+  font-size: var(--crm-text-sm);
+  color: var(--crm-text-muted);
+  text-transform: capitalize;
+  margin-bottom: var(--crm-space-1);
+}
+
+.imovel-card-endereco {
+  font-weight: var(--crm-font-medium);
+  color: var(--crm-text);
+  margin-bottom: var(--crm-space-2);
+}
+
+.imovel-card-valores {
+  font-size: var(--crm-text-sm);
+  color: var(--crm-accent);
+  font-weight: var(--crm-font-medium);
+  margin-bottom: var(--crm-space-3);
+}
+
+.imovel-card-actions {
+  display: flex;
+  gap: var(--crm-space-2);
+}
+
+.imovel-card-actions button {
+  padding: var(--crm-space-1) var(--crm-space-2);
+  font-size: var(--crm-text-xs);
+  background: none;
+  border: 1px solid var(--crm-border);
+  border-radius: var(--crm-radius);
+  color: var(--crm-text-muted);
+  cursor: pointer;
+}
+
+.imovel-card-actions button:hover {
+  border-color: var(--crm-accent);
+  color: var(--crm-accent);
+}
+
+.imoveis-loading,
+.imoveis-erro {
+  padding: var(--crm-space-8);
+  text-align: center;
+  color: var(--crm-text-muted);
+}
+
+.imoveis-erro {
+  color: var(--crm-error);
+}
+
+.imoveis-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: var(--crm-space-4);
+  overflow: auto;
+}
+
+.imoveis-modal {
+  background: var(--crm-surface);
+  border-radius: var(--crm-radius-lg);
+  padding: var(--crm-space-6);
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--crm-shadow-lg);
+}
+
+.imoveis-modal h2 {
+  margin: 0 0 var(--crm-space-4);
+  font-size: var(--crm-text-xl);
+}
+
+.imoveis-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--crm-space-4);
+}
+
+.imoveis-form label {
+  font-size: var(--crm-text-sm);
+  font-weight: var(--crm-font-medium);
+  color: var(--crm-text);
+}
+
+.imoveis-form input,
+.imoveis-form select,
+.imoveis-form textarea {
+  padding: var(--crm-space-3) var(--crm-space-4);
+  border: 1px solid var(--crm-border);
+  border-radius: var(--crm-radius);
+  font-size: var(--crm-text-base);
+}
+
+.imoveis-form textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.imoveis-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--crm-space-4);
+}
+
+.imoveis-form-actions {
+  display: flex;
+  gap: var(--crm-space-3);
+  margin-top: var(--crm-space-2);
+}
+
+.imoveis-form-actions button {
+  padding: var(--crm-space-3) var(--crm-space-4);
+  border-radius: var(--crm-radius);
+  font-weight: var(--crm-font-medium);
+  cursor: pointer;
+}
+
+.imoveis-form-actions .primary {
+  background: var(--crm-accent);
+  color: #fff;
+  border: none;
+}
+
+.imoveis-form-actions .primary:hover {
+  background: var(--crm-accent-hover);
+}
+
+.imoveis-form-actions .secondary {
+  background: none;
+  border: 1px solid var(--crm-border);
+  color: var(--crm-text-muted);
+}
+
+.imoveis-form-row-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 640px) {
+  .imoveis-form-row,
+  .imoveis-form-row-3 {
+    grid-template-columns: 1fr;
+  }
+}

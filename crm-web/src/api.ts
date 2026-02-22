@@ -1,14 +1,148 @@
+import { getToken } from './auth';
+import type { Contato, Imovel, Tarefa } from './types';
+
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
+function authHeaders(): HeadersInit {
+  const token = getToken();
+  return {
+    'Content-Type': 'application/json',
+    ...(token && { Authorization: `Bearer ${token}` }),
+  };
+}
+
+async function handleRes<T>(res: Response): Promise<T> {
+  if (!res.ok) {
+    const err = (await res.json().catch(() => ({}))) as { message?: string | string[] };
+    const msg = Array.isArray(err.message) ? err.message[0] : err.message || 'Erro na requisição';
+    throw new Error(msg);
+  }
+  return res.json();
+}
+
+// Auth
 export async function login(email: string, senha: string) {
   const res = await fetch(`${API_URL}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, senha }),
   });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({})) as { message?: string };
-    throw new Error(Array.isArray(err.message) ? err.message[0] : err.message || 'E-mail ou senha inválidos');
-  }
-  return res.json();
+  return handleRes(res);
+}
+
+// Contatos
+export async function getContatos(estagio?: string): Promise<Contato[]> {
+  const q = estagio ? `?estagio=${encodeURIComponent(estagio)}` : '';
+  const res = await fetch(`${API_URL}/contatos${q}`, { headers: authHeaders() });
+  return handleRes(res);
+}
+
+export async function getContato(id: string): Promise<Contato> {
+  const res = await fetch(`${API_URL}/contatos/${id}`, { headers: authHeaders() });
+  return handleRes(res);
+}
+
+export async function createContato(data: Partial<Contato>): Promise<Contato> {
+  const res = await fetch(`${API_URL}/contatos`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleRes(res);
+}
+
+export async function updateContato(id: string, data: Partial<Contato>): Promise<Contato> {
+  const res = await fetch(`${API_URL}/contatos/${id}`, {
+    method: 'PUT',
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleRes(res);
+}
+
+export async function deleteContato(id: string): Promise<void> {
+  const res = await fetch(`${API_URL}/contatos/${id}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  });
+  if (!res.ok) await handleRes(res);
+}
+
+// Imóveis
+export async function getImoveis(params?: { cidade?: string; bairro?: string; tipo?: string; status?: string }): Promise<Imovel[]> {
+  const q = new URLSearchParams();
+  if (params?.cidade) q.set('cidade', params.cidade);
+  if (params?.bairro) q.set('bairro', params.bairro);
+  if (params?.tipo) q.set('tipo', params.tipo);
+  if (params?.status) q.set('status', params.status);
+  const query = q.toString() ? `?${q}` : '';
+  const res = await fetch(`${API_URL}/imoveis${query}`, { headers: authHeaders() });
+  return handleRes(res);
+}
+
+export async function getImovel(id: string): Promise<Imovel> {
+  const res = await fetch(`${API_URL}/imoveis/${id}`, { headers: authHeaders() });
+  return handleRes(res);
+}
+
+export async function createImovel(data: Partial<Imovel>): Promise<Imovel> {
+  const res = await fetch(`${API_URL}/imoveis`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleRes(res);
+}
+
+export async function updateImovel(id: string, data: Partial<Imovel>): Promise<Imovel> {
+  const res = await fetch(`${API_URL}/imoveis/${id}`, {
+    method: 'PUT',
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleRes(res);
+}
+
+export async function deleteImovel(id: string): Promise<void> {
+  const res = await fetch(`${API_URL}/imoveis/${id}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  });
+  if (!res.ok) await handleRes(res);
+}
+
+// Tarefas
+export async function getTarefas(params?: { usuarioId?: string; dataPrevista?: string }): Promise<Tarefa[]> {
+  const q = new URLSearchParams();
+  if (params?.usuarioId) q.set('usuarioId', params.usuarioId);
+  if (params?.dataPrevista) q.set('dataPrevista', params.dataPrevista);
+  const query = q.toString() ? `?${q}` : '';
+  const res = await fetch(`${API_URL}/tarefas${query}`, { headers: authHeaders() });
+  return handleRes(res);
+}
+
+export async function createTarefa(data: { titulo: string; descricao?: string; dataPrevista?: string; contatoId?: string; imovelId?: string }): Promise<Tarefa> {
+  const res = await fetch(`${API_URL}/tarefas`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleRes(res);
+}
+
+export async function updateTarefa(id: string, data: Partial<Tarefa>): Promise<Tarefa> {
+  const res = await fetch(`${API_URL}/tarefas/${id}`, {
+    method: 'PUT',
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleRes(res);
+}
+
+export async function deleteTarefa(id: string): Promise<void> {
+  const res = await fetch(`${API_URL}/tarefas/${id}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  });
+  if (!res.ok) await handleRes(res);
 }

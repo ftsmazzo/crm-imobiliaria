@@ -1,0 +1,190 @@
+.tarefas-page h1 {
+  margin: 0 0 var(--crm-space-2);
+  font-size: var(--crm-text-2xl);
+  font-weight: var(--crm-font-bold);
+  color: var(--crm-text);
+  letter-spacing: -0.02em;
+}
+
+.tarefas-page .lead {
+  margin: 0 0 var(--crm-space-6);
+  font-size: var(--crm-text-base);
+  color: var(--crm-text-muted);
+}
+
+.tarefas-toolbar {
+  margin-bottom: var(--crm-space-6);
+}
+
+.tarefas-btn-new {
+  padding: var(--crm-space-2) var(--crm-space-4);
+  font-size: var(--crm-text-sm);
+  font-weight: var(--crm-font-medium);
+  color: #fff;
+  background: var(--crm-accent);
+  border: none;
+  border-radius: var(--crm-radius);
+  cursor: pointer;
+}
+
+.tarefas-btn-new:hover {
+  background: var(--crm-accent-hover);
+}
+
+.tarefas-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--crm-space-3);
+}
+
+.tarefa-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--crm-space-4);
+  background: var(--crm-surface);
+  border-radius: var(--crm-radius);
+  padding: var(--crm-space-4);
+  border: 1px solid var(--crm-border);
+  box-shadow: var(--crm-shadow);
+}
+
+.tarefa-item.concluida {
+  opacity: 0.7;
+}
+
+.tarefa-item.concluida .tarefa-titulo {
+  text-decoration: line-through;
+  color: var(--crm-text-muted);
+}
+
+.tarefa-check {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: var(--crm-accent);
+}
+
+.tarefa-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.tarefa-titulo {
+  font-weight: var(--crm-font-medium);
+  color: var(--crm-text);
+  margin-bottom: var(--crm-space-1);
+}
+
+.tarefa-meta {
+  font-size: var(--crm-text-sm);
+  color: var(--crm-text-muted);
+  margin-bottom: var(--crm-space-1);
+}
+
+.tarefa-desc {
+  font-size: var(--crm-text-sm);
+  color: var(--crm-text-muted);
+}
+
+.tarefa-actions button {
+  padding: var(--crm-space-1) var(--crm-space-2);
+  font-size: var(--crm-text-xs);
+  background: none;
+  border: 1px solid var(--crm-border);
+  border-radius: var(--crm-radius);
+  color: var(--crm-text-muted);
+  cursor: pointer;
+}
+
+.tarefa-actions button:hover {
+  border-color: var(--crm-error);
+  color: var(--crm-error);
+}
+
+.tarefas-loading,
+.tarefas-erro {
+  padding: var(--crm-space-8);
+  text-align: center;
+  color: var(--crm-text-muted);
+}
+
+.tarefas-erro {
+  color: var(--crm-error);
+}
+
+.tarefas-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: var(--crm-space-4);
+}
+
+.tarefas-modal {
+  background: var(--crm-surface);
+  border-radius: var(--crm-radius-lg);
+  padding: var(--crm-space-6);
+  width: 100%;
+  max-width: 400px;
+  box-shadow: var(--crm-shadow-lg);
+}
+
+.tarefas-modal h2 {
+  margin: 0 0 var(--crm-space-4);
+  font-size: var(--crm-text-xl);
+}
+
+.tarefas-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--crm-space-4);
+}
+
+.tarefas-form label {
+  font-size: var(--crm-text-sm);
+  font-weight: var(--crm-font-medium);
+  color: var(--crm-text);
+}
+
+.tarefas-form input,
+.tarefas-form textarea {
+  padding: var(--crm-space-3) var(--crm-space-4);
+  border: 1px solid var(--crm-border);
+  border-radius: var(--crm-radius);
+  font-size: var(--crm-text-base);
+}
+
+.tarefas-form textarea {
+  min-height: 60px;
+  resize: vertical;
+}
+
+.tarefas-form-actions {
+  display: flex;
+  gap: var(--crm-space-3);
+  margin-top: var(--crm-space-2);
+}
+
+.tarefas-form-actions button {
+  padding: var(--crm-space-3) var(--crm-space-4);
+  border-radius: var(--crm-radius);
+  font-weight: var(--crm-font-medium);
+  cursor: pointer;
+}
+
+.tarefas-form-actions .primary {
+  background: var(--crm-accent);
+  color: #fff;
+  border: none;
+}
+
+.tarefas-form-actions .secondary {
+  background: none;
+  border: 1px solid var(--crm-border);
+  color: var(--crm-text-muted);
+}

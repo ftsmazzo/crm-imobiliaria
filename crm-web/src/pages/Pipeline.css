@@ -1,0 +1,112 @@
+.pipeline-page h1 {
+  margin: 0 0 var(--crm-space-2);
+  font-size: var(--crm-text-2xl);
+  font-weight: var(--crm-font-bold);
+  color: var(--crm-text);
+  letter-spacing: -0.02em;
+}
+
+.pipeline-page .lead {
+  margin: 0 0 var(--crm-space-6);
+  font-size: var(--crm-text-base);
+  color: var(--crm-text-muted);
+}
+
+.pipeline-board {
+  display: flex;
+  gap: var(--crm-space-4);
+  overflow-x: auto;
+  padding-bottom: var(--crm-space-4);
+  min-height: 400px;
+}
+
+.pipeline-col {
+  flex: 0 0 280px;
+  background: var(--crm-bg-subtle);
+  border-radius: var(--crm-radius-lg);
+  padding: var(--crm-space-4);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--crm-border);
+}
+
+.pipeline-col-header {
+  font-size: var(--crm-text-sm);
+  font-weight: var(--crm-font-semibold);
+  color: var(--crm-text);
+  margin-bottom: var(--crm-space-3);
+  text-transform: capitalize;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pipeline-col-count {
+  background: var(--crm-primary);
+  color: #fff;
+  font-size: var(--crm-text-xs);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.pipeline-cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--crm-space-3);
+  flex: 1;
+  min-height: 0;
+}
+
+.pipeline-card {
+  background: var(--crm-surface);
+  border-radius: var(--crm-radius);
+  padding: var(--crm-space-4);
+  box-shadow: var(--crm-shadow);
+  border: 1px solid var(--crm-border);
+  cursor: pointer;
+  transition: box-shadow 0.15s;
+}
+
+.pipeline-card:hover {
+  box-shadow: var(--crm-shadow-md);
+}
+
+.pipeline-card-nome {
+  font-weight: var(--crm-font-semibold);
+  color: var(--crm-text);
+  margin-bottom: var(--crm-space-1);
+}
+
+.pipeline-card-email {
+  font-size: var(--crm-text-sm);
+  color: var(--crm-text-muted);
+  margin-bottom: var(--crm-space-2);
+}
+
+.pipeline-card-select {
+  width: 100%;
+  padding: var(--crm-space-2) var(--crm-space-3);
+  font-size: var(--crm-text-sm);
+  border: 1px solid var(--crm-border);
+  border-radius: var(--crm-radius);
+  background: var(--crm-surface);
+  color: var(--crm-text);
+  cursor: pointer;
+}
+
+.pipeline-loading,
+.pipeline-erro {
+  padding: var(--crm-space-8);
+  text-align: center;
+  color: var(--crm-text-muted);
+}
+
+.pipeline-erro {
+  color: var(--crm-error);
+}
+
+@media (max-width: 640px) {
+  .pipeline-col {
+    flex: 0 0 260px;
+  }
+}

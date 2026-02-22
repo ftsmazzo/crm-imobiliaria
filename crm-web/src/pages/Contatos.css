@@ -1,0 +1,200 @@
+.contatos-page h1 {
+  margin: 0 0 var(--crm-space-2);
+  font-size: var(--crm-text-2xl);
+  font-weight: var(--crm-font-bold);
+  color: var(--crm-text);
+  letter-spacing: -0.02em;
+}
+
+.contatos-page .lead {
+  margin: 0 0 var(--crm-space-6);
+  font-size: var(--crm-text-base);
+  color: var(--crm-text-muted);
+}
+
+.contatos-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--crm-space-4);
+  margin-bottom: var(--crm-space-6);
+}
+
+.contatos-btn-new {
+  padding: var(--crm-space-2) var(--crm-space-4);
+  font-size: var(--crm-text-sm);
+  font-weight: var(--crm-font-medium);
+  color: #fff;
+  background: var(--crm-accent);
+  border: none;
+  border-radius: var(--crm-radius);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.contatos-btn-new:hover {
+  background: var(--crm-accent-hover);
+}
+
+.contatos-table-wrap {
+  background: var(--crm-surface);
+  border-radius: var(--crm-radius-lg);
+  border: 1px solid var(--crm-border);
+  overflow: hidden;
+  box-shadow: var(--crm-shadow);
+}
+
+.contatos-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.contatos-table th,
+.contatos-table td {
+  padding: var(--crm-space-3) var(--crm-space-4);
+  text-align: left;
+  border-bottom: 1px solid var(--crm-border);
+}
+
+.contatos-table th {
+  font-size: var(--crm-text-xs);
+  font-weight: var(--crm-font-semibold);
+  color: var(--crm-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.contatos-table tr:last-child td {
+  border-bottom: none;
+}
+
+.contatos-table tr:hover td {
+  background: var(--crm-bg-subtle);
+}
+
+.contatos-table .estagio {
+  text-transform: capitalize;
+  font-size: var(--crm-text-sm);
+}
+
+.contatos-actions {
+  display: flex;
+  gap: var(--crm-space-2);
+}
+
+.contatos-actions button {
+  padding: var(--crm-space-1) var(--crm-space-2);
+  font-size: var(--crm-text-xs);
+  background: none;
+  border: 1px solid var(--crm-border);
+  border-radius: var(--crm-radius);
+  color: var(--crm-text-muted);
+  cursor: pointer;
+}
+
+.contatos-actions button:hover {
+  border-color: var(--crm-accent);
+  color: var(--crm-accent);
+}
+
+.contatos-loading,
+.contatos-erro {
+  padding: var(--crm-space-8);
+  text-align: center;
+  color: var(--crm-text-muted);
+}
+
+.contatos-erro {
+  color: var(--crm-error);
+}
+
+/* Modal */
+.contatos-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: var(--crm-space-4);
+}
+
+.contatos-modal {
+  background: var(--crm-surface);
+  border-radius: var(--crm-radius-lg);
+  padding: var(--crm-space-6);
+  width: 100%;
+  max-width: 420px;
+  box-shadow: var(--crm-shadow-lg);
+}
+
+.contatos-modal h2 {
+  margin: 0 0 var(--crm-space-4);
+  font-size: var(--crm-text-xl);
+}
+
+.contatos-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--crm-space-4);
+}
+
+.contatos-form label {
+  font-size: var(--crm-text-sm);
+  font-weight: var(--crm-font-medium);
+  color: var(--crm-text);
+}
+
+.contatos-form input,
+.contatos-form select,
+.contatos-form textarea {
+  padding: var(--crm-space-3) var(--crm-space-4);
+  border: 1px solid var(--crm-border);
+  border-radius: var(--crm-radius);
+  font-size: var(--crm-text-base);
+}
+
+.contatos-form textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.contatos-form-actions {
+  display: flex;
+  gap: var(--crm-space-3);
+  margin-top: var(--crm-space-2);
+}
+
+.contatos-form-actions button {
+  padding: var(--crm-space-3) var(--crm-space-4);
+  border-radius: var(--crm-radius);
+  font-weight: var(--crm-font-medium);
+  cursor: pointer;
+}
+
+.contatos-form-actions .primary {
+  background: var(--crm-accent);
+  color: #fff;
+  border: none;
+}
+
+.contatos-form-actions .primary:hover {
+  background: var(--crm-accent-hover);
+}
+
+.contatos-form-actions .secondary {
+  background: none;
+  border: 1px solid var(--crm-border);
+  color: var(--crm-text-muted);
+}
+
+@media (max-width: 640px) {
+  .contatos-table-wrap {
+    overflow-x: auto;
+  }
+  .contatos-table {
+    min-width: 600px;
+  }
+}
