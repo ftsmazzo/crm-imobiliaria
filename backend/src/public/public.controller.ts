@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseUUIDPipe, Post, Query, UseGuards } from '@nestjs/common';
 import { ContatosService } from '../contatos/contatos.service';
 import { ImoveisService } from '../imoveis/imoveis.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { Public } from '../auth/public.decorator';
 import { LeadPublicDto } from './dto/lead-public.dto';
+import { LeadRateLimitGuard } from './lead-rate-limit.guard';
 
 @Public()
 @Controller('api/public')
@@ -64,6 +65,7 @@ export class PublicController {
   }
 
   @Post('lead')
+  @UseGuards(LeadRateLimitGuard)
   async receberLead(@Body() dto: LeadPublicDto) {
     const contato = await this.contatos.create(
       {
