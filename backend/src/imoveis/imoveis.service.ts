@@ -1,5 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { Usuario } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateImovelDto } from './dto/create-imovel.dto';
 import { UpdateImovelDto } from './dto/update-imovel.dto';
@@ -8,7 +9,10 @@ import { UpdateImovelDto } from './dto/update-imovel.dto';
 export class ImoveisService {
   constructor(private prisma: PrismaService) {}
 
-  async create(dto: CreateImovelDto) {
+  async create(dto: CreateImovelDto, user?: Usuario) {
+    const usuarioResponsavelId =
+      dto.usuarioResponsavelId ??
+      (user?.role === 'corretor' ? user.id : undefined);
     return this.prisma.imovel.create({
       data: {
         tipo: dto.tipo,
@@ -25,17 +29,26 @@ export class ImoveisService {
         qtdQuartos: dto.qtdQuartos,
         qtdBanheiros: dto.qtdBanheiros,
         area: dto.area != null ? dto.area : undefined,
-        usuarioResponsavelId: dto.usuarioResponsavelId,
+        usuarioResponsavelId: usuarioResponsavelId ?? undefined,
       },
     });
   }
 
-  async findAll(cidade?: string, bairro?: string, tipo?: string, status?: string) {
+  async findAll(
+    cidade?: string,
+    bairro?: string,
+    tipo?: string,
+    status?: string,
+    user?: Usuario,
+  ) {
     const where: Prisma.ImovelWhereInput = {};
     if (cidade) where.cidade = { contains: cidade, mode: 'insensitive' };
     if (bairro) where.bairro = { contains: bairro, mode: 'insensitive' };
     if (tipo) where.tipo = tipo;
     if (status) where.status = status;
+    if (user?.role === 'corretor') {
+      where.usuarioResponsavelId = user.id;
+    }
     return this.prisma.imovel.findMany({
       where,
       orderBy: { criadoEm: 'desc' },
@@ -43,7 +56,7 @@ export class ImoveisService {
     });
   }
 
-  async findOne(id: string) {
+  async findOne(id: string, user?: Usuario) {
     const i = await this.prisma.imovel.findUnique({
       where: { id },
       include: {
@@ -53,35 +66,37 @@ export class ImoveisService {
       },
     });
     if (!i) throw new NotFoundException('Imóvel não encontrado');
+    if (user?.role === 'corretor' && i.usuarioResponsavelId !== user.id) {
+      throw new ForbiddenException('Sem permissão para acessar este imóvel');
+    }
     return i;
   }
 
-  async update(id: string, dto: UpdateImovelDto) {
-    await this.findOne(id);
-    return this.prisma.imovel.update({
-      where: { id },
-      data: {
-        ...(dto.tipo !== undefined && { tipo: dto.tipo }),
-        ...(dto.rua !== undefined && { rua: dto.rua }),
-        ...(dto.numero !== undefined && { numero: dto.numero }),
-        ...(dto.bairro !== undefined && { bairro: dto.bairro }),
-        ...(dto.cidade !== undefined && { cidade: dto.cidade }),
-        ...(dto.cep !== undefined && { cep: dto.cep }),
-        ...(dto.valorVenda !== undefined && { valorVenda: dto.valorVenda }),
-        ...(dto.valorAluguel !== undefined && { valorAluguel: dto.valorAluguel }),
-        ...(dto.status !== undefined && { status: dto.status }),
-        ...(dto.codigo !== undefined && { codigo: dto.codigo }),
-        ...(dto.descricao !== undefined && { descricao: dto.descricao }),
-        ...(dto.qtdQuartos !== undefined && { qtdQuartos: dto.qtdQuartos }),
-        ...(dto.qtdBanheiros !== undefined && { qtdBanheiros: dto.qtdBanheiros }),
-        ...(dto.area !== undefined && { area: dto.area }),
-        ...(dto.usuarioResponsavelId !== undefined && { usuarioResponsavelId: dto.usuarioResponsavelId }),
-      },
-    });
+  async update(id: string, dto: UpdateImovelDto, user?: Usuario) {
+    await this.findOne(id, user);
+    const data: Prisma.ImovelUpdateInput = {
+      ...(dto.tipo !== undefined && { tipo: dto.tipo }),
+      ...(dto.rua !== undefined && { rua: dto.rua }),
+      ...(dto.numero !== undefined && { numero: dto.numero }),
+      ...(dto.bairro !== undefined && { bairro: dto.bairro }),
+      ...(dto.cidade !== undefined && { cidade: dto.cidade }),
+      ...(dto.cep !== undefined && { cep: dto.cep }),
+      ...(dto.valorVenda !== undefined && { valorVenda: dto.valorVenda }),
+      ...(dto.valorAluguel !== undefined && { valorAluguel: dto.valorAluguel }),
+      ...(dto.status !== undefined && { status: dto.status }),
+      ...(dto.codigo !== undefined && { codigo: dto.codigo }),
+      ...(dto.descricao !== undefined && { descricao: dto.descricao }),
+      ...(dto.qtdQuartos !== undefined && { qtdQuartos: dto.qtdQuartos }),
+      ...(dto.qtdBanheiros !== undefined && { qtdBanheiros: dto.qtdBanheiros }),
+      ...(dto.area !== undefined && { area: dto.area }),
+      ...(dto.usuarioResponsavelId !== undefined && { usuarioResponsavelId: dto.usuarioResponsavelId }),
+    };
+    if (user?.role === 'corretor') delete (data as Record<string, unknown>).usuarioResponsavelId;
+    return this.prisma.imovel.update({ where: { id }, data });
   }
 
-  async remove(id: string) {
-    await this.findOne(id);
+  async remove(id: string, user?: Usuario) {
+    await this.findOne(id, user);
     return this.prisma.imovel.delete({ where: { id } });
   }
 }

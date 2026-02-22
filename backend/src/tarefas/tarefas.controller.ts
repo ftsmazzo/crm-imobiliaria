@@ -16,24 +16,29 @@ export class TarefasController {
 
   @Get()
   findAll(
+    @CurrentUser() user: Usuario,
     @Query('usuarioId') usuarioId?: string,
     @Query('dataPrevista') dataPrevista?: string,
   ) {
-    return this.service.findAll(usuarioId, dataPrevista);
+    return this.service.findAll(user, usuarioId, dataPrevista);
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.service.findOne(id);
+  findOne(@CurrentUser() user: Usuario, @Param('id', ParseUUIDPipe) id: string) {
+    return this.service.findOne(id, user);
   }
 
   @Put(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateTarefaDto) {
-    return this.service.update(id, dto);
+  update(
+    @CurrentUser() user: Usuario,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdateTarefaDto,
+  ) {
+    return this.service.update(id, dto, user);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.service.remove(id);
+  remove(@CurrentUser() user: Usuario, @Param('id', ParseUUIDPipe) id: string) {
+    return this.service.remove(id, user);
   }
 }

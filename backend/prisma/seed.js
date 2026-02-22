@@ -10,6 +10,10 @@ const gestores = [
   { email: 'contato@imobmiq.com.br', nome: 'Alexsandro Mantovani' },
 ];
 
+const corretores = [
+  { email: 'corretor@imobmiq.com.br', nome: 'Corretor Teste' },
+];
+
 async function main() {
   const senhaHash = await bcrypt.hash(SENHA_INICIAL, 10);
   for (const g of gestores) {
@@ -25,6 +29,20 @@ async function main() {
       },
     });
     console.log('Gestor criado/atualizado:', g.email);
+  }
+  for (const c of corretores) {
+    await prisma.usuario.upsert({
+      where: { email: c.email },
+      update: {},
+      create: {
+        email: c.email,
+        nome: c.nome,
+        senhaHash,
+        role: 'corretor',
+        ativo: true,
+      },
+    });
+    console.log('Corretor criado/atualizado:', c.email);
   }
 }
 

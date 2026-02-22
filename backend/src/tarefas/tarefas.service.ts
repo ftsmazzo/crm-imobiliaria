@@ -1,5 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { Usuario } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateTarefaDto } from './dto/create-tarefa.dto';
 import { UpdateTarefaDto } from './dto/update-tarefa.dto';
@@ -21,9 +22,13 @@ export class TarefasService {
     });
   }
 
-  async findAll(usuarioId?: string, dataPrevista?: string) {
+  async findAll(user: Usuario, usuarioId?: string, dataPrevista?: string) {
     const where: Prisma.TarefaWhereInput = {};
-    if (usuarioId) where.usuarioId = usuarioId;
+    if (user.role === 'corretor') {
+      where.usuarioId = user.id;
+    } else if (usuarioId) {
+      where.usuarioId = usuarioId;
+    }
     if (dataPrevista) where.dataPrevista = new Date(dataPrevista);
     return this.prisma.tarefa.findMany({
       where,
@@ -36,7 +41,7 @@ export class TarefasService {
     });
   }
 
-  async findOne(id: string) {
+  async findOne(id: string, user?: Usuario) {
     const t = await this.prisma.tarefa.findUnique({
       where: { id },
       include: {
@@ -46,11 +51,14 @@ export class TarefasService {
       },
     });
     if (!t) throw new NotFoundException('Tarefa não encontrada');
+    if (user?.role === 'corretor' && t.usuarioId !== user.id) {
+      throw new ForbiddenException('Sem permissão para acessar esta tarefa');
+    }
     return t;
   }
 
-  async update(id: string, dto: UpdateTarefaDto) {
-    await this.findOne(id);
+  async update(id: string, dto: UpdateTarefaDto, user?: Usuario) {
+    await this.findOne(id, user);
     return this.prisma.tarefa.update({
       where: { id },
       data: {
@@ -64,8 +72,8 @@ export class TarefasService {
     });
   }
 
-  async remove(id: string) {
-    await this.findOne(id);
+  async remove(id: string, user?: Usuario) {
+    await this.findOne(id, user);
     return this.prisma.tarefa.delete({ where: { id } });
   }
 }

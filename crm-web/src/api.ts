@@ -111,6 +111,19 @@ export async function deleteImovel(id: string): Promise<void> {
   if (!res.ok) await handleRes(res);
 }
 
+// Dashboard
+export type DashboardStats = {
+  contatosPorEstagio: Record<string, number>;
+  tarefasAtrasadas: number;
+  imoveisPorStatus: Record<string, number>;
+  novosLeads: number;
+};
+
+export async function getDashboardStats(): Promise<DashboardStats> {
+  const res = await fetch(`${API_URL}/dashboard/estatisticas`, { headers: authHeaders() });
+  return handleRes(res);
+}
+
 // Tarefas
 export async function getTarefas(params?: { usuarioId?: string; dataPrevista?: string }): Promise<Tarefa[]> {
   const q = new URLSearchParams();
