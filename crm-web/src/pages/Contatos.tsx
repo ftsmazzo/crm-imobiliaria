@@ -70,7 +70,7 @@ export default function Contatos() {
           observacoes: form.observacoes || undefined,
           estagio: form.estagio,
         });
-      } else if (modal && modal !== 'novo') {
+      } else if (modal) {
         await updateContato(modal.id, {
           nome: form.nome,
           email: form.email,

@@ -101,7 +101,7 @@ export default function Imoveis() {
       };
       if (modal === 'novo') {
         await createImovel(payload);
-      } else if (modal && modal !== 'novo') {
+      } else if (modal) {
         await updateImovel(modal.id, payload);
       }
       setModal(null);
