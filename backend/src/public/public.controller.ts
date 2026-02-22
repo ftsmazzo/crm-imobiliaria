@@ -27,7 +27,12 @@ export class PublicController {
     const lista = await this.imoveis.findAll(cidade, bairro, tipo, status ?? 'disponivel');
     const result = await Promise.all(
       lista.map(async (i) => {
-        const fotos = await this.fotosService.getPresignedUrlsForImovel(i.id);
+        let fotos: { id: string; url: string }[] = [];
+        try {
+          fotos = await this.fotosService.getPresignedUrlsForImovel(i.id);
+        } catch {
+          // MinIO/storage falhou: site continua mostrando imóvel sem fotos
+        }
         return {
           id: i.id,
           tipo: i.tipo,
@@ -54,7 +59,12 @@ export class PublicController {
   @Get('imoveis/:id')
   async detalheImovel(@Param('id', ParseUUIDPipe) id: string) {
     const i = await this.imoveis.findOne(id);
-    const fotos = await this.fotosService.getPresignedUrlsForImovel(i.id);
+    let fotos: { id: string; url: string }[] = [];
+    try {
+      fotos = await this.fotosService.getPresignedUrlsForImovel(i.id);
+    } catch {
+      // MinIO/storage falhou: detalhe continua sem fotos
+    }
     return {
       id: i.id,
       tipo: i.tipo,

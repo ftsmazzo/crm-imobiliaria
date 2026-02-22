@@ -293,6 +293,13 @@
   object-fit: cover;
 }
 
+.imoveis-foto-thumb-placeholder {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4/3;
+  background: var(--crm-border);
+}
+
 .imoveis-foto-remove {
   display: block;
   width: 100%;

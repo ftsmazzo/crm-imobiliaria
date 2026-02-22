@@ -1,10 +1,12 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Usuario } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { StorageService } from '../storage/storage.service';
 
 @Injectable()
 export class ImoveisFotosService {
+  private readonly logger = new Logger(ImoveisFotosService.name);
+
   constructor(
     private prisma: PrismaService,
     private storage: StorageService,
@@ -38,14 +40,19 @@ export class ImoveisFotosService {
     if (user?.role === 'corretor' && imovel.usuarioResponsavelId !== user.id) {
       throw new ForbiddenException('Sem permissão');
     }
-    const fotos = await Promise.all(
-      imovel.fotos.map(async (f) => ({
-        id: f.id,
-        ordem: f.ordem,
-        url: await this.storage.getPresignedUrl(f.key),
-      })),
-    );
-    return fotos;
+    try {
+      const fotos = await Promise.all(
+        imovel.fotos.map(async (f) => ({
+          id: f.id,
+          ordem: f.ordem,
+          url: await this.storage.getPresignedUrl(f.key),
+        })),
+      );
+      return fotos;
+    } catch (err) {
+      this.logger.warn(`Fotos do imóvel ${imovelId}: MinIO/storage falhou, retornando lista vazia`, err);
+      return imovel.fotos.map((f) => ({ id: f.id, ordem: f.ordem, url: '' }));
+    }
   }
 
   async remove(imovelId: string, fotoId: string, user?: Usuario) {
@@ -67,11 +74,16 @@ export class ImoveisFotosService {
       where: { imovelId },
       orderBy: { ordem: 'asc' },
     });
-    return Promise.all(
-      fotos.map(async (f) => ({
-        id: f.id,
-        url: await this.storage.getPresignedUrl(f.key),
-      })),
-    );
+    try {
+      return await Promise.all(
+        fotos.map(async (f) => ({
+          id: f.id,
+          url: await this.storage.getPresignedUrl(f.key),
+        })),
+      );
+    } catch (err) {
+      this.logger.warn(`Presigned URLs imóvel ${imovelId}: MinIO falhou, retornando vazio`, err);
+      return [];
+    }
   }
 }
