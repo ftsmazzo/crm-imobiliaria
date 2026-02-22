@@ -57,8 +57,18 @@ model Imovel {
   criadoEm            DateTime  @default(now()) @map("criado_em")
   atualizadoEm        DateTime  @updatedAt @map("atualizado_em")
   usuarioResponsavel  Usuario?  @relation(fields: [usuarioResponsavelId], references: [id])
+  fotos               ImovelFoto[]
   interesses         Interesse[]
   tarefas             Tarefa[]
+}
+
+model ImovelFoto {
+  id        String   @id @default(uuid())
+  imovelId  String   @map("imovel_id")
+  key       String   // objeto no MinIO (ex: imoveis/uuid/nome-arquivo.jpg)
+  ordem     Int      @default(0)
+  criadoEm  DateTime @default(now()) @map("criado_em")
+  imovel    Imovel   @relation(fields: [imovelId], references: [id], onDelete: Cascade)
 }
 
 model Tarefa {

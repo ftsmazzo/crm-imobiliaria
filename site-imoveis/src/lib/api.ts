@@ -1,5 +1,7 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
+export type ImovelFotoPublic = { id: string; url: string };
+
 export type ImovelPublic = {
   id: string;
   tipo: string;
@@ -16,6 +18,7 @@ export type ImovelPublic = {
   qtdQuartos: number | null;
   qtdBanheiros: number | null;
   area: string | null;
+  fotos?: ImovelFotoPublic[];
 };
 
 export type LeadPayload = {

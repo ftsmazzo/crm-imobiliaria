@@ -111,6 +111,36 @@ export async function deleteImovel(id: string): Promise<void> {
   if (!res.ok) await handleRes(res);
 }
 
+export type ImovelFoto = { id: string; ordem: number; url: string };
+
+export async function getImovelFotos(imovelId: string): Promise<ImovelFoto[]> {
+  const token = getToken();
+  const res = await fetch(`${API_URL}/imoveis/${imovelId}/fotos`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
+  return handleRes(res);
+}
+
+export async function uploadImovelFoto(imovelId: string, file: File): Promise<{ id: string; key: string; ordem: number }> {
+  const token = getToken();
+  const form = new FormData();
+  form.append('file', file);
+  const res = await fetch(`${API_URL}/imoveis/${imovelId}/fotos`, {
+    method: 'POST',
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    body: form,
+  });
+  return handleRes(res);
+}
+
+export async function deleteImovelFoto(imovelId: string, fotoId: string): Promise<void> {
+  const res = await fetch(`${API_URL}/imoveis/${imovelId}/fotos/${fotoId}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  });
+  if (!res.ok) await handleRes(res);
+}
+
 // Dashboard
 export type DashboardStats = {
   contatosPorEstagio: Record<string, number>;

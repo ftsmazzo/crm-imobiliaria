@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getImoveis, createImovel, updateImovel, deleteImovel } from '../api';
+import { getImoveis, createImovel, updateImovel, deleteImovel, getImovelFotos, uploadImovelFoto, deleteImovelFoto, type ImovelFoto } from '../api';
 import type { Imovel } from '../types';
 import { buscarPorCep } from '../viacep';
 import {
@@ -56,6 +56,9 @@ export default function Imoveis() {
   const [importResult, setImportResult] = useState<ResultadoParse | null>(null);
   const [importing, setImporting] = useState(false);
   const [importProgress, setImportProgress] = useState({ current: 0, total: 0, ok: 0, errors: 0 });
+  const [fotos, setFotos] = useState<ImovelFoto[]>([]);
+  const [fotosLoading, setFotosLoading] = useState(false);
+  const [uploadingFoto, setUploadingFoto] = useState(false);
 
   async function load() {
     setLoading(true);
@@ -99,6 +102,11 @@ export default function Imoveis() {
     });
     setCepMsg(null);
     setModal(i);
+    setFotos([]);
+    if (i.id) {
+      setFotosLoading(true);
+      getImovelFotos(i.id).then(setFotos).catch(() => setFotos([])).finally(() => setFotosLoading(false));
+    }
   }
 
   async function handleCepBlur() {
@@ -150,12 +158,17 @@ export default function Imoveis() {
         area: form.area != null ? Number(form.area) : undefined,
       };
       if (modal === 'novo') {
-        await createImovel(payload);
+        const created = await createImovel(payload);
+        setModal(created);
+        setForm(imovelToForm(created));
+        setFotos([]);
+        getImovelFotos(created.id).then(setFotos).catch(() => setFotos([]));
+        load();
       } else if (modal) {
         await updateImovel(modal.id, payload);
+        setModal(null);
+        load();
       }
-      setModal(null);
-      load();
     } catch (e) {
       setErro(e instanceof Error ? e.message : 'Erro ao salvar');
     } finally {
@@ -489,6 +502,68 @@ export default function Imoveis() {
                     />
                   </div>
                 </section>
+
+                {/* Fotos (só ao editar ou após criar) */}
+                {modal && typeof modal === 'object' && modal.id && (
+                  <section className="imoveis-form-section">
+                    <h3 className="imoveis-form-section-title">Fotos do imóvel</h3>
+                    <div className="field">
+                      <label>Enviar foto (até 10 MB)</label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        disabled={uploadingFoto}
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file || !modal || typeof modal !== 'object' || !modal.id) return;
+                          setUploadingFoto(true);
+                          try {
+                            await uploadImovelFoto(modal.id, file);
+                            const list = await getImovelFotos(modal.id);
+                            setFotos(list);
+                          } catch (err) {
+                            console.error(err);
+                            alert('Falha ao enviar foto. Tente de novo.');
+                          } finally {
+                            setUploadingFoto(false);
+                            e.target.value = '';
+                          }
+                        }}
+                      />
+                      {uploadingFoto && <span className="imoveis-foto-status">Enviando...</span>}
+                    </div>
+                    {fotosLoading ? (
+                      <p className="imoveis-fotos-loading">Carregando fotos...</p>
+                    ) : fotos.length > 0 ? (
+                      <ul className="imoveis-fotos-list">
+                        {fotos.map((f) => (
+                          <li key={f.id} className="imoveis-foto-item">
+                            <img src={f.url} alt="" className="imoveis-foto-thumb" />
+                            <button
+                              type="button"
+                              className="imoveis-foto-remove"
+                              onClick={async () => {
+                                if (!modal || typeof modal !== 'object' || !modal.id) return;
+                                if (!confirm('Remover esta foto?')) return;
+                                try {
+                                  await deleteImovelFoto(modal.id, f.id);
+                                  setFotos((prev) => prev.filter((x) => x.id !== f.id));
+                                } catch (err) {
+                                  console.error(err);
+                                  alert('Falha ao remover foto.');
+                                }
+                              }}
+                            >
+                              Remover
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="imoveis-fotos-empty">Nenhuma foto ainda. Envie acima.</p>
+                    )}
+                  </section>
+                )}
               </div>
               <div className="imoveis-form-actions">
                 <button type="button" className="secondary" onClick={() => setModal(null)}>

@@ -15,6 +15,9 @@ export default function ImovelCard({ imovel }: { imovel: ImovelPublic }) {
   return (
     <Link href={`/imoveis/${imovel.id}`} className="imovel-card">
       <div className="imovel-card-image">
+        {imovel.fotos?.[0]?.url ? (
+          <img src={imovel.fotos[0].url} alt="" className="imovel-card-img" />
+        ) : null}
         <span className="imovel-card-tipo">{imovel.tipo}</span>
       </div>
       <div className="imovel-card-body">

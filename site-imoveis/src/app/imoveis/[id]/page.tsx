@@ -44,7 +44,15 @@ export default async function ImovelPage({ params }: { params: Promise<{ id: str
           <span className="imovel-detalhe-tipo">{imovel.tipo}</span>
           {imovel.codigo && <span className="imovel-detalhe-codigo">Cód. {imovel.codigo}</span>}
         </div>
-        <div className="imovel-detalhe-imagem" />
+        {(imovel.fotos && imovel.fotos.length > 0) ? (
+          <div className="imovel-detalhe-galeria">
+            {imovel.fotos.map((f) => (
+              <img key={f.id} src={f.url} alt="" className="imovel-detalhe-galeria-img" />
+            ))}
+          </div>
+        ) : (
+          <div className="imovel-detalhe-imagem" />
+        )}
         <div className="imovel-detalhe-body">
           <div className="imovel-detalhe-valores">
             {valorVenda && <span>Venda: {valorVenda}</span>}

@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Param, ParseUUIDPipe, Post, Query, UseGuards } from '@nestjs/common';
 import { ContatosService } from '../contatos/contatos.service';
+import { ImoveisFotosService } from '../imoveis/imoveis-fotos.service';
 import { ImoveisService } from '../imoveis/imoveis.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { Public } from '../auth/public.decorator';
@@ -12,6 +13,7 @@ export class PublicController {
   constructor(
     private imoveis: ImoveisService,
     private contatos: ContatosService,
+    private fotosService: ImoveisFotosService,
     private prisma: PrismaService,
   ) {}
 
@@ -23,28 +25,36 @@ export class PublicController {
     @Query('status') status?: string,
   ) {
     const lista = await this.imoveis.findAll(cidade, bairro, tipo, status ?? 'disponivel');
-    return lista.map((i) => ({
-      id: i.id,
-      tipo: i.tipo,
-      rua: i.rua,
-      numero: i.numero,
-      bairro: i.bairro,
-      cidade: i.cidade,
-      cep: i.cep,
-      valorVenda: i.valorVenda?.toString(),
-      valorAluguel: i.valorAluguel?.toString(),
-      status: i.status,
-      codigo: i.codigo,
-      descricao: i.descricao,
-      qtdQuartos: i.qtdQuartos,
-      qtdBanheiros: i.qtdBanheiros,
-      area: i.area?.toString(),
-    }));
+    const result = await Promise.all(
+      lista.map(async (i) => {
+        const fotos = await this.fotosService.getPresignedUrlsForImovel(i.id);
+        return {
+          id: i.id,
+          tipo: i.tipo,
+          rua: i.rua,
+          numero: i.numero,
+          bairro: i.bairro,
+          cidade: i.cidade,
+          cep: i.cep,
+          valorVenda: i.valorVenda?.toString(),
+          valorAluguel: i.valorAluguel?.toString(),
+          status: i.status,
+          codigo: i.codigo,
+          descricao: i.descricao,
+          qtdQuartos: i.qtdQuartos,
+          qtdBanheiros: i.qtdBanheiros,
+          area: i.area?.toString(),
+          fotos: fotos.map((f) => ({ id: f.id, url: f.url })),
+        };
+      }),
+    );
+    return result;
   }
 
   @Get('imoveis/:id')
   async detalheImovel(@Param('id', ParseUUIDPipe) id: string) {
     const i = await this.imoveis.findOne(id);
+    const fotos = await this.fotosService.getPresignedUrlsForImovel(i.id);
     return {
       id: i.id,
       tipo: i.tipo,
@@ -61,6 +71,7 @@ export class PublicController {
       qtdQuartos: i.qtdQuartos,
       qtdBanheiros: i.qtdBanheiros,
       area: i.area?.toString(),
+      fotos: fotos.map((f) => ({ id: f.id, url: f.url })),
     };
   }
 

@@ -61,6 +61,7 @@ export class ImoveisService {
       where: { id },
       include: {
         usuarioResponsavel: { select: { id: true, nome: true, email: true } },
+        fotos: { orderBy: { ordem: 'asc' } },
         interesses: { include: { contato: { select: { id: true, nome: true, email: true } } } },
         tarefas: true,
       },
