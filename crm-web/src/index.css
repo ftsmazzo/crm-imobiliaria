@@ -1,2 +1,43 @@
-* { box-sizing: border-box; }
-body { margin: 0; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  font-family: var(--crm-font);
+  font-size: var(--crm-text-base);
+  line-height: 1.5;
+  color: var(--crm-text);
+  background: var(--crm-bg);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+input,
+button {
+  font-size: inherit;
+}
+
+a {
+  color: var(--crm-accent);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--crm-accent-hover);
+  text-decoration: underline;
+}

@@ -1,0 +1,41 @@
+/* Dashboard – conteúdo dentro do shell */
+
+.dashboard-page h1 {
+  margin: 0 0 var(--crm-space-2);
+  font-size: var(--crm-text-2xl);
+  font-weight: var(--crm-font-bold);
+  color: var(--crm-text);
+  letter-spacing: -0.02em;
+}
+
+.dashboard-page .lead {
+  margin: 0 0 var(--crm-space-8);
+  font-size: var(--crm-text-base);
+  color: var(--crm-text-muted);
+}
+
+.dashboard-welcome {
+  background: var(--crm-surface);
+  border-radius: var(--crm-radius-lg);
+  padding: var(--crm-space-8);
+  border: 1px solid var(--crm-border);
+  box-shadow: var(--crm-shadow);
+  max-width: 32rem;
+}
+
+.dashboard-welcome p {
+  margin: 0;
+  font-size: var(--crm-text-base);
+  color: var(--crm-text);
+  line-height: 1.6;
+}
+
+.dashboard-welcome p + p {
+  margin-top: var(--crm-space-4);
+}
+
+@media (max-width: 480px) {
+  .dashboard-welcome {
+    padding: var(--crm-space-6);
+  }
+}
