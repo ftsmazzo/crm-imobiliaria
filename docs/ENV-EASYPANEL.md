@@ -35,27 +35,30 @@ Variáveis usadas no **build** (Next.js). Prefixo `NEXT_PUBLIC_` para ficarem di
 | Variável                  | Obrigatória | Descrição | Exemplo |
 |---------------------------|-------------|-----------|---------|
 | `NEXT_PUBLIC_API_URL`     | Sim         | URL pública da API (backend), para listagem de imóveis e envio de leads. | `https://api.seudominio.com.br` |
+| `NEXT_PUBLIC_WHATSAPP`    | Não         | Número para botão WhatsApp (apenas dígitos, com DDI). | `5511999999999` |
+| `NEXT_PUBLIC_ENDERECO`    | Não         | Endereço exibido no rodapé. | `Av. Exemplo, 1000 - Centro` |
+| `NEXT_PUBLIC_CRECI`       | Não         | CRECI para exibição no rodapé. | `12345-F` |
 
 ---
 
-## Resumo rápido (copiar e colar no EasyPanel)
+## Variáveis prontas (copiar e colar no EasyPanel)
 
-**Backend:**
+### Backend
 ```
-DATABASE_URL=postgresql://...
-JWT_SECRET=...
+DATABASE_URL=postgresql://devocional:c7c136dbc2db1177bacc@imobmiq_postgres:5432/crm?sslmode=disable
+JWT_SECRET=2aa77285629d3c786cd4962e9ae220d4
 JWT_EXPIRES_IN=7d
-CORS_ORIGINS=https://painel.seudominio.com.br,https://seudominio.com.br
+CORS_ORIGINS=https://cmr-imobiliaria-crm-web.90qhxz.easypanel.host,https://cmr-imobiliaria-site-imoveis.90qhxz.easypanel.host
 ```
 
-**Painel CRM (crm-web):**
+### Painel CRM (crm-web)
 ```
-VITE_API_URL=https://api.seudominio.com.br
+VITE_API_URL=https://cmr-imobiliaria-backend.90qhxz.easypanel.host
 ```
 
-**Site de imóveis:**
+### Site de imóveis
 ```
-NEXT_PUBLIC_API_URL=https://api.seudominio.com.br
+NEXT_PUBLIC_API_URL=https://cmr-imobiliaria-backend.90qhxz.easypanel.host
 ```
 
 ---

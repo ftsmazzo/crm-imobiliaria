@@ -18,4 +18,8 @@ export class LeadPublicDto {
   @IsOptional()
   @IsUUID()
   imovelId?: string;
+
+  @IsOptional()
+  @IsString()
+  origem?: string; // site, encomende, anuncie, etc.
 }

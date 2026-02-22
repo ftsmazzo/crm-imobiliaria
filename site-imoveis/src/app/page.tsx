@@ -1,8 +1,42 @@
-export default function Home() {
+import Link from 'next/link';
+import { getImoveis } from '@/lib/api';
+import ImovelCard from '@/components/ImovelCard';
+
+export default async function Home() {
+  const imoveis = await getImoveis({ status: 'disponivel' });
+  const destaque = imoveis.slice(0, 6);
+
   return (
-    <main style={{ padding: '2rem' }}>
-      <h1>Site de Imóveis</h1>
-      <p>Etapa E0: fundação. Listagem e detalhes em breve.</p>
-    </main>
+    <>
+      <section className="hero">
+        <div className="container">
+          <h1>Encontre o imóvel ideal</h1>
+          <p className="hero-lead">Venda e locação com atendimento personalizado.</p>
+          <Link href="/imoveis" className="btn btn-primary">
+            Ver imóveis
+          </Link>
+        </div>
+      </section>
+
+      <section className="container" style={{ marginTop: '3rem' }}>
+        <h2 style={{ marginBottom: '1.5rem' }}>Imóveis em destaque</h2>
+        {destaque.length === 0 ? (
+          <p style={{ color: 'var(--site-muted)' }}>Nenhum imóvel disponível no momento.</p>
+        ) : (
+          <div className="imovel-grid">
+            {destaque.map((i) => (
+              <ImovelCard key={i.id} imovel={i} />
+            ))}
+          </div>
+        )}
+        {imoveis.length > 6 && (
+          <p style={{ marginTop: '1.5rem', textAlign: 'center' }}>
+            <Link href="/imoveis" className="btn btn-outline">
+              Ver todos os imóveis
+            </Link>
+          </p>
+        )}
+      </section>
+    </>
   );
 }

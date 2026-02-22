@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Param, ParseUUIDPipe, Post, Query } from '@nestjs/common';
 import { ContatosService } from '../contatos/contatos.service';
 import { ImoveisService } from '../imoveis/imoveis.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { Public } from '../auth/public.decorator';
 import { LeadPublicDto } from './dto/lead-public.dto';
 
@@ -10,6 +11,7 @@ export class PublicController {
   constructor(
     private imoveis: ImoveisService,
     private contatos: ContatosService,
+    private prisma: PrismaService,
   ) {}
 
   @Get('imoveis')
@@ -63,14 +65,27 @@ export class PublicController {
 
   @Post('lead')
   async receberLead(@Body() dto: LeadPublicDto) {
-    const contato = await this.contatos.create({
-      nome: dto.nome,
-      email: dto.email,
-      telefone: dto.telefone,
-      origem: 'site',
-      observacoes: dto.mensagem ?? undefined,
-      estagio: 'novo',
-    });
+    const contato = await this.contatos.create(
+      {
+        nome: dto.nome,
+        email: dto.email,
+        telefone: dto.telefone,
+        origem: dto.origem ?? 'site',
+        observacoes: dto.mensagem ?? undefined,
+        estagio: 'novo',
+      },
+      undefined,
+    );
+    if (dto.imovelId) {
+      await this.prisma.interesse.create({
+        data: {
+          contatoId: contato.id,
+          imovelId: dto.imovelId,
+          tipo: 'interesse',
+          observacao: dto.mensagem ?? undefined,
+        },
+      });
+    }
     return { id: contato.id, message: 'Lead recebido com sucesso' };
   }
 }
