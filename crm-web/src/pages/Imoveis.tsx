@@ -160,7 +160,22 @@ export default function Imoveis() {
       if (modal === 'novo') {
         const created = await createImovel(payload);
         setModal(created);
-        setForm(imovelToForm(created));
+        setForm({
+          tipo: created.tipo,
+          rua: created.rua ?? '',
+          numero: created.numero ?? '',
+          bairro: created.bairro ?? '',
+          cidade: created.cidade ?? '',
+          cep: created.cep ?? '',
+          valorVenda: created.valorVenda != null ? Number(created.valorVenda) : undefined,
+          valorAluguel: created.valorAluguel != null ? Number(created.valorAluguel) : undefined,
+          status: created.status,
+          codigo: created.codigo ?? '',
+          descricao: created.descricao ?? '',
+          qtdQuartos: created.qtdQuartos ?? undefined,
+          qtdBanheiros: created.qtdBanheiros ?? undefined,
+          area: created.area != null ? Number(created.area) : undefined,
+        });
         setFotos([]);
         getImovelFotos(created.id).then(setFotos).catch(() => setFotos([]));
         load();
