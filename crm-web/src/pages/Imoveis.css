@@ -204,18 +204,18 @@
   border: 1px solid rgba(220, 38, 38, 0.2);
 }
 
-/* Modal do formulário – estilo Kenlo */
+/* Modal do formulário – sem rolagem dupla, sem barra horizontal */
 .imoveis-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.45);
-  backdrop-filter: blur(2px);
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 200;
-  padding: var(--crm-space-4);
-  overflow: auto;
+  padding: 1rem;
+  overflow: hidden;
   animation: imoveis-fadeIn 0.2s ease;
 }
 
@@ -225,39 +225,58 @@
 }
 
 .imoveis-modal {
-  background: var(--crm-surface);
-  border-radius: var(--crm-radius-xl);
+  background: #fff;
+  border-radius: 0.75rem;
   width: 100%;
-  max-width: 580px;
+  max-width: min(560px, calc(100vw - 2rem));
   max-height: calc(100vh - 2rem);
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
-  box-shadow: var(--crm-shadow-lg);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);
+  border: 1px solid var(--crm-border);
   animation: imoveis-slideUp 0.25s ease;
 }
 
 @keyframes imoveis-slideUp {
-  from { opacity: 0; transform: translateY(16px); }
+  from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .imoveis-modal-header {
-  padding: var(--crm-space-6) var(--crm-space-6) 0;
-  margin-bottom: var(--crm-space-4);
+  flex-shrink: 0;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--crm-border);
 }
 
 .imoveis-modal-header h2 {
   margin: 0;
-  font-size: 1.25rem;
-  font-weight: var(--crm-font-bold);
+  font-size: 1.2rem;
+  font-weight: 700;
   color: var(--crm-text);
   letter-spacing: -0.02em;
 }
 
 .imoveis-modal-body {
-  padding: 0 var(--crm-space-6);
+  flex: 1;
+  min-height: 0;
+  padding: 0 1.5rem;
   overflow-y: auto;
-  max-height: calc(100vh - 12rem);
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.imoveis-modal .imoveis-form {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.imoveis-form-actions {
+  flex-shrink: 0;
 }
 
 .imoveis-form-section {
