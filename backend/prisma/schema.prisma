@@ -1,0 +1,20 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Modelos serão adicionados na Etapa E1
+model Usuario {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  senhaHash String   @map("senha_hash")
+  nome      String
+  role      String   @default("corretor") // corretor | gestor
+  ativo     Boolean  @default(true)
+  criadoEm  DateTime @default(now()) @map("criado_em")
+  atualizadoEm DateTime @updatedAt @map("atualizado_em")
+}
