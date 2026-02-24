@@ -257,6 +257,87 @@
   letter-spacing: -0.02em;
 }
 
+/* Wizard: stepper e etapas */
+.imoveis-modal-wizard .imoveis-modal-header {
+  padding-bottom: 1rem;
+}
+
+.imoveis-stepper {
+  margin-top: 1rem;
+}
+
+.imoveis-stepper-progress {
+  height: 6px;
+  background: var(--crm-bg-subtle);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.imoveis-stepper-bar {
+  height: 100%;
+  background: var(--crm-accent);
+  border-radius: 999px;
+  transition: width 0.25s ease;
+}
+
+.imoveis-stepper-label {
+  margin: 0;
+  font-size: var(--crm-text-sm);
+  font-weight: var(--crm-font-medium);
+  color: var(--crm-text-muted);
+}
+
+.imoveis-stepper-dots {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.imoveis-step-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--crm-border);
+  transition: background 0.2s;
+}
+
+.imoveis-step-dot.active {
+  background: var(--crm-accent);
+}
+
+.imoveis-step-content {
+  margin-bottom: 0;
+  animation: imoveis-stepIn 0.2s ease;
+}
+
+@keyframes imoveis-stepIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.imoveis-modal-wizard .imoveis-form-actions {
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.imoveis-modal-wizard .imoveis-form-actions .secondary {
+  margin-right: auto;
+}
+
+.imoveis-form-actions .imoveis-btn-prev {
+  background: var(--crm-surface);
+  border: 1px solid var(--crm-border);
+  color: var(--crm-text);
+}
+
+.imoveis-form-actions .imoveis-btn-prev:hover {
+  border-color: var(--crm-text-muted);
+  background: var(--crm-bg-subtle);
+}
+
 .imoveis-modal-body {
   flex: 1;
   min-height: 0;

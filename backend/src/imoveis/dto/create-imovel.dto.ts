@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateImovelDto {
   @IsString()
@@ -33,6 +33,14 @@ export class CreateImovelDto {
   valorAluguel?: number;
 
   @IsOptional()
+  @IsNumber()
+  valorIptu?: number;
+
+  @IsOptional()
+  @IsNumber()
+  valorCondominio?: number;
+
+  @IsOptional()
   @IsString()
   status?: string;
 
@@ -42,19 +50,55 @@ export class CreateImovelDto {
 
   @IsOptional()
   @IsString()
+  quadra?: string;
+
+  @IsOptional()
+  @IsString()
+  lote?: string;
+
+  @IsOptional()
+  @IsString()
   descricao?: string;
 
   @IsOptional()
-  @IsNumber()
+  @IsInt()
   qtdQuartos?: number;
 
   @IsOptional()
-  @IsNumber()
+  @IsInt()
   qtdBanheiros?: number;
+
+  @IsOptional()
+  @IsInt()
+  qtdSalas?: number;
+
+  @IsOptional()
+  @IsInt()
+  lavabo?: number;
 
   @IsOptional()
   @IsNumber()
   area?: number;
+
+  @IsOptional()
+  @IsNumber()
+  areaTerreno?: number;
+
+  @IsOptional()
+  @IsInt()
+  anoConstrucao?: number;
+
+  @IsOptional()
+  @IsString()
+  tipoPiso?: string;
+
+  @IsOptional()
+  @IsString()
+  empreendimentoId?: string;
+
+  @IsOptional()
+  @IsString()
+  proprietarioId?: string;
 
   @IsOptional()
   @IsString()

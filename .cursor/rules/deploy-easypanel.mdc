@@ -1,0 +1,19 @@
+---
+description: Regra de deploy e migrations – EasyPanel; sem acesso VPS; avisar só quando pronto para implantar
+alwaysApply: true
+---
+
+# Deploy e migrations – EasyPanel
+
+## Regra fixa
+
+- **Migrations**: São aplicadas **na implantação** no EasyPanel. O backend já está configurado para rodar `scripts/migrate.sh` no startup do container (Dockerfile), que executa `npx prisma migrate deploy`. Não é necessário rodar migrations manualmente no VPS.
+- **Acesso**: O usuário **não tem acesso ao VPS** e **não mexe no EasyPanel** para rodar comandos no Shell, a não ser que algo dê erro e seja orientado.
+- **Fluxo**: O assistente faz **todas as alterações**, **commita e dá push** no Git. O usuário apenas **implanta no EasyPanel** (deploy a partir do repositório).
+- **Aviso**: Só avisar o usuário **quando estiver pronto para implantar no EasyPanel**. Não pedir para ele rodar migration, nem acessar VPS, nem executar comandos no servidor.
+
+## Resumo
+
+1. Fazer o que for preciso no código (backend, front, migrations, etc.).
+2. Commit e push.
+3. Dizer explicitamente: **“Está pronto para implantar no EasyPanel.”** (ou equivalente).

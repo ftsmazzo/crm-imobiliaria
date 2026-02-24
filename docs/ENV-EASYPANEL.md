@@ -88,13 +88,7 @@ O EasyPanel não cria os 3 sozinhos: crie cada serviço, apontando o mesmo repos
 
 ## Migration do banco (Backend)
 
-Após o primeiro deploy (ou após puxar alterações que tenham novas migrations), rode as migrations no container do backend. No EasyPanel você pode usar **Shell** no serviço do backend e executar:
-
-```bash
-npx prisma migrate deploy
-```
-
-Isso cria/atualiza as tabelas (incluindo a de fotos de imóveis). Se não rodar, a API pode falhar ao acessar tabelas que ainda não existem.
+As migrations são aplicadas **automaticamente** sempre que o container do backend sobe. O `Dockerfile` do backend executa `scripts/migrate.sh` antes de iniciar a API, e esse script roda `npx prisma migrate deploy`. Ou seja: ao fazer deploy no EasyPanel (novo build + restart), as migrations pendentes já são aplicadas. **Não é necessário rodar comandos no Shell** para migrations em deploys normais.
 
 ### Se der erro P3009 (migration falhou)
 

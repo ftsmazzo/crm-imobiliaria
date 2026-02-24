@@ -1,0 +1,278 @@
+/* Página de cadastro/edição de imóvel – abas/etapas */
+
+.imovel-cadastro-page {
+  max-width: 720px;
+  margin: 0 auto 2rem;
+  padding: 0 1rem;
+}
+
+.imovel-cadastro-header {
+  margin-bottom: 1.5rem;
+}
+
+.imovel-cadastro-header h1 {
+  margin: 0 0 1rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--crm-text);
+}
+
+.imovel-cadastro-stepper {
+  margin-top: 1rem;
+}
+
+.imovel-cadastro-stepper-bar-wrap {
+  height: 6px;
+  background: var(--crm-bg-subtle);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.imovel-cadastro-stepper-bar {
+  height: 100%;
+  background: var(--crm-accent);
+  border-radius: 999px;
+  transition: width 0.25s ease;
+}
+
+.imovel-cadastro-stepper-label {
+  margin: 0;
+  font-size: var(--crm-text-sm);
+  font-weight: 500;
+  color: var(--crm-text-muted);
+}
+
+.imovel-cadastro-stepper-dots {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.imovel-cadastro-stepper-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--crm-border);
+  transition: background 0.2s;
+}
+
+.imovel-cadastro-stepper-dots span.active {
+  background: var(--crm-accent);
+}
+
+.imovel-cadastro-form {
+  background: #fff;
+  border-radius: 0.75rem;
+  border: 1px solid var(--crm-border);
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+}
+
+.imovel-cadastro-erro {
+  color: var(--crm-error);
+  font-size: var(--crm-text-sm);
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background: var(--crm-error-light, #fef2f2);
+  border-radius: var(--crm-radius);
+}
+
+.imovel-cadastro-section {
+  margin-bottom: 1.5rem;
+  animation: imovel-step-in 0.2s ease;
+}
+
+@keyframes imovel-step-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.imovel-cadastro-section h2 {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--crm-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--crm-border);
+}
+
+.imovel-cadastro-section .field {
+  margin-bottom: 1rem;
+}
+
+.imovel-cadastro-section .field label {
+  display: block;
+  font-size: var(--crm-text-sm);
+  font-weight: 500;
+  color: var(--crm-text);
+  margin-bottom: 0.25rem;
+}
+
+.imovel-cadastro-section .field input,
+.imovel-cadastro-section .field select,
+.imovel-cadastro-section .field textarea {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--crm-border);
+  border-radius: var(--crm-radius);
+  font-size: var(--crm-text-base);
+  font-family: inherit;
+}
+
+.imovel-cadastro-section .field input:focus,
+.imovel-cadastro-section .field select:focus,
+.imovel-cadastro-section .field textarea:focus {
+  outline: none;
+  border-color: var(--crm-accent);
+  box-shadow: 0 0 0 2px var(--crm-accent-light);
+}
+
+.imovel-cadastro-section .field textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.imovel-cadastro-section .field-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+.imovel-cadastro-section .field-row-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 640px) {
+  .imovel-cadastro-section .field-row-4 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.imovel-cadastro-tipos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.imovel-cadastro-tipos button {
+  padding: 0.5rem 0.75rem;
+  font-size: var(--crm-text-sm);
+  border: 1px solid var(--crm-border);
+  border-radius: var(--crm-radius);
+  background: var(--crm-surface);
+  color: var(--crm-text);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.imovel-cadastro-tipos button:hover {
+  border-color: var(--crm-text-muted);
+}
+
+.imovel-cadastro-tipos button.active {
+  border-color: var(--crm-accent);
+  background: var(--crm-accent-light);
+  color: var(--crm-accent-hover);
+}
+
+.imovel-cep-field .hint {
+  display: block;
+  font-size: var(--crm-text-xs);
+  color: var(--crm-text-muted);
+  margin-top: 0.25rem;
+}
+
+.imovel-cep-field .hint.loading { color: var(--crm-accent); }
+.imovel-cep-field .hint.ok { color: var(--crm-success); }
+.imovel-cep-field .hint.not-found { color: var(--crm-error); }
+
+.imovel-cadastro-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--crm-border);
+}
+
+.imovel-cadastro-actions .secondary {
+  background: var(--crm-surface);
+  border: 1px solid var(--crm-border);
+  color: var(--crm-text);
+  padding: 0.5rem 1rem;
+  border-radius: var(--crm-radius);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.imovel-cadastro-actions .secondary:hover {
+  border-color: var(--crm-text-muted);
+}
+
+.imovel-cadastro-actions .primary {
+  background: var(--crm-accent);
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: var(--crm-radius);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.imovel-cadastro-actions .primary:hover:not(:disabled) {
+  background: var(--crm-accent-hover);
+}
+
+.imovel-cadastro-actions .primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.imovel-cadastro-fotos {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.75rem;
+}
+
+.imovel-cadastro-fotos li {
+  border-radius: var(--crm-radius);
+  overflow: hidden;
+  border: 1px solid var(--crm-border);
+}
+
+.imovel-cadastro-fotos img,
+.imovel-cadastro-fotos .thumb-placeholder {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+}
+
+.imovel-cadastro-fotos .thumb-placeholder {
+  background: var(--crm-bg-subtle);
+}
+
+.imovel-cadastro-fotos button {
+  display: block;
+  width: 100%;
+  padding: 0.25rem;
+  font-size: 0.75rem;
+  background: var(--crm-bg);
+  border: none;
+  border-top: 1px solid var(--crm-border);
+  color: var(--crm-text-muted);
+  cursor: pointer;
+}
+
+.imovel-cadastro-fotos button:hover {
+  background: var(--crm-error-light, #fef2f2);
+  color: var(--crm-error);
+}

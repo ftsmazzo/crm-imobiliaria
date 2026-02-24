@@ -12,6 +12,16 @@ export type Contato = {
   usuarioResponsavel?: { id: string; nome: string; email: string } | null;
 };
 
+export type Empreendimento = {
+  id: string;
+  nome: string;
+  descricao: string | null;
+  endereco: string | null;
+  criadoEm: string;
+  atualizadoEm: string;
+  _count?: { imoveis: number };
+};
+
 export type Imovel = {
   id: string;
   tipo: string;
@@ -22,15 +32,28 @@ export type Imovel = {
   cep: string | null;
   valorVenda?: number | string | null;
   valorAluguel?: number | string | null;
+  valorIptu?: number | string | null;
+  valorCondominio?: number | string | null;
   status: string;
   codigo: string | null;
+  quadra: string | null;
+  lote: string | null;
   descricao: string | null;
   qtdQuartos: number | null;
   qtdBanheiros: number | null;
+  qtdSalas: number | null;
+  lavabo: number | null;
   area?: number | string | null;
+  areaTerreno?: number | string | null;
+  anoConstrucao: number | null;
+  tipoPiso: string | null;
+  empreendimentoId: string | null;
+  proprietarioId: string | null;
   usuarioResponsavelId: string | null;
   criadoEm: string;
   atualizadoEm: string;
+  empreendimento?: { id: string; nome: string } | null;
+  proprietario?: { id: string; nome: string; email: string; telefone?: string | null } | null;
 };
 
 export type Tarefa = {

@@ -5,6 +5,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { ContatosModule } from './contatos/contatos.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { HealthModule } from './health/health.module';
+import { EmpreendimentosModule } from './empreendimentos/empreendimentos.module';
 import { ImoveisModule } from './imoveis/imoveis.module';
 import { PublicModule } from './public/public.module';
 import { StorageModule } from './storage/storage.module';
@@ -12,7 +13,7 @@ import { TarefasModule } from './tarefas/tarefas.module';
 import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
-  imports: [PrismaModule, StorageModule, AuthModule, HealthModule, ContatosModule, ImoveisModule, TarefasModule, PublicModule, DashboardModule],
+  imports: [PrismaModule, StorageModule, AuthModule, HealthModule, ContatosModule, EmpreendimentosModule, ImoveisModule, TarefasModule, PublicModule, DashboardModule],
   providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }],
 })
 export class AppModule {}

@@ -3,6 +3,7 @@ import { isLoggedIn } from './auth';
 import Contatos from './pages/Contatos';
 import Dashboard from './pages/Dashboard';
 import Imoveis from './pages/Imoveis';
+import ImovelCadastro from './pages/ImovelCadastro';
 import Login from './pages/Login';
 import Pipeline from './pages/Pipeline';
 import Tarefas from './pages/Tarefas';
@@ -20,6 +21,8 @@ export default function App() {
         <Route path="/pipeline" element={<PrivateRoute><Pipeline /></PrivateRoute>} />
         <Route path="/contatos" element={<PrivateRoute><Contatos /></PrivateRoute>} />
         <Route path="/imoveis" element={<PrivateRoute><Imoveis /></PrivateRoute>} />
+        <Route path="/imoveis/novo" element={<PrivateRoute><ImovelCadastro /></PrivateRoute>} />
+        <Route path="/imoveis/:id/editar" element={<PrivateRoute><ImovelCadastro /></PrivateRoute>} />
         <Route path="/tarefas" element={<PrivateRoute><Tarefas /></PrivateRoute>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

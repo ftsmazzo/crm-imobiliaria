@@ -22,44 +22,83 @@ model Usuario {
 }
 
 model Contato {
-  id                  String    @id @default(uuid())
-  nome                String
-  email               String
-  telefone            String?
-  origem              String?
-  observacoes         String?   @map("observacoes")
-  estagio             String    @default("novo") // novo, qualificado, visita, proposta, fechado
-  usuarioResponsavelId String?  @map("usuario_responsavel_id")
-  criadoEm            DateTime  @default(now()) @map("criado_em")
-  atualizadoEm        DateTime  @updatedAt @map("atualizado_em")
-  usuarioResponsavel  Usuario?  @relation(fields: [usuarioResponsavelId], references: [id])
-  interesses          Interesse[]
-  tarefas             Tarefa[]
+  id                       String    @id @default(uuid())
+  nome                     String
+  email                    String
+  telefone                 String?
+  origem                   String?
+  observacoes              String?   @map("observacoes")
+  estagio                  String    @default("novo") // novo, qualificado, visita, proposta, fechado
+  usuarioResponsavelId     String?   @map("usuario_responsavel_id")
+  criadoEm                 DateTime  @default(now()) @map("criado_em")
+  atualizadoEm             DateTime  @updatedAt @map("atualizado_em")
+  usuarioResponsavel       Usuario?  @relation(fields: [usuarioResponsavelId], references: [id])
+  interesses               Interesse[]
+  tarefas                  Tarefa[]
+  imoveisComoProprietario  Imovel[]  @relation("ProprietarioImoveis")
+}
+
+model Empreendimento {
+  id          String   @id @default(uuid())
+  nome        String
+  descricao   String?  @db.Text
+  endereco    String?  @map("endereco") @db.Text
+  criadoEm    DateTime @default(now()) @map("criado_em")
+  atualizadoEm DateTime @updatedAt @map("atualizado_em")
+  imoveis     Imovel[]
+
+  @@map("empreendimento")
 }
 
 model Imovel {
-  id                  String    @id @default(uuid())
-  tipo                String    // casa, apartamento, terreno, etc.
-  rua                 String?
-  numero              String?
-  bairro              String?
-  cidade              String?
-  cep                 String?
-  valorVenda          Decimal?  @map("valor_venda") @db.Decimal(14, 2)
-  valorAluguel        Decimal?  @map("valor_aluguel") @db.Decimal(14, 2)
-  status              String    @default("disponivel") // disponivel, reservado, vendido, alugado
-  codigo              String?
-  descricao           String?
-  qtdQuartos          Int?      @map("qtd_quartos")
-  qtdBanheiros        Int?      @map("qtd_banheiros")
-  area                Decimal?  @db.Decimal(10, 2)
-  usuarioResponsavelId String?  @map("usuario_responsavel_id")
-  criadoEm            DateTime  @default(now()) @map("criado_em")
-  atualizadoEm        DateTime  @updatedAt @map("atualizado_em")
-  usuarioResponsavel  Usuario?  @relation(fields: [usuarioResponsavelId], references: [id])
-  fotos               ImovelFoto[]
-  interesses         Interesse[]
-  tarefas             Tarefa[]
+  id                    String    @id @default(uuid())
+  tipo                  String    // casa, apartamento, terreno, casa_condominio, terreno_condominio, comercial
+  rua                   String?
+  numero                String?
+  bairro                String?
+  cidade                String?
+  cep                   String?
+  valorVenda            Decimal?  @map("valor_venda") @db.Decimal(14, 2)
+  valorAluguel          Decimal?  @map("valor_aluguel") @db.Decimal(14, 2)
+  valorIptu             Decimal?  @map("valor_iptu") @db.Decimal(14, 2)
+  valorCondominio       Decimal?  @map("valor_condominio") @db.Decimal(14, 2)
+  status                String    @default("disponivel") // disponivel, reservado, vendido, alugado
+  codigo                String?
+  quadra                String?
+  lote                  String?
+  descricao             String?   @db.Text
+  qtdQuartos            Int?      @map("qtd_quartos")
+  qtdBanheiros          Int?      @map("qtd_banheiros")
+  qtdSalas              Int?      @map("qtd_salas")
+  lavabo                Int?      @default(0) // 0 = não, 1+ = quantidade
+  area                  Decimal?  @db.Decimal(10, 2)   // área construída m²
+  areaTerreno           Decimal?  @map("area_terreno") @db.Decimal(10, 2)
+  anoConstrucao         Int?      @map("ano_construcao")
+  tipoPiso              String?   @map("tipo_piso")
+  empreendimentoId      String?   @map("empreendimento_id")
+  proprietarioId        String?   @map("proprietario_id")
+  usuarioResponsavelId  String?   @map("usuario_responsavel_id")
+  criadoEm              DateTime  @default(now()) @map("criado_em")
+  atualizadoEm          DateTime  @updatedAt @map("atualizado_em")
+  usuarioResponsavel    Usuario?  @relation(fields: [usuarioResponsavelId], references: [id])
+  empreendimento        Empreendimento? @relation(fields: [empreendimentoId], references: [id], onDelete: SetNull)
+  proprietario          Contato?  @relation("ProprietarioImoveis", fields: [proprietarioId], references: [id], onDelete: SetNull)
+  fotos                 ImovelFoto[]
+  documentos            ImovelDocumento[]
+  interesses            Interesse[]
+  tarefas               Tarefa[]
+}
+
+model ImovelDocumento {
+  id        String   @id @default(uuid())
+  imovelId  String   @map("imovel_id")
+  tipo      String   // iptu, autorizacao
+  key       String   // objeto no storage (ex: imoveis/uuid/documentos/nome.pdf)
+  nome      String?  // nome original do arquivo
+  criadoEm  DateTime @default(now()) @map("criado_em")
+  imovel    Imovel   @relation(fields: [imovelId], references: [id], onDelete: Cascade)
+
+  @@map("imovel_documento")
 }
 
 model ImovelFoto {

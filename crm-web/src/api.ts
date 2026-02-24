@@ -1,5 +1,5 @@
 import { getToken } from './auth';
-import type { Contato, Imovel, Tarefa } from './types';
+import type { Contato, Empreendimento, Imovel, Tarefa } from './types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
@@ -66,6 +66,12 @@ export async function deleteContato(id: string): Promise<void> {
     headers: authHeaders(),
   });
   if (!res.ok) await handleRes(res);
+}
+
+// Empreendimentos
+export async function getEmpreendimentos(): Promise<Empreendimento[]> {
+  const res = await fetch(`${API_URL}/empreendimentos`, { headers: authHeaders() });
+  return handleRes(res);
 }
 
 // Imóveis
