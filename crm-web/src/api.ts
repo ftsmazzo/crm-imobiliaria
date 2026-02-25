@@ -129,6 +129,26 @@ export async function deleteProprietario(id: string): Promise<void> {
   if (!res.ok) await handleRes(res);
 }
 
+/** Consulta CNPJ via backend (evita CORS). Retorna dados para preencher ou { ok: false, message }. */
+export async function consultaCnpj(cnpj: string): Promise<
+  | { ok: true; razaoSocial: string; endereco?: string; telefone?: string; email?: string }
+  | { ok: false; message: string }
+> {
+  const digits = (cnpj || '').replace(/\D/g, '');
+  if (digits.length !== 14) return { ok: false, message: 'CNPJ deve ter 14 dígitos' };
+  const res = await fetch(`${API_URL}/consulta/cnpj/${encodeURIComponent(digits)}`, { headers: authHeaders() });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) return { ok: false, message: (data as { message?: string }).message || 'Erro ao consultar' };
+  if (data.ok === false) return { ok: false, message: data.message || 'CNPJ não encontrado' };
+  return {
+    ok: true,
+    razaoSocial: data.razaoSocial ?? '',
+    endereco: data.endereco,
+    telefone: data.telefone,
+    email: data.email,
+  };
+}
+
 // Imóveis
 export async function getImoveis(params?: { cidade?: string; bairro?: string; tipo?: string; status?: string }): Promise<Imovel[]> {
   const q = new URLSearchParams();

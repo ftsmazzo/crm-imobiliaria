@@ -118,14 +118,14 @@ export default function ImovelCadastro() {
   const totalSteps = isNew ? 6 : 7;
   const currentLabel = STEP_LABELS[step - 1];
 
-  // Manter step alinhado à URL ao navegar (ex.: após criar imóvel ir para ?step=7)
+  // Ler step da URL apenas na carga / ao trocar de imóvel (evita sobrescrever ao clicar Voltar)
   useEffect(() => {
     const s = searchParams.get('step');
     if (s) {
       const n = Math.min(7, Math.max(1, Number(s)));
       if (!Number.isNaN(n)) setStep(n);
     }
-  }, [searchParams, id]);
+  }, [id]);
 
   function goToStep(newStep: number) {
     const n = Math.min(totalSteps, Math.max(1, newStep));

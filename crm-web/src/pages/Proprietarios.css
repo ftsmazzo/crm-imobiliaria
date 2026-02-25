@@ -76,16 +76,36 @@
 }
 .proprietarios-form-section:first-child { margin-top: 0; }
 .proprietarios-form .field { margin-bottom: 1rem; }
-.proprietarios-cnpj-loading {
-  display: inline-block;
-  margin-left: 0.5rem;
-  font-size: var(--crm-text-sm);
-  color: var(--crm-text-muted);
+.proprietarios-cnpj-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
 }
-.proprietarios-cpf-hint {
+.proprietarios-cnpj-row input { flex: 1; min-width: 0; }
+.proprietarios-cnpj-btn {
+  padding: 0.5rem 0.75rem;
   font-size: var(--crm-text-sm);
-  color: var(--crm-text-muted);
+  font-weight: 500;
+  color: var(--crm-accent);
+  background: var(--crm-surface);
+  border: 1px solid var(--crm-accent);
+  border-radius: var(--crm-radius);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.proprietarios-cnpj-btn:hover:not(:disabled) { background: var(--crm-accent-light); }
+.proprietarios-cnpj-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+.proprietarios-cnpj-ok {
+  display: block;
   margin-top: 0.25rem;
+  font-size: var(--crm-text-sm);
+  color: var(--crm-success, #059669);
+}
+.proprietarios-cnpj-erro {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: var(--crm-text-sm);
+  color: var(--crm-error);
 }
 .proprietarios-form .field label { display: block; font-size: var(--crm-text-sm); font-weight: 500; margin-bottom: 0.25rem; }
 .proprietarios-form .field input, .proprietarios-form .field textarea {

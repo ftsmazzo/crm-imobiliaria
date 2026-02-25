@@ -152,23 +152,17 @@
   }
 }
 
-/* Tipo de listing: 5 botões distribuídos em linha (grid responsivo) */
+/* Tipo de listing: 5 botões com texto completo visível (sem recorte) */
 .imovel-cadastro-tipos {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: 0.5rem;
   margin-top: 0.25rem;
 }
 
-@media (max-width: 560px) {
+@media (min-width: 520px) {
   .imovel-cadastro-tipos {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 561px) and (max-width: 700px) {
-  .imovel-cadastro-tipos {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(5, 1fr);
   }
 }
 
@@ -182,6 +176,9 @@
   cursor: pointer;
   transition: border-color 0.2s, background 0.2s;
   min-width: 0;
+  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip;
 }
 
 .imovel-cadastro-tipos button:hover {

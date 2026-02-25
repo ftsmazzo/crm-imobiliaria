@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getProprietarios, createProprietario, updateProprietario, deleteProprietario } from '../api';
-import { buscarPorCnpj } from '../brasilapi-cnpj';
+import { getProprietarios, createProprietario, updateProprietario, deleteProprietario, consultaCnpj } from '../api';
 import type { Proprietario } from '../types';
 import AppLayout from '../components/AppLayout';
 import './Proprietarios.css';
@@ -34,6 +33,7 @@ export default function Proprietarios() {
   const [form, setForm] = useState(emptyForm());
   const [saving, setSaving] = useState(false);
   const [cnpjLoading, setCnpjLoading] = useState(false);
+  const [cnpjMsg, setCnpjMsg] = useState<'ok' | string | null>(null);
 
   async function load() {
     setLoading(true);
@@ -138,6 +138,33 @@ export default function Proprietarios() {
     }
   }
 
+  async function buscarCnpj(cnpjVal?: string) {
+    const cnpj = (cnpjVal ?? form.cnpj) || '';
+    if (cnpj.replace(/\D/g, '').length !== 14) return;
+    setCnpjMsg(null);
+    setCnpjLoading(true);
+    try {
+      const data = await consultaCnpj(cnpj);
+      if (data.ok) {
+        setForm((f) => ({
+          ...f,
+          tipo: 'PJ',
+          razaoSocial: data.razaoSocial || f.razaoSocial,
+          endereco: data.endereco || f.endereco,
+          repLegalContato: data.telefone || f.repLegalContato,
+          repLegalEmail: data.email || f.repLegalEmail,
+        }));
+        setCnpjMsg('ok');
+      } else {
+        setCnpjMsg(data.message || 'CNPJ não encontrado');
+      }
+    } catch (e) {
+      setCnpjMsg(e instanceof Error ? e.message : 'Erro ao consultar CNPJ');
+    } finally {
+      setCnpjLoading(false);
+    }
+  }
+
   async function handleDelete(p: Proprietario) {
     if (!confirm(`Excluir proprietário ${p.nome}?`)) return;
     try {
@@ -214,7 +241,6 @@ export default function Proprietarios() {
 <div className="field">
                   <label htmlFor="prop-cpf">CPF</label>
                   <input id="prop-cpf" value={form.cpf} onChange={(e) => setForm((f) => ({ ...f, cpf: e.target.value }))} placeholder="000.000.000-00" title="Preencha manualmente; não há API gratuita para consulta por CPF" />
-                  <p className="proprietarios-cpf-hint" aria-hidden>Não há API gratuita para consulta por CPF; preencha manualmente.</p>
                   </div>
                   <div className="field">
                     <label htmlFor="prop-rg">RG</label>
@@ -258,33 +284,23 @@ export default function Proprietarios() {
                 <div className="field-row">
                   <div className="field">
                     <label htmlFor="prop-cnpj">CNPJ</label>
-                    <input
-                      id="prop-cnpj"
-                      value={form.cnpj}
-                      onChange={(e) => setForm((f) => ({ ...f, cnpj: e.target.value }))}
-                      onBlur={async () => {
-                        const digits = (form.cnpj || '').replace(/\D/g, '');
-                        if (digits.length !== 14) return;
-                        setCnpjLoading(true);
-                        try {
-                          const data = await buscarPorCnpj(form.cnpj);
-                          if (data) {
-                            setForm((f) => ({
-                              ...f,
-                              razaoSocial: data.razaoSocial || f.razaoSocial,
-                              endereco: data.endereco || f.endereco,
-                              repLegalContato: data.telefone || f.repLegalContato,
-                              repLegalEmail: data.email || f.repLegalEmail,
-                            }));
-                          }
-                        } finally {
-                          setCnpjLoading(false);
-                        }
-                      }}
-                      placeholder="00.000.000/0000-00"
-                      title="Ao sair do campo, os dados da empresa são preenchidos automaticamente (BrasilAPI)"
-                    />
-                    {cnpjLoading && <span className="proprietarios-cnpj-loading">Buscando...</span>}
+                    <div className="proprietarios-cnpj-row">
+                      <input
+                        id="prop-cnpj"
+                        value={form.cnpj}
+                        onChange={(e) => { setForm((f) => ({ ...f, cnpj: e.target.value })); setCnpjMsg(null); }}
+                        onBlur={(e) => {
+                          const v = (e.target as HTMLInputElement).value;
+                          if (v.replace(/\D/g, '').length === 14) buscarCnpj(v);
+                        }}
+                        placeholder="00.000.000/0000-00"
+                      />
+                      <button type="button" className="proprietarios-cnpj-btn" onClick={buscarCnpj} disabled={cnpjLoading || (form.cnpj || '').replace(/\D/g, '').length !== 14}>
+                        {cnpjLoading ? 'Buscando...' : 'Buscar'}
+                      </button>
+                    </div>
+                    {cnpjMsg === 'ok' && <span className="proprietarios-cnpj-ok">Dados preenchidos.</span>}
+                    {cnpjMsg && cnpjMsg !== 'ok' && <span className="proprietarios-cnpj-erro">{cnpjMsg}</span>}
                   </div>
                   <div className="field">
                     <label htmlFor="prop-inscricaoEstadual">Inscrição estadual</label>
