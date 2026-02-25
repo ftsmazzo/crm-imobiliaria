@@ -1,0 +1,54 @@
+.imovel-detalhe-page { max-width: 900px; margin: 0 auto 2rem; padding: 0 1rem; }
+.imovel-detalhe-loading { padding: 2rem; text-align: center; }
+.imovel-detalhe-erro { color: var(--crm-error); margin-bottom: 1rem; }
+.imovel-detalhe-header { margin-bottom: 1.5rem; }
+.imovel-detalhe-header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+.imovel-detalhe-back, .imovel-detalhe-edit {
+  padding: 0.35rem 0.75rem;
+  font-size: var(--crm-text-sm);
+  border-radius: var(--crm-radius);
+  cursor: pointer;
+  border: 1px solid var(--crm-border);
+  background: var(--crm-surface);
+  color: var(--crm-text);
+}
+.imovel-detalhe-edit { border-color: var(--crm-accent); color: var(--crm-accent); }
+.imovel-detalhe-header h1 { margin: 0 0 0.25rem; font-size: 1.5rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.imovel-detalhe-tipo { font-size: 1rem; font-weight: 500; color: var(--crm-text-muted); }
+.imovel-detalhe-status {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  font-size: var(--crm-text-xs);
+  border-radius: 999px;
+  background: var(--crm-bg-subtle);
+  color: var(--crm-text-muted);
+  text-transform: capitalize;
+}
+.imovel-detalhe-status.disponivel { background: var(--crm-accent-light); color: var(--crm-accent-hover); }
+.imovel-detalhe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; margin-bottom: 1.5rem; }
+.imovel-detalhe-block {
+  background: #fff;
+  border: 1px solid var(--crm-border);
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 2px 8px rgba(15,23,42,0.06);
+}
+.imovel-detalhe-block h2 {
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--crm-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--crm-border);
+}
+.imovel-detalhe-block-content { display: flex; flex-direction: column; gap: 0.5rem; }
+.imovel-detalhe-item { display: flex; flex-direction: column; gap: 0.125rem; }
+.imovel-detalhe-label { font-size: var(--crm-text-xs); color: var(--crm-text-muted); }
+.imovel-detalhe-value { font-size: var(--crm-text-sm); }
+.imovel-detalhe-descricao { margin: 0; font-size: var(--crm-text-sm); white-space: pre-wrap; }
+.imovel-detalhe-fotos { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.75rem; }
+.imovel-detalhe-fotos li { border-radius: var(--crm-radius); overflow: hidden; border: 1px solid var(--crm-border); }
+.imovel-detalhe-fotos img { display: block; width: 100%; aspect-ratio: 4/3; object-fit: cover; }
+.imovel-detalhe-foto-placeholder { display: block; width: 100%; aspect-ratio: 4/3; background: var(--crm-bg-subtle); }

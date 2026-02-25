@@ -1,4 +1,4 @@
-import { IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateImovelDto {
   @IsString()
@@ -11,6 +11,10 @@ export class CreateImovelDto {
   @IsOptional()
   @IsString()
   numero?: string;
+
+  @IsOptional()
+  @IsString()
+  complemento?: string;
 
   @IsOptional()
   @IsString()
@@ -91,6 +95,66 @@ export class CreateImovelDto {
   @IsOptional()
   @IsString()
   tipoPiso?: string;
+
+  @IsOptional()
+  @IsString()
+  numeroMatricula?: string;
+
+  @IsOptional()
+  @IsString()
+  numeroIptu?: string;
+
+  @IsOptional()
+  @IsString()
+  cartorio?: string;
+
+  @IsOptional()
+  @IsString()
+  tipoListing?: string;
+
+  @IsOptional()
+  @IsString()
+  subtipo?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  exibirEnderecoSite?: boolean;
+
+  @IsOptional()
+  @IsInt()
+  qtdVagas?: number;
+
+  @IsOptional()
+  @IsString()
+  tipoVaga?: string;
+
+  @IsOptional()
+  @IsString()
+  pontosReferencia?: string;
+
+  @IsOptional()
+  @IsString()
+  eletrodomesticos?: string;
+
+  @IsOptional()
+  @IsInt()
+  andarUnidade?: number;
+
+  @IsOptional()
+  @IsInt()
+  qtdAndares?: number;
+
+  @IsOptional()
+  @IsInt()
+  totalUnidades?: number;
+
+  @IsOptional()
+  @IsInt()
+  qtdTorres?: number;
+
+  @IsOptional()
+  @IsString()
+  caracteristicas?: string;
 
   @IsOptional()
   @IsString()

@@ -22,20 +22,46 @@ model Usuario {
 }
 
 model Contato {
-  id                       String    @id @default(uuid())
-  nome                     String
-  email                    String
-  telefone                 String?
-  origem                   String?
-  observacoes              String?   @map("observacoes")
-  estagio                  String    @default("novo") // novo, qualificado, visita, proposta, fechado
-  usuarioResponsavelId     String?   @map("usuario_responsavel_id")
-  criadoEm                 DateTime  @default(now()) @map("criado_em")
-  atualizadoEm             DateTime  @updatedAt @map("atualizado_em")
-  usuarioResponsavel       Usuario?  @relation(fields: [usuarioResponsavelId], references: [id])
-  interesses               Interesse[]
-  tarefas                  Tarefa[]
-  imoveisComoProprietario  Imovel[]  @relation("ProprietarioImoveis")
+  id                   String    @id @default(uuid())
+  nome                 String
+  email                String
+  telefone             String?
+  origem               String?
+  observacoes          String?   @map("observacoes")
+  estagio              String    @default("novo") // novo, qualificado, visita, proposta, fechado
+  usuarioResponsavelId String?   @map("usuario_responsavel_id")
+  criadoEm             DateTime  @default(now()) @map("criado_em")
+  atualizadoEm         DateTime  @updatedAt @map("atualizado_em")
+  usuarioResponsavel   Usuario?  @relation(fields: [usuarioResponsavelId], references: [id])
+  interesses           Interesse[]
+  tarefas              Tarefa[]
+}
+
+model Proprietario {
+  id            String    @id @default(uuid())
+  nome          String
+  cpf           String?    @db.VarChar(14)
+  rg            String?    @db.VarChar(20)
+  dataNascimento DateTime? @map("data_nascimento") @db.Date
+  estadoCivil   String?    @map("estado_civil") @db.VarChar(20)
+  telefone      String?
+  telefone2     String?    @map("telefone2")
+  email         String?
+  endereco      String?    @db.Text
+  observacoes   String?    @db.Text
+  tipo          String?    @default("PF") // PF ou PJ
+  razaoSocial   String?    @map("razao_social")
+  cnpj          String?    @db.VarChar(18)
+  inscricaoEstadual String? @map("inscricao_estadual")
+  repLegalNome  String?    @map("rep_legal_nome")
+  repLegalCpf   String?    @map("rep_legal_cpf") @db.VarChar(14)
+  repLegalContato String?  @map("rep_legal_contato")
+  repLegalEmail String?    @map("rep_legal_email")
+  criadoEm      DateTime   @default(now()) @map("criado_em")
+  atualizadoEm  DateTime   @updatedAt @map("atualizado_em")
+  imoveis       Imovel[]
+
+  @@map("proprietario")
 }
 
 model Empreendimento {
@@ -55,6 +81,7 @@ model Imovel {
   tipo                  String    // casa, apartamento, terreno, casa_condominio, terreno_condominio, comercial
   rua                   String?
   numero                String?
+  complemento           String?   @db.VarChar(100)
   bairro                String?
   cidade                String?
   cep                   String?
@@ -62,19 +89,34 @@ model Imovel {
   valorAluguel          Decimal?  @map("valor_aluguel") @db.Decimal(14, 2)
   valorIptu             Decimal?  @map("valor_iptu") @db.Decimal(14, 2)
   valorCondominio       Decimal?  @map("valor_condominio") @db.Decimal(14, 2)
-  status                String    @default("disponivel") // disponivel, reservado, vendido, alugado
+  status                String    @default("disponivel")
   codigo                String?
   quadra                String?
   lote                  String?
+  numeroMatricula       String?   @map("numero_matricula")
+  numeroIptu            String?   @map("numero_iptu") @db.VarChar(30)
+  cartorio              String?   @db.VarChar(100)
+  tipoListing           String?   @map("tipo_listing") // residencial, comercial, rural, terreno, outro
+  subtipo               String?   @map("subtipo") @db.VarChar(80)
+  exibirEnderecoSite    Boolean?  @map("exibir_endereco_site") @default(true)
   descricao             String?   @db.Text
   qtdQuartos            Int?      @map("qtd_quartos")
   qtdBanheiros          Int?      @map("qtd_banheiros")
   qtdSalas              Int?      @map("qtd_salas")
-  lavabo                Int?      @default(0) // 0 = não, 1+ = quantidade
-  area                  Decimal?  @db.Decimal(10, 2)   // área construída m²
+  lavabo                Int?      @default(0)
+  qtdVagas              Int?      @map("qtd_vagas")
+  tipoVaga              String?   @map("tipo_vaga") // coberta, descoberta, ambos
+  area                  Decimal?  @db.Decimal(10, 2)
   areaTerreno           Decimal?  @map("area_terreno") @db.Decimal(10, 2)
   anoConstrucao         Int?      @map("ano_construcao")
   tipoPiso              String?   @map("tipo_piso")
+  pontosReferencia      String?   @map("pontos_referencia") @db.VarChar(200)
+  eletrodomesticos      String?   @map("eletrodomesticos") @db.Text
+  andarUnidade          Int?      @map("andar_unidade")
+  qtdAndares            Int?      @map("qtd_andares")
+  totalUnidades         Int?      @map("total_unidades")
+  qtdTorres             Int?      @map("qtd_torres")
+  caracteristicas       String?   @map("caracteristicas") @db.Text // JSON array: ["churrasqueira","piscina",...]
   empreendimentoId      String?   @map("empreendimento_id")
   proprietarioId        String?   @map("proprietario_id")
   usuarioResponsavelId  String?   @map("usuario_responsavel_id")
@@ -82,7 +124,7 @@ model Imovel {
   atualizadoEm          DateTime  @updatedAt @map("atualizado_em")
   usuarioResponsavel    Usuario?  @relation(fields: [usuarioResponsavelId], references: [id])
   empreendimento        Empreendimento? @relation(fields: [empreendimentoId], references: [id], onDelete: SetNull)
-  proprietario          Contato?  @relation("ProprietarioImoveis", fields: [proprietarioId], references: [id], onDelete: SetNull)
+  proprietario          Proprietario? @relation(fields: [proprietarioId], references: [id], onDelete: SetNull)
   fotos                 ImovelFoto[]
   documentos            ImovelDocumento[]
   interesses            Interesse[]

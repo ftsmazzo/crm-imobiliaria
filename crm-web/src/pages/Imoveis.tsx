@@ -166,6 +166,7 @@ export default function Imoveis() {
                   {i.valorVenda == null && i.valorAluguel == null && '–'}
                 </div>
                 <div className="imovel-card-actions">
+                  <button type="button" onClick={() => navigate(`/imoveis/${i.id}`)}>Ver</button>
                   <button type="button" onClick={() => navigate(`/imoveis/${i.id}/editar`)}>Editar</button>
                   <button type="button" onClick={() => handleDelete(i)}>Excluir</button>
                 </div>

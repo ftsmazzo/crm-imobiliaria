@@ -1,0 +1,95 @@
+.proprietarios-page { margin-bottom: 2rem; }
+.proprietarios-page .lead { color: var(--crm-text-muted); margin-bottom: 1rem; }
+.proprietarios-toolbar { margin-bottom: 1.5rem; }
+.proprietarios-btn-new {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: var(--crm-text-sm);
+  font-weight: 600;
+  color: #fff;
+  background: var(--crm-accent);
+  border: none;
+  border-radius: var(--crm-radius);
+  cursor: pointer;
+}
+.proprietarios-btn-new:hover { background: var(--crm-accent-hover); }
+.proprietarios-erro { color: var(--crm-error); margin-bottom: 1rem; }
+.proprietarios-loading, .proprietarios-empty { padding: 2rem; text-align: center; color: var(--crm-text-muted); }
+.proprietarios-empty .proprietarios-btn-new { margin-top: 1rem; }
+.proprietarios-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.proprietario-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: #fff;
+  border: 1px solid var(--crm-border);
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px rgba(15,23,42,0.06);
+}
+.proprietario-card-body { min-width: 0; }
+.proprietario-card-body strong { display: block; margin-bottom: 0.25rem; }
+.proprietario-card-contato, .proprietario-card-cpf, .proprietario-card-imoveis {
+  font-size: var(--crm-text-sm);
+  color: var(--crm-text-muted);
+  margin: 0.25rem 0 0;
+}
+.proprietario-card-actions { display: flex; gap: 0.5rem; }
+.proprietario-card-actions button {
+  padding: 0.35rem 0.75rem;
+  font-size: var(--crm-text-sm);
+  border-radius: var(--crm-radius);
+  cursor: pointer;
+  border: 1px solid var(--crm-border);
+  background: var(--crm-surface);
+}
+.proprietario-card-actions button:first-of-type { border-color: var(--crm-accent); color: var(--crm-accent); }
+.proprietarios-modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(15,23,42,0.5);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 200; padding: 1rem;
+}
+.proprietarios-modal {
+  background: #fff;
+  border-radius: 0.75rem;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(15,23,42,0.2);
+}
+.proprietarios-modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--crm-border); }
+.proprietarios-modal-header h2 { margin: 0; font-size: 1.2rem; }
+.proprietarios-modal-body { padding: 1.5rem; overflow-y: auto; }
+.proprietarios-form-section {
+  margin: 1.25rem 0 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--crm-text);
+}
+.proprietarios-form-section:first-child { margin-top: 0; }
+.proprietarios-form .field { margin-bottom: 1rem; }
+.proprietarios-form .field label { display: block; font-size: var(--crm-text-sm); font-weight: 500; margin-bottom: 0.25rem; }
+.proprietarios-form .field input, .proprietarios-form .field textarea {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--crm-border);
+  border-radius: var(--crm-radius);
+}
+.proprietarios-form .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.proprietarios-form-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--crm-border);
+}
+.proprietarios-form-actions .secondary { background: var(--crm-surface); border: 1px solid var(--crm-border); color: var(--crm-text); padding: 0.5rem 1rem; border-radius: var(--crm-radius); cursor: pointer; }
+.proprietarios-form-actions .primary { background: var(--crm-accent); color: #fff; border: none; padding: 0.5rem 1rem; border-radius: var(--crm-radius); font-weight: 600; cursor: pointer; }

@@ -4,8 +4,10 @@ import Contatos from './pages/Contatos';
 import Dashboard from './pages/Dashboard';
 import Imoveis from './pages/Imoveis';
 import ImovelCadastro from './pages/ImovelCadastro';
+import ImovelDetalhe from './pages/ImovelDetalhe';
 import Login from './pages/Login';
 import Pipeline from './pages/Pipeline';
+import Proprietarios from './pages/Proprietarios';
 import Tarefas from './pages/Tarefas';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
@@ -23,6 +25,8 @@ export default function App() {
         <Route path="/imoveis" element={<PrivateRoute><Imoveis /></PrivateRoute>} />
         <Route path="/imoveis/novo" element={<PrivateRoute><ImovelCadastro /></PrivateRoute>} />
         <Route path="/imoveis/:id/editar" element={<PrivateRoute><ImovelCadastro /></PrivateRoute>} />
+        <Route path="/imoveis/:id" element={<PrivateRoute><ImovelDetalhe /></PrivateRoute>} />
+        <Route path="/proprietarios" element={<PrivateRoute><Proprietarios /></PrivateRoute>} />
         <Route path="/tarefas" element={<PrivateRoute><Tarefas /></PrivateRoute>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

@@ -12,6 +12,31 @@ export type Contato = {
   usuarioResponsavel?: { id: string; nome: string; email: string } | null;
 };
 
+export type Proprietario = {
+  id: string;
+  nome: string;
+  cpf: string | null;
+  rg: string | null;
+  dataNascimento: string | null;
+  estadoCivil: string | null;
+  telefone: string | null;
+  telefone2: string | null;
+  email: string | null;
+  endereco: string | null;
+  observacoes: string | null;
+  tipo: string | null;
+  razaoSocial: string | null;
+  cnpj: string | null;
+  inscricaoEstadual: string | null;
+  repLegalNome: string | null;
+  repLegalCpf: string | null;
+  repLegalContato: string | null;
+  repLegalEmail: string | null;
+  criadoEm: string;
+  atualizadoEm: string;
+  _count?: { imoveis: number };
+};
+
 export type Empreendimento = {
   id: string;
   nome: string;
@@ -27,6 +52,7 @@ export type Imovel = {
   tipo: string;
   rua: string | null;
   numero: string | null;
+  complemento: string | null;
   bairro: string | null;
   cidade: string | null;
   cep: string | null;
@@ -38,22 +64,37 @@ export type Imovel = {
   codigo: string | null;
   quadra: string | null;
   lote: string | null;
+  numeroMatricula: string | null;
+  numeroIptu: string | null;
+  cartorio: string | null;
+  tipoListing: string | null;
+  subtipo: string | null;
+  exibirEnderecoSite: boolean | null;
   descricao: string | null;
   qtdQuartos: number | null;
   qtdBanheiros: number | null;
   qtdSalas: number | null;
   lavabo: number | null;
+  qtdVagas: number | null;
+  tipoVaga: string | null;
   area?: number | string | null;
   areaTerreno?: number | string | null;
   anoConstrucao: number | null;
   tipoPiso: string | null;
+  pontosReferencia: string | null;
+  eletrodomesticos: string | null;
+  andarUnidade: number | null;
+  qtdAndares: number | null;
+  totalUnidades: number | null;
+  qtdTorres: number | null;
+  caracteristicas: string | null;
   empreendimentoId: string | null;
   proprietarioId: string | null;
   usuarioResponsavelId: string | null;
   criadoEm: string;
   atualizadoEm: string;
   empreendimento?: { id: string; nome: string } | null;
-  proprietario?: { id: string; nome: string; email: string; telefone?: string | null } | null;
+  proprietario?: { id: string; nome: string; email: string | null; telefone: string | null } | null;
 };
 
 export type Tarefa = {

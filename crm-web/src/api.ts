@@ -1,5 +1,5 @@
 import { getToken } from './auth';
-import type { Contato, Empreendimento, Imovel, Tarefa } from './types';
+import type { Contato, Empreendimento, Imovel, Proprietario, Tarefa } from './types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
@@ -72,6 +72,35 @@ export async function deleteContato(id: string): Promise<void> {
 export async function getEmpreendimentos(): Promise<Empreendimento[]> {
   const res = await fetch(`${API_URL}/empreendimentos`, { headers: authHeaders() });
   return handleRes(res);
+}
+
+// Proprietários
+export async function getProprietarios(): Promise<Proprietario[]> {
+  const res = await fetch(`${API_URL}/proprietarios`, { headers: authHeaders() });
+  return handleRes(res);
+}
+
+export async function createProprietario(data: Partial<Proprietario>): Promise<Proprietario> {
+  const res = await fetch(`${API_URL}/proprietarios`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleRes(res);
+}
+
+export async function updateProprietario(id: string, data: Partial<Proprietario>): Promise<Proprietario> {
+  const res = await fetch(`${API_URL}/proprietarios/${id}`, {
+    method: 'PUT',
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleRes(res);
+}
+
+export async function deleteProprietario(id: string): Promise<void> {
+  const res = await fetch(`${API_URL}/proprietarios/${id}`, { method: 'DELETE', headers: authHeaders() });
+  if (!res.ok) await handleRes(res);
 }
 
 // Imóveis

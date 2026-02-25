@@ -43,8 +43,11 @@ export default function AppLayout({ children }: AppLayoutProps) {
             <Link to="/contatos" onClick={closeSidebar} className={location.pathname === '/contatos' ? 'active' : ''}>
               Contatos
             </Link>
-            <Link to="/imoveis" onClick={closeSidebar} className={location.pathname === '/imoveis' ? 'active' : ''}>
+            <Link to="/imoveis" onClick={closeSidebar} className={location.pathname.startsWith('/imoveis') ? 'active' : ''}>
               Imóveis
+            </Link>
+            <Link to="/proprietarios" onClick={closeSidebar} className={location.pathname === '/proprietarios' ? 'active' : ''}>
+              Proprietários
             </Link>
             <Link to="/tarefas" onClick={closeSidebar} className={location.pathname === '/tarefas' ? 'active' : ''}>
               Tarefas

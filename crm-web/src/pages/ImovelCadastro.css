@@ -276,3 +276,22 @@
   background: var(--crm-error-light, #fef2f2);
   color: var(--crm-error);
 }
+
+.imovel-cadastro-caracteristicas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.imovel-cadastro-check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--crm-text-sm);
+  cursor: pointer;
+  text-transform: capitalize;
+}
+
+.imovel-cadastro-check input { width: auto; }
+.imovel-cadastro-check span { flex: 1; }

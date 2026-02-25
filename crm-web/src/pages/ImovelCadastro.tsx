@@ -8,7 +8,7 @@ import {
   uploadImovelFoto,
   deleteImovelFoto,
   getEmpreendimentos,
-  getContatos,
+  getProprietarios,
   type ImovelFoto,
 } from '../api';
 import type { Imovel } from '../types';
@@ -37,10 +37,26 @@ const STEP_LABELS = [
 
 type FormState = Record<string, string | number | undefined>;
 
+const TIPO_LISTING = [
+  { value: 'residencial', label: 'Residencial' },
+  { value: 'comercial', label: 'Comercial' },
+  { value: 'rural', label: 'Rural' },
+  { value: 'terreno', label: 'Terreno' },
+  { value: 'outro', label: 'Outro' },
+] as const;
+
+const CARACTERISTICAS_OPCOES = [
+  'churrasqueira', 'piscina', 'acesso_pcd', 'bar_molhado', 'claraboia', 'deck', 'doca', 'edicula',
+  'elevador', 'em_frente_agua', 'entrada_privativa', 'estufa', 'hidromassagem', 'internet', 'jardim',
+  'lago', 'lareira', 'patio', 'sistema_irrigacao', 'sistema_seguranca', 'spa', 'teto_abobadado',
+  'ponto_cabeamento', 'trailer', 'quadra_esportiva', 'sauna', 'varanda', 'ventilador_teto',
+] as const;
+
 const emptyForm = (): FormState => ({
   tipo: 'apartamento',
   rua: '',
   numero: '',
+  complemento: '',
   bairro: '',
   cidade: '',
   cep: '',
@@ -52,15 +68,30 @@ const emptyForm = (): FormState => ({
   codigo: '',
   quadra: '',
   lote: '',
+  numeroMatricula: '',
+  numeroIptu: '',
+  cartorio: '',
+  tipoListing: 'residencial',
+  subtipo: '',
+  exibirEnderecoSite: 1,
   descricao: '',
   qtdQuartos: undefined,
   qtdBanheiros: undefined,
   qtdSalas: undefined,
   lavabo: 0,
+  qtdVagas: undefined,
+  tipoVaga: '',
   area: undefined,
   areaTerreno: undefined,
   anoConstrucao: undefined,
   tipoPiso: '',
+  pontosReferencia: '',
+  eletrodomesticos: '',
+  andarUnidade: undefined,
+  qtdAndares: undefined,
+  totalUnidades: undefined,
+  qtdTorres: undefined,
+  caracteristicas: '[]',
   empreendimentoId: '',
   proprietarioId: '',
 });
@@ -79,7 +110,7 @@ export default function ImovelCadastro() {
   const [cepLoading, setCepLoading] = useState(false);
   const [cepMsg, setCepMsg] = useState<'ok' | 'not_found' | null>(null);
   const [empreendimentos, setEmpreendimentos] = useState<{ id: string; nome: string }[]>([]);
-  const [contatos, setContatos] = useState<{ id: string; nome: string; email: string }[]>([]);
+  const [proprietarios, setProprietarios] = useState<{ id: string; nome: string; email: string | null; telefone: string | null }[]>([]);
   const [fotos, setFotos] = useState<ImovelFoto[]>([]);
   const [fotosLoading, setFotosLoading] = useState(false);
   const [uploadingFoto, setUploadingFoto] = useState(false);
@@ -87,9 +118,18 @@ export default function ImovelCadastro() {
   const totalSteps = isNew ? 6 : 7;
   const currentLabel = STEP_LABELS[step - 1];
 
+  // Manter step alinhado à URL ao navegar (ex.: após criar imóvel ir para ?step=7)
+  useEffect(() => {
+    const s = searchParams.get('step');
+    if (s) {
+      const n = Math.min(7, Math.max(1, Number(s)));
+      if (!Number.isNaN(n)) setStep(n);
+    }
+  }, [searchParams, id]);
+
   useEffect(() => {
     getEmpreendimentos().then((list) => setEmpreendimentos(list)).catch(() => setEmpreendimentos([]));
-    getContatos().then((list) => setContatos(list)).catch(() => setContatos([]));
+    getProprietarios().then((list) => setProprietarios(list)).catch(() => setProprietarios([]));
   }, []);
 
   useEffect(() => {
@@ -101,6 +141,7 @@ export default function ImovelCadastro() {
             tipo: i.tipo,
             rua: i.rua ?? '',
             numero: i.numero ?? '',
+            complemento: i.complemento ?? '',
             bairro: i.bairro ?? '',
             cidade: i.cidade ?? '',
             cep: i.cep ?? '',
@@ -112,22 +153,37 @@ export default function ImovelCadastro() {
             codigo: i.codigo ?? '',
             quadra: i.quadra ?? '',
             lote: i.lote ?? '',
+            numeroMatricula: i.numeroMatricula ?? '',
+            numeroIptu: i.numeroIptu ?? '',
+            cartorio: i.cartorio ?? '',
+            tipoListing: i.tipoListing ?? 'residencial',
+            subtipo: i.subtipo ?? '',
+            exibirEnderecoSite: i.exibirEnderecoSite !== false ? 1 : 0,
             descricao: i.descricao ?? '',
             qtdQuartos: i.qtdQuartos ?? undefined,
             qtdBanheiros: i.qtdBanheiros ?? undefined,
             qtdSalas: i.qtdSalas ?? undefined,
             lavabo: i.lavabo ?? 0,
+            qtdVagas: i.qtdVagas ?? undefined,
+            tipoVaga: i.tipoVaga ?? '',
             area: i.area != null ? Number(i.area) : undefined,
             areaTerreno: i.areaTerreno != null ? Number(i.areaTerreno) : undefined,
             anoConstrucao: i.anoConstrucao ?? undefined,
             tipoPiso: i.tipoPiso ?? '',
+            pontosReferencia: i.pontosReferencia ?? '',
+            eletrodomesticos: i.eletrodomesticos ?? '',
+            andarUnidade: i.andarUnidade ?? undefined,
+            qtdAndares: i.qtdAndares ?? undefined,
+            totalUnidades: i.totalUnidades ?? undefined,
+            qtdTorres: i.qtdTorres ?? undefined,
+            caracteristicas: i.caracteristicas ?? '[]',
             empreendimentoId: i.empreendimentoId ?? '',
             proprietarioId: i.proprietarioId ?? '',
           });
           return getImovelFotos(i.id);
         })
-        .then(setFotos)
-        .catch(() => setFotos([]))
+        .then((list) => { setFotos(list); setFotosLoading(false); })
+        .catch(() => { setFotos([]); setFotosLoading(false); })
         .finally(() => setLoading(false));
     }
   }, [id, isNew]);
@@ -164,6 +220,7 @@ export default function ImovelCadastro() {
       tipo: String(form.tipo),
       rua: form.rua != null ? String(form.rua) : undefined,
       numero: form.numero != null ? String(form.numero) : undefined,
+      complemento: form.complemento ? String(form.complemento) : undefined,
       bairro: form.bairro != null ? String(form.bairro) : undefined,
       cidade: form.cidade != null ? String(form.cidade) : undefined,
       cep: form.cep != null ? String(form.cep) : undefined,
@@ -184,6 +241,21 @@ export default function ImovelCadastro() {
       areaTerreno: form.areaTerreno != null ? Number(form.areaTerreno) : undefined,
       anoConstrucao: form.anoConstrucao != null ? Number(form.anoConstrucao) : undefined,
       tipoPiso: form.tipoPiso ? String(form.tipoPiso) : undefined,
+      numeroMatricula: form.numeroMatricula ? String(form.numeroMatricula) : undefined,
+      numeroIptu: form.numeroIptu ? String(form.numeroIptu) : undefined,
+      cartorio: form.cartorio ? String(form.cartorio) : undefined,
+      tipoListing: form.tipoListing ? String(form.tipoListing) : undefined,
+      subtipo: form.subtipo ? String(form.subtipo) : undefined,
+      exibirEnderecoSite: form.exibirEnderecoSite !== 0,
+      qtdVagas: form.qtdVagas != null ? Number(form.qtdVagas) : undefined,
+      tipoVaga: form.tipoVaga ? String(form.tipoVaga) : undefined,
+      pontosReferencia: form.pontosReferencia ? String(form.pontosReferencia) : undefined,
+      eletrodomesticos: form.eletrodomesticos ? String(form.eletrodomesticos) : undefined,
+      andarUnidade: form.andarUnidade != null ? Number(form.andarUnidade) : undefined,
+      qtdAndares: form.qtdAndares != null ? Number(form.qtdAndares) : undefined,
+      totalUnidades: form.totalUnidades != null ? Number(form.totalUnidades) : undefined,
+      qtdTorres: form.qtdTorres != null ? Number(form.qtdTorres) : undefined,
+      caracteristicas: form.caracteristicas && form.caracteristicas !== '[]' ? String(form.caracteristicas) : undefined,
       empreendimentoId: form.empreendimentoId ? String(form.empreendimentoId) : undefined,
       proprietarioId: form.proprietarioId ? String(form.proprietarioId) : undefined,
     };
@@ -202,7 +274,7 @@ export default function ImovelCadastro() {
       } else if (id) {
         await updateImovel(id, payload);
         if (step < 7) setStep(7);
-        else navigate('/imoveis');
+        // Na etapa 7 não fazemos submit que redireciona; usuário usa "Concluir"
       }
     } catch (e) {
       setErro(e instanceof Error ? e.message : 'Erro ao salvar');
@@ -287,6 +359,50 @@ export default function ImovelCadastro() {
                   ))}
                 </select>
               </div>
+              <div className="field-row">
+                <div className="field">
+                  <label htmlFor="numeroMatricula">Nº Matrícula</label>
+                  <input id="numeroMatricula" value={form.numeroMatricula} onChange={(e) => setForm((f) => ({ ...f, numeroMatricula: e.target.value }))} placeholder="Ex: 0192126" />
+                </div>
+                <div className="field">
+                  <label htmlFor="numeroIptu">Nº IPTU</label>
+                  <input id="numeroIptu" value={form.numeroIptu} onChange={(e) => setForm((f) => ({ ...f, numeroIptu: e.target.value }))} placeholder="Ex: 388586" />
+                </div>
+              </div>
+              <div className="field">
+                <label htmlFor="cartorio">Cartório</label>
+                <input id="cartorio" value={form.cartorio} onChange={(e) => setForm((f) => ({ ...f, cartorio: e.target.value }))} placeholder="Cartório" />
+              </div>
+              <div className="field-row">
+                <div className="field">
+                  <label>Tipo de listing</label>
+                  <div className="imovel-cadastro-tipos">
+                    {TIPO_LISTING.map((t) => (
+                      <button
+                        key={t.value}
+                        type="button"
+                        className={form.tipoListing === t.value ? 'active' : ''}
+                        onClick={() => setForm((f) => ({ ...f, tipoListing: t.value }))}
+                      >
+                        {t.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="field-row">
+                <div className="field">
+                  <label htmlFor="subtipo">Subtipo</label>
+                  <input id="subtipo" value={form.subtipo} onChange={(e) => setForm((f) => ({ ...f, subtipo: e.target.value }))} placeholder="Subtipo" />
+                </div>
+                <div className="field">
+                  <label>Exibir endereço no site?</label>
+                  <div className="imovel-cadastro-tipos">
+                    <button type="button" className={form.exibirEnderecoSite ? 'active' : ''} onClick={() => setForm((f) => ({ ...f, exibirEnderecoSite: 1 }))}>Sim</button>
+                    <button type="button" className={!form.exibirEnderecoSite ? 'active' : ''} onClick={() => setForm((f) => ({ ...f, exibirEnderecoSite: 0 }))}>Não</button>
+                  </div>
+                </div>
+              </div>
             </section>
           )}
 
@@ -317,13 +433,19 @@ export default function ImovelCadastro() {
                   <input id="numero" value={form.numero} onChange={(e) => setForm((f) => ({ ...f, numero: e.target.value }))} placeholder="Nº" />
                 </div>
                 <div className="field">
+                  <label htmlFor="complemento">Complemento</label>
+                  <input id="complemento" value={form.complemento} onChange={(e) => setForm((f) => ({ ...f, complemento: e.target.value }))} placeholder="Complemento" />
+                </div>
+              </div>
+              <div className="field-row">
+                <div className="field">
                   <label htmlFor="bairro">Bairro</label>
                   <input id="bairro" value={form.bairro} onChange={(e) => setForm((f) => ({ ...f, bairro: e.target.value }))} placeholder="Bairro" />
                 </div>
-              </div>
-              <div className="field">
-                <label htmlFor="cidade">Cidade</label>
-                <input id="cidade" value={form.cidade} onChange={(e) => setForm((f) => ({ ...f, cidade: e.target.value }))} placeholder="Cidade" />
+                <div className="field">
+                  <label htmlFor="cidade">Cidade</label>
+                  <input id="cidade" value={form.cidade} onChange={(e) => setForm((f) => ({ ...f, cidade: e.target.value }))} placeholder="Cidade" />
+                </div>
               </div>
             </section>
           )}
@@ -400,6 +522,69 @@ export default function ImovelCadastro() {
                   <input id="tipoPiso" value={form.tipoPiso} onChange={(e) => setForm((f) => ({ ...f, tipoPiso: e.target.value }))} placeholder="Ex: porcelanato" />
                 </div>
               </div>
+              <div className="field-row field-row-4">
+                <div className="field">
+                  <label htmlFor="qtdVagas">Vagas garagem</label>
+                  <input id="qtdVagas" type="number" min="0" value={form.qtdVagas ?? ''} onChange={(e) => setForm((f) => ({ ...f, qtdVagas: e.target.value ? Number(e.target.value) : undefined }))} placeholder="0" />
+                </div>
+                <div className="field">
+                  <label htmlFor="tipoVaga">Tipo de vaga</label>
+                  <select id="tipoVaga" value={form.tipoVaga} onChange={(e) => setForm((f) => ({ ...f, tipoVaga: e.target.value }))}>
+                    <option value="">–</option>
+                    <option value="coberta">Coberta</option>
+                    <option value="descoberta">Descoberta</option>
+                    <option value="ambos">Ambos</option>
+                  </select>
+                </div>
+                <div className="field">
+                  <label htmlFor="andarUnidade">Andar da unidade</label>
+                  <input id="andarUnidade" type="number" value={form.andarUnidade ?? ''} onChange={(e) => setForm((f) => ({ ...f, andarUnidade: e.target.value ? Number(e.target.value) : undefined }))} placeholder="–" />
+                </div>
+                <div className="field">
+                  <label htmlFor="qtdAndares">Nº andares</label>
+                  <input id="qtdAndares" type="number" min="0" value={form.qtdAndares ?? ''} onChange={(e) => setForm((f) => ({ ...f, qtdAndares: e.target.value ? Number(e.target.value) : undefined }))} placeholder="–" />
+                </div>
+              </div>
+              <div className="field-row">
+                <div className="field">
+                  <label htmlFor="totalUnidades">Total de unidades</label>
+                  <input id="totalUnidades" type="number" min="0" value={form.totalUnidades ?? ''} onChange={(e) => setForm((f) => ({ ...f, totalUnidades: e.target.value ? Number(e.target.value) : undefined }))} placeholder="–" />
+                </div>
+                <div className="field">
+                  <label htmlFor="qtdTorres">Nº torres</label>
+                  <input id="qtdTorres" type="number" min="0" value={form.qtdTorres ?? ''} onChange={(e) => setForm((f) => ({ ...f, qtdTorres: e.target.value ? Number(e.target.value) : undefined }))} placeholder="–" />
+                </div>
+              </div>
+              <div className="field">
+                <label htmlFor="pontosReferencia">Pontos de referência</label>
+                <input id="pontosReferencia" value={form.pontosReferencia} onChange={(e) => setForm((f) => ({ ...f, pontosReferencia: e.target.value }))} placeholder="Ex: hotel JP" />
+              </div>
+              <div className="field">
+                <label htmlFor="eletrodomesticos">Eletrodomésticos</label>
+                <input id="eletrodomesticos" value={form.eletrodomesticos} onChange={(e) => setForm((f) => ({ ...f, eletrodomesticos: e.target.value }))} placeholder="Lista de eletrodomésticos" />
+              </div>
+              <div className="field">
+                <label>Características</label>
+                <div className="imovel-cadastro-caracteristicas">
+                  {CARACTERISTICAS_OPCOES.map((key) => {
+                    const arr: string[] = (() => { try { return JSON.parse(String(form.caracteristicas || '[]')); } catch { return []; } })();
+                    const checked = arr.includes(key);
+                    return (
+                      <label key={key} className="imovel-cadastro-check">
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => {
+                            const next = checked ? arr.filter((x) => x !== key) : [...arr, key];
+                            setForm((f) => ({ ...f, caracteristicas: JSON.stringify(next) }));
+                          }}
+                        />
+                        <span>{key.replace(/_/g, ' ')}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
             </section>
           )}
 
@@ -417,17 +602,21 @@ export default function ImovelCadastro() {
             <section className="imovel-cadastro-section">
               <h2>Proprietário</h2>
               <div className="field">
-                <label htmlFor="proprietario">Vincular proprietário (contato)</label>
+                <label htmlFor="proprietario">Vincular proprietário</label>
                 <select
                   id="proprietario"
                   value={form.proprietarioId}
                   onChange={(e) => setForm((f) => ({ ...f, proprietarioId: e.target.value }))}
                 >
                   <option value="">Nenhum</option>
-                  {contatos.map((c) => (
-                    <option key={c.id} value={c.id}>{c.nome} – {c.email}</option>
+                  {proprietarios.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.nome}
+                      {(p.telefone || p.email) && ` – ${[p.telefone, p.email].filter(Boolean).join(' / ')}`}
+                    </option>
                   ))}
                 </select>
+                <p className="hint">Cadastre proprietários em <a href="/proprietarios" target="_blank" rel="noopener noreferrer">Proprietários</a> para vincular aqui.</p>
               </div>
             </section>
           )}
@@ -503,9 +692,13 @@ export default function ImovelCadastro() {
               <button type="button" className="primary" onClick={() => setStep((s) => s + 1)}>
                 Próximo
               </button>
+            ) : step === 7 && id ? (
+              <button type="button" className="primary" onClick={() => navigate('/imoveis')}>
+                Concluir
+              </button>
             ) : (
               <button type="submit" className="primary" disabled={saving}>
-                {saving ? 'Salvando...' : isNew ? 'Salvar imóvel' : 'Salvar'}
+                {saving ? 'Salvando...' : 'Salvar imóvel'}
               </button>
             )}
           </footer>
