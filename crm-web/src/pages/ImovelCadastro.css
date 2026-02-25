@@ -152,18 +152,24 @@
   }
 }
 
-/* Tipo de listing: 5 botões com texto completo visível (sem recorte) */
-.imovel-cadastro-tipos {
+/* Tipo do imóvel: 6 botões em 2 linhas (3 colunas), texto completo */
+.imovel-cadastro-tipo-imovel {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 0.5rem;
   margin-top: 0.25rem;
 }
 
-@media (min-width: 520px) {
-  .imovel-cadastro-tipos {
-    grid-template-columns: repeat(5, 1fr);
-  }
+.imovel-cadastro-tipo-imovel button {
+  min-width: 0;
+  white-space: nowrap;
+}
+
+/* Tipo de listing (select) e blocos de botões genéricos */
+.imovel-cadastro-tipos {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
 }
 
 .imovel-cadastro-tipos button {

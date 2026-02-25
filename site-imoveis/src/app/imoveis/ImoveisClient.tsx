@@ -9,7 +9,9 @@ const TIPOS = [
   { value: '', label: 'Todos' },
   { value: 'apartamento', label: 'Apartamento' },
   { value: 'casa', label: 'Casa' },
+  { value: 'casa_condominio', label: 'Casa em condomínio' },
   { value: 'terreno', label: 'Terreno' },
+  { value: 'terreno_condominio', label: 'Terreno em condomínio' },
   { value: 'comercial', label: 'Comercial' },
 ];
 

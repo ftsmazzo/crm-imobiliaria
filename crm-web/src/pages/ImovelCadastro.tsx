@@ -283,8 +283,7 @@ export default function ImovelCadastro() {
         return;
       } else if (id) {
         await updateImovel(id, payload);
-        if (step < 7) setStep(7);
-        // Na etapa 7 não fazemos submit que redireciona; usuário usa "Concluir"
+        // Não avançar de step ao salvar; usuário permanece na etapa atual (evita "pular" do proprietário)
       }
     } catch (e) {
       setErro(e instanceof Error ? e.message : 'Erro ao salvar');
@@ -329,7 +328,7 @@ export default function ImovelCadastro() {
               <h2>Identificação</h2>
               <div className="field">
                 <label>Tipo do imóvel</label>
-                <div className="imovel-cadastro-tipos">
+                <div className="imovel-cadastro-tipos imovel-cadastro-tipo-imovel">
                   {TIPOS.map((t) => (
                     <button
                       key={t.value}
