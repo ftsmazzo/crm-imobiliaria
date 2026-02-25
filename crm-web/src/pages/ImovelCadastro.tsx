@@ -570,22 +570,23 @@ export default function ImovelCadastro() {
               </div>
               <div className="field">
                 <label>Características</label>
+                <p className="hint">Clique para ligar ou desligar cada item.</p>
                 <div className="imovel-cadastro-caracteristicas">
                   {CARACTERISTICAS_OPCOES.map((key) => {
                     const arr: string[] = (() => { try { return JSON.parse(String(form.caracteristicas || '[]')); } catch { return []; } })();
-                    const checked = arr.includes(key);
+                    const ativo = arr.includes(key);
                     return (
-                      <label key={key} className="imovel-cadastro-check">
-                        <input
-                          type="checkbox"
-                          checked={checked}
-                          onChange={() => {
-                            const next = checked ? arr.filter((x) => x !== key) : [...arr, key];
-                            setForm((f) => ({ ...f, caracteristicas: JSON.stringify(next) }));
-                          }}
-                        />
-                        <span>{key.replace(/_/g, ' ')}</span>
-                      </label>
+                      <button
+                        key={key}
+                        type="button"
+                        className={`imovel-cadastro-carac-btn ${ativo ? 'active' : ''}`}
+                        onClick={() => {
+                          const next = ativo ? arr.filter((x) => x !== key) : [...arr, key];
+                          setForm((f) => ({ ...f, caracteristicas: JSON.stringify(next) }));
+                        }}
+                      >
+                        {key.replace(/_/g, ' ')}
+                      </button>
                     );
                   })}
                 </div>

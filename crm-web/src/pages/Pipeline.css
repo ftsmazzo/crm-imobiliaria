@@ -58,6 +58,7 @@
 }
 
 .pipeline-card {
+  position: relative;
   background: #fff;
   border-radius: 0.5rem;
   padding: 1rem 1.25rem;
@@ -70,6 +71,40 @@
 .pipeline-card:hover {
   box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
   transform: translateY(-1px);
+}
+
+.pipeline-card-resumo {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  margin-top: 0.25rem;
+  padding: 0.75rem 1rem;
+  background: var(--crm-text);
+  color: #fff;
+  border-radius: var(--crm-radius);
+  font-size: var(--crm-text-sm);
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.pipeline-card-resumo p {
+  margin: 0 0 0.35rem;
+  line-height: 1.4;
+}
+
+.pipeline-card-resumo p:last-child {
+  margin-bottom: 0;
+}
+
+.pipeline-card-resumo strong {
+  color: rgba(255, 255, 255, 0.85);
+  margin-right: 0.25rem;
+}
+
+.pipeline-card-resumo-vazio {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: var(--crm-text-xs);
 }
 
 .pipeline-card-nome {

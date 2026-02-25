@@ -23,11 +23,8 @@ export default function ImoveisClient({ imoveisIniciais }: { imoveisIniciais: Im
   const [tipo, setTipo] = useState('');
 
   useEffect(() => {
-    if (!cidade && !bairro && !tipo) {
-      setImoveis(imoveisIniciais);
-      return;
-    }
-    setLoading(true);
+    const temFiltro = !!(cidade || bairro || tipo);
+    if (temFiltro) setLoading(true);
     getImoveis({
       status: 'disponivel',
       cidade: cidade || undefined,
@@ -36,7 +33,7 @@ export default function ImoveisClient({ imoveisIniciais }: { imoveisIniciais: Im
     })
       .then(setImoveis)
       .finally(() => setLoading(false));
-  }, [cidade, bairro, tipo, imoveisIniciais]);
+  }, [cidade, bairro, tipo]);
 
   return (
     <>

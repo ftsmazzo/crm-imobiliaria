@@ -13,12 +13,25 @@ export type ImovelPublic = {
   exibirEnderecoSite?: boolean;
   valorVenda: string | null;
   valorAluguel: string | null;
+  valorIptu?: string | null;
+  valorCondominio?: string | null;
   status: string;
   codigo: string | null;
   descricao: string | null;
   qtdQuartos: number | null;
   qtdBanheiros: number | null;
+  qtdSalas?: number | null;
+  lavabo?: number | null;
   area: string | null;
+  areaTerreno?: string | null;
+  qtdVagas?: number | null;
+  tipoVaga?: string | null;
+  anoConstrucao?: number | null;
+  tipoPiso?: string | null;
+  pontosReferencia?: string | null;
+  eletrodomesticos?: string | null;
+  andarUnidade?: number | null;
+  caracteristicas?: string | null;
   fotos?: ImovelFotoPublic[];
 };
 

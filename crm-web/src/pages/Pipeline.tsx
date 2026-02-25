@@ -5,6 +5,38 @@ import { ESTAGIOS } from '../types';
 import AppLayout from '../components/AppLayout';
 import './Pipeline.css';
 
+function PipelineCard({ c, onMudarEstagio }: { c: Contato; onMudarEstagio: (c: Contato, e: string) => void }) {
+  const [showResumo, setShowResumo] = useState(false);
+  return (
+    <div
+      className="pipeline-card"
+      onMouseEnter={() => setShowResumo(true)}
+      onMouseLeave={() => setShowResumo(false)}
+    >
+      <div className="pipeline-card-nome">{c.nome}</div>
+      <div className="pipeline-card-email">{c.email}</div>
+      {showResumo && (
+        <div className="pipeline-card-resumo" role="tooltip">
+          {c.telefone && <p><strong>Telefone:</strong> {c.telefone}</p>}
+          {c.origem && <p><strong>Origem:</strong> {c.origem}</p>}
+          {c.observacoes && <p><strong>Observações:</strong> {c.observacoes}</p>}
+          {!c.telefone && !c.origem && !c.observacoes && <p className="pipeline-card-resumo-vazio">Sem dados adicionais</p>}
+        </div>
+      )}
+      <select
+        className="pipeline-card-select"
+        value={c.estagio}
+        onChange={(ev) => onMudarEstagio(c, ev.target.value)}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {ESTAGIOS.map((e) => (
+          <option key={e} value={e}>{ESTAGIO_LABEL[e]}</option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
 const ESTAGIO_LABEL: Record<Estagio, string> = {
   novo: 'Novo',
   qualificado: 'Qualificado',
@@ -65,20 +97,7 @@ export default function Pipeline() {
               </div>
               <div className="pipeline-cards">
                 {porEstagio(estagio).map((c) => (
-                  <div key={c.id} className="pipeline-card">
-                    <div className="pipeline-card-nome">{c.nome}</div>
-                    <div className="pipeline-card-email">{c.email}</div>
-                    <select
-                      className="pipeline-card-select"
-                      value={c.estagio}
-                      onChange={(ev) => handleMudarEstagio(c, ev.target.value)}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      {ESTAGIOS.map((e) => (
-                        <option key={e} value={e}>{ESTAGIO_LABEL[e]}</option>
-                      ))}
-                    </select>
-                  </div>
+                  <PipelineCard key={c.id} c={c} onMudarEstagio={handleMudarEstagio} />
                 ))}
               </div>
             </div>

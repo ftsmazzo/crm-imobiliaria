@@ -323,20 +323,32 @@
 }
 
 .imovel-cadastro-caracteristicas {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 0.5rem;
 }
 
-.imovel-cadastro-check {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+.imovel-cadastro-carac-btn {
+  padding: 0.5rem 0.85rem;
   font-size: var(--crm-text-sm);
+  font-family: inherit;
+  border: 1px solid var(--crm-border);
+  border-radius: var(--crm-radius);
+  background: var(--crm-surface);
+  color: var(--crm-text-muted);
   cursor: pointer;
   text-transform: capitalize;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
 }
 
-.imovel-cadastro-check input { width: auto; }
-.imovel-cadastro-check span { flex: 1; }
+.imovel-cadastro-carac-btn:hover {
+  border-color: var(--crm-text-muted);
+  color: var(--crm-text);
+}
+
+.imovel-cadastro-carac-btn.active {
+  border-color: var(--crm-accent);
+  background: var(--crm-accent-light);
+  color: var(--crm-accent-hover);
+}

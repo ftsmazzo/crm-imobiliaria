@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, NotFoundException, Param, ParseUUIDPipe, Post, Query, UseGuards } from '@nestjs/common';
 import { ContatosService } from '../contatos/contatos.service';
 import { ImoveisFotosService } from '../imoveis/imoveis-fotos.service';
 import { ImoveisService } from '../imoveis/imoveis.service';
@@ -60,6 +60,9 @@ export class PublicController {
   @Get('imoveis/:id')
   async detalheImovel(@Param('id', ParseUUIDPipe) id: string) {
     const i = await this.imoveis.findOne(id);
+    if (i.status !== 'disponivel') {
+      throw new NotFoundException('Imóvel não disponível');
+    }
     let fotos: { id: string; url: string }[] = [];
     try {
       fotos = await this.fotosService.getPresignedUrlsForImovel(i.id);
@@ -77,12 +80,25 @@ export class PublicController {
       exibirEnderecoSite: i.exibirEnderecoSite ?? true,
       valorVenda: i.valorVenda?.toString(),
       valorAluguel: i.valorAluguel?.toString(),
+      valorIptu: i.valorIptu?.toString(),
+      valorCondominio: i.valorCondominio?.toString(),
       status: i.status,
       codigo: i.codigo,
       descricao: i.descricao,
       qtdQuartos: i.qtdQuartos,
       qtdBanheiros: i.qtdBanheiros,
+      qtdSalas: i.qtdSalas,
+      lavabo: i.lavabo,
       area: i.area?.toString(),
+      areaTerreno: i.areaTerreno?.toString(),
+      qtdVagas: i.qtdVagas,
+      tipoVaga: i.tipoVaga,
+      anoConstrucao: i.anoConstrucao,
+      tipoPiso: i.tipoPiso,
+      pontosReferencia: i.pontosReferencia,
+      eletrodomesticos: i.eletrodomesticos,
+      andarUnidade: i.andarUnidade,
+      caracteristicas: i.caracteristicas,
       fotos: fotos.map((f) => ({ id: f.id, url: f.url })),
     };
   }
