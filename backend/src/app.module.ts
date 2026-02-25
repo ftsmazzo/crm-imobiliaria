@@ -11,11 +11,10 @@ import { ProprietariosModule } from './proprietarios/proprietarios.module';
 import { PublicModule } from './public/public.module';
 import { StorageModule } from './storage/storage.module';
 import { TarefasModule } from './tarefas/tarefas.module';
-import { ConsultaModule } from './consulta/consulta.module';
 import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
-  imports: [PrismaModule, StorageModule, AuthModule, HealthModule, ContatosModule, EmpreendimentosModule, ImoveisModule, ProprietariosModule, TarefasModule, PublicModule, DashboardModule, ConsultaModule],
+  imports: [PrismaModule, StorageModule, AuthModule, HealthModule, ContatosModule, EmpreendimentosModule, ImoveisModule, ProprietariosModule, TarefasModule, PublicModule, DashboardModule],
   providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }],
 })
 export class AppModule {}

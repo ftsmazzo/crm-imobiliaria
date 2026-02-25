@@ -1,0 +1,20 @@
+.empreendimento-cadastro-page { max-width: 640px; margin: 0 auto 2rem; padding: 0 1rem; }
+.empreendimento-cadastro-header { margin-bottom: 1.5rem; }
+.empreendimento-cadastro-header h1 { margin: 0; font-size: 1.5rem; font-weight: 700; color: var(--crm-text); }
+.empreendimento-cadastro-form { background: #fff; border-radius: 0.75rem; border: 1px solid var(--crm-border); padding: 1.5rem; box-shadow: 0 2px 8px rgba(15,23,42,0.06); }
+.empreendimento-cadastro-erro { color: var(--crm-error); font-size: var(--crm-text-sm); margin-bottom: 1rem; padding: 0.5rem; background: var(--crm-error-light,#fef2f2); border-radius: var(--crm-radius); }
+.empreendimento-cadastro-section { margin-bottom: 1.5rem; }
+.empreendimento-cadastro-section h2 { margin: 0 0 1rem; font-size: 1rem; font-weight: 600; color: var(--crm-text-muted); text-transform: uppercase; letter-spacing: 0.04em; padding-bottom: 0.5rem; border-bottom: 1px solid var(--crm-border); }
+.empreendimento-cadastro-section .field { margin-bottom: 1rem; }
+.empreendimento-cadastro-section .field label { display: block; font-size: var(--crm-text-sm); font-weight: 500; margin-bottom: 0.25rem; }
+.empreendimento-cadastro-section .field input, .empreendimento-cadastro-section .field textarea { width: 100%; padding: 0.5rem 0.75rem; border: 1px solid var(--crm-border); border-radius: var(--crm-radius); font-size: var(--crm-text-base); }
+.empreendimento-cadastro-section .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.empreendimento-cadastro-section .hint { display: block; font-size: var(--crm-text-sm); margin-top: 0.25rem; }
+.empreendimento-cadastro-section .hint.loading { color: var(--crm-accent); }
+.empreendimento-cadastro-section .hint.ok { color: var(--crm-success,#059669); }
+.empreendimento-cadastro-section .hint.not-found { color: var(--crm-error); }
+.empreendimento-cadastro-actions { display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--crm-border); }
+.empreendimento-cadastro-actions .secondary { padding: 0.5rem 1rem; border: 1px solid var(--crm-border); background: var(--crm-surface); border-radius: var(--crm-radius); cursor: pointer; }
+.empreendimento-cadastro-actions .primary { padding: 0.5rem 1rem; background: var(--crm-accent); color: #fff; border: none; border-radius: var(--crm-radius); font-weight: 600; cursor: pointer; }
+.empreendimento-cadastro-loading { padding: 2rem; text-align: center; color: var(--crm-text-muted); }
+@media (max-width: 480px) { .empreendimento-cadastro-section .field-row { grid-template-columns: 1fr; } }

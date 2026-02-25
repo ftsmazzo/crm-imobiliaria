@@ -384,23 +384,18 @@ export default function ImovelCadastro() {
                 <label htmlFor="cartorio">Cartório</label>
                 <input id="cartorio" value={form.cartorio} onChange={(e) => setForm((f) => ({ ...f, cartorio: e.target.value }))} placeholder="Cartório" />
               </div>
-              <div className="field-row">
-                <div className="field">
-                  <label>Tipo de listing</label>
-                  <div className="imovel-cadastro-tipos">
+              <div className="field">
+                  <label htmlFor="tipoListing">Tipo de listing</label>
+                  <select
+                    id="tipoListing"
+                    value={form.tipoListing}
+                    onChange={(e) => setForm((f) => ({ ...f, tipoListing: e.target.value }))}
+                  >
                     {TIPO_LISTING.map((t) => (
-                      <button
-                        key={t.value}
-                        type="button"
-                        className={form.tipoListing === t.value ? 'active' : ''}
-                        onClick={() => setForm((f) => ({ ...f, tipoListing: t.value }))}
-                      >
-                        {t.label}
-                      </button>
+                      <option key={t.value} value={t.value}>{t.label}</option>
                     ))}
-                  </div>
+                  </select>
                 </div>
-              </div>
               <div className="field-row imovel-cadastro-subtipo-exibir">
                 <div className="field">
                   <label htmlFor="subtipo">Subtipo</label>

@@ -2,12 +2,14 @@ import { Navigate, Route, BrowserRouter, Routes } from 'react-router-dom';
 import { isLoggedIn } from './auth';
 import Contatos from './pages/Contatos';
 import Dashboard from './pages/Dashboard';
+import EmpreendimentoCadastro from './pages/EmpreendimentoCadastro';
 import Empreendimentos from './pages/Empreendimentos';
 import Imoveis from './pages/Imoveis';
 import ImovelCadastro from './pages/ImovelCadastro';
 import ImovelDetalhe from './pages/ImovelDetalhe';
 import Login from './pages/Login';
 import Pipeline from './pages/Pipeline';
+import ProprietarioCadastro from './pages/ProprietarioCadastro';
 import Proprietarios from './pages/Proprietarios';
 import Tarefas from './pages/Tarefas';
 
@@ -28,7 +30,11 @@ export default function App() {
         <Route path="/imoveis/:id/editar" element={<PrivateRoute><ImovelCadastro /></PrivateRoute>} />
         <Route path="/imoveis/:id" element={<PrivateRoute><ImovelDetalhe /></PrivateRoute>} />
         <Route path="/proprietarios" element={<PrivateRoute><Proprietarios /></PrivateRoute>} />
+        <Route path="/proprietarios/novo" element={<PrivateRoute><ProprietarioCadastro /></PrivateRoute>} />
+        <Route path="/proprietarios/:id/editar" element={<PrivateRoute><ProprietarioCadastro /></PrivateRoute>} />
         <Route path="/empreendimentos" element={<PrivateRoute><Empreendimentos /></PrivateRoute>} />
+        <Route path="/empreendimentos/novo" element={<PrivateRoute><EmpreendimentoCadastro /></PrivateRoute>} />
+        <Route path="/empreendimentos/:id/editar" element={<PrivateRoute><EmpreendimentoCadastro /></PrivateRoute>} />
         <Route path="/tarefas" element={<PrivateRoute><Tarefas /></PrivateRoute>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

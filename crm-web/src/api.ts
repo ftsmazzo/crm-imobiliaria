@@ -74,6 +74,11 @@ export async function getEmpreendimentos(): Promise<Empreendimento[]> {
   return handleRes(res);
 }
 
+export async function getEmpreendimento(id: string): Promise<Empreendimento> {
+  const res = await fetch(`${API_URL}/empreendimentos/${id}`, { headers: authHeaders() });
+  return handleRes(res);
+}
+
 export async function createEmpreendimento(data: { nome: string; descricao?: string; endereco?: string }): Promise<Empreendimento> {
   const res = await fetch(`${API_URL}/empreendimentos`, {
     method: 'POST',
@@ -106,6 +111,11 @@ export async function getProprietarios(): Promise<Proprietario[]> {
   return handleRes(res);
 }
 
+export async function getProprietario(id: string): Promise<Proprietario> {
+  const res = await fetch(`${API_URL}/proprietarios/${id}`, { headers: authHeaders() });
+  return handleRes(res);
+}
+
 export async function createProprietario(data: Partial<Proprietario>): Promise<Proprietario> {
   const res = await fetch(`${API_URL}/proprietarios`, {
     method: 'POST',
@@ -127,26 +137,6 @@ export async function updateProprietario(id: string, data: Partial<Proprietario>
 export async function deleteProprietario(id: string): Promise<void> {
   const res = await fetch(`${API_URL}/proprietarios/${id}`, { method: 'DELETE', headers: authHeaders() });
   if (!res.ok) await handleRes(res);
-}
-
-/** Consulta CNPJ via backend (evita CORS). Retorna dados para preencher ou { ok: false, message }. */
-export async function consultaCnpj(cnpj: string): Promise<
-  | { ok: true; razaoSocial: string; endereco?: string; telefone?: string; email?: string }
-  | { ok: false; message: string }
-> {
-  const digits = (cnpj || '').replace(/\D/g, '');
-  if (digits.length !== 14) return { ok: false, message: 'CNPJ deve ter 14 dígitos' };
-  const res = await fetch(`${API_URL}/consulta/cnpj/${encodeURIComponent(digits)}`, { headers: authHeaders() });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) return { ok: false, message: (data as { message?: string }).message || 'Erro ao consultar' };
-  if (data.ok === false) return { ok: false, message: data.message || 'CNPJ não encontrado' };
-  return {
-    ok: true,
-    razaoSocial: data.razaoSocial ?? '',
-    endereco: data.endereco,
-    telefone: data.telefone,
-    email: data.email,
-  };
 }
 
 // Imóveis
