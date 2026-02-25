@@ -84,9 +84,11 @@ export default function FormInteresse({ imovelId }: { imovelId: string }) {
           rows={3}
         />
       </div>
-      <button type="submit" className="btn btn-primary">
-        Enviar
-      </button>
+      <div className="form-actions">
+        <button type="submit" className="btn btn-primary">
+          Enviar
+        </button>
+      </div>
     </form>
   );
 }

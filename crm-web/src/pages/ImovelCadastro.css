@@ -152,10 +152,24 @@
   }
 }
 
+/* Tipo de listing: 5 botões distribuídos em linha (grid responsivo) */
 .imovel-cadastro-tipos {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
   gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+@media (max-width: 560px) {
+  .imovel-cadastro-tipos {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 561px) and (max-width: 700px) {
+  .imovel-cadastro-tipos {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 .imovel-cadastro-tipos button {
@@ -167,6 +181,7 @@
   color: var(--crm-text);
   cursor: pointer;
   transition: border-color 0.2s, background 0.2s;
+  min-width: 0;
 }
 
 .imovel-cadastro-tipos button:hover {
@@ -179,6 +194,33 @@
   color: var(--crm-accent-hover);
 }
 
+/* Linha Subtipo + Exibir endereço: duas colunas iguais e alinhamento vertical */
+.imovel-cadastro-subtipo-exibir {
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+}
+
+/* Bloco Sim/Não (Exibir endereço): 2 botões lado a lado (não usar grid de 5 colunas) */
+.imovel-cadastro-tipos-toggle {
+  display: flex !important;
+  grid-template-columns: unset;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+@media (max-width: 480px) {
+  .imovel-cadastro-subtipo-exibir {
+    grid-template-columns: 1fr;
+  }
+}
+
+.imovel-cadastro-section .hint {
+  display: block;
+  font-size: var(--crm-text-sm);
+  color: var(--crm-text-muted);
+  margin-top: 0.25rem;
+}
+.imovel-cadastro-section .hint a { color: var(--crm-accent); }
 .imovel-cep-field .hint {
   display: block;
   font-size: var(--crm-text-xs);

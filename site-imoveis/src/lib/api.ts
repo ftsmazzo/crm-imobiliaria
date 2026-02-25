@@ -10,6 +10,7 @@ export type ImovelPublic = {
   bairro: string | null;
   cidade: string | null;
   cep: string | null;
+  exibirEnderecoSite?: boolean;
   valorVenda: string | null;
   valorAluguel: string | null;
   status: string;

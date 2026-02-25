@@ -99,7 +99,7 @@ const emptyForm = (): FormState => ({
 export default function ImovelCadastro() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const isNew = id === 'novo' || !id;
   const [form, setForm] = useState<FormState>(emptyForm());
   const [saving, setSaving] = useState(false);
@@ -126,6 +126,16 @@ export default function ImovelCadastro() {
       if (!Number.isNaN(n)) setStep(n);
     }
   }, [searchParams, id]);
+
+  function goToStep(newStep: number) {
+    const n = Math.min(totalSteps, Math.max(1, newStep));
+    setStep(n);
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      next.set('step', String(n));
+      return next;
+    }, { replace: true });
+  }
 
   useEffect(() => {
     getEmpreendimentos().then((list) => setEmpreendimentos(list)).catch(() => setEmpreendimentos([]));
@@ -358,6 +368,7 @@ export default function ImovelCadastro() {
                     <option key={e.id} value={e.id}>{e.nome}</option>
                   ))}
                 </select>
+                <p className="hint">Cadastre em <a href="/empreendimentos" target="_blank" rel="noopener noreferrer">Empreendimentos</a> para vincular aqui.</p>
               </div>
               <div className="field-row">
                 <div className="field">
@@ -390,14 +401,14 @@ export default function ImovelCadastro() {
                   </div>
                 </div>
               </div>
-              <div className="field-row">
+              <div className="field-row imovel-cadastro-subtipo-exibir">
                 <div className="field">
                   <label htmlFor="subtipo">Subtipo</label>
                   <input id="subtipo" value={form.subtipo} onChange={(e) => setForm((f) => ({ ...f, subtipo: e.target.value }))} placeholder="Subtipo" />
                 </div>
-                <div className="field">
+                <div className="field imovel-cadastro-exibir-endereco">
                   <label>Exibir endereço no site?</label>
-                  <div className="imovel-cadastro-tipos">
+                  <div className="imovel-cadastro-tipos imovel-cadastro-tipos-toggle">
                     <button type="button" className={form.exibirEnderecoSite ? 'active' : ''} onClick={() => setForm((f) => ({ ...f, exibirEnderecoSite: 1 }))}>Sim</button>
                     <button type="button" className={!form.exibirEnderecoSite ? 'active' : ''} onClick={() => setForm((f) => ({ ...f, exibirEnderecoSite: 0 }))}>Não</button>
                   </div>
@@ -684,12 +695,12 @@ export default function ImovelCadastro() {
               Cancelar
             </button>
             {step > 1 && (
-              <button type="button" className="secondary" onClick={() => setStep((s) => s - 1)}>
+              <button type="button" className="secondary" onClick={() => goToStep(step - 1)}>
                 Anterior
               </button>
             )}
             {step < (isNew ? 6 : 7) ? (
-              <button type="button" className="primary" onClick={() => setStep((s) => s + 1)}>
+              <button type="button" className="primary" onClick={() => goToStep(step + 1)}>
                 Próximo
               </button>
             ) : step === 7 && id ? (

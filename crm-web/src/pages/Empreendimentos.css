@@ -1,0 +1,96 @@
+.empreendimentos-page { margin-bottom: 2rem; }
+.empreendimentos-page .lead { color: var(--crm-text-muted); margin-bottom: 1rem; }
+.empreendimentos-toolbar { margin-bottom: 1.5rem; }
+.empreendimentos-btn-new {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: var(--crm-text-sm);
+  font-weight: 600;
+  color: #fff;
+  background: var(--crm-accent);
+  border: none;
+  border-radius: var(--crm-radius);
+  cursor: pointer;
+}
+.empreendimentos-btn-new:hover { background: var(--crm-accent-hover); }
+.empreendimentos-erro { color: var(--crm-error); margin-bottom: 1rem; }
+.empreendimentos-loading,
+.empreendimentos-empty { padding: 2rem; text-align: center; color: var(--crm-text-muted); }
+.empreendimentos-empty .empreendimentos-btn-new { margin-top: 1rem; }
+.empreendimentos-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.empreendimento-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: #fff;
+  border: 1px solid var(--crm-border);
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+}
+.empreendimento-card-body { min-width: 0; }
+.empreendimento-card-body strong { display: block; margin-bottom: 0.25rem; }
+.empreendimento-card-endereco,
+.empreendimento-card-imoveis {
+  font-size: var(--crm-text-sm);
+  color: var(--crm-text-muted);
+  margin: 0.25rem 0 0;
+}
+.empreendimento-card-actions { display: flex; gap: 0.5rem; }
+.empreendimento-card-actions button {
+  padding: 0.35rem 0.75rem;
+  font-size: var(--crm-text-sm);
+  border-radius: var(--crm-radius);
+  cursor: pointer;
+  border: 1px solid var(--crm-border);
+  background: var(--crm-surface);
+}
+.empreendimento-card-actions button:first-of-type { border-color: var(--crm-accent); color: var(--crm-accent); }
+.empreendimentos-modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 200; padding: 1rem;
+}
+.empreendimentos-modal {
+  background: #fff;
+  border-radius: 0.75rem;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);
+}
+.empreendimentos-modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--crm-border); }
+.empreendimentos-modal-header h2 { margin: 0; font-size: 1.2rem; }
+.empreendimentos-modal-body { padding: 1.5rem; overflow-y: auto; }
+.empreendimentos-form .field { margin-bottom: 1rem; }
+.empreendimentos-form .field label { display: block; font-size: var(--crm-text-sm); font-weight: 500; margin-bottom: 0.25rem; }
+.empreendimentos-form .field input,
+.empreendimentos-form .field textarea {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--crm-border);
+  border-radius: var(--crm-radius);
+}
+.empreendimentos-form-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--crm-border);
+}
+.empreendimentos-form-actions .secondary {
+  background: var(--crm-surface); border: 1px solid var(--crm-border); color: var(--crm-text);
+  padding: 0.5rem 1rem; border-radius: var(--crm-radius); cursor: pointer;
+}
+.empreendimentos-form-actions .primary {
+  background: var(--crm-accent); color: #fff; border: none;
+  padding: 0.5rem 1rem; border-radius: var(--crm-radius); font-weight: 600; cursor: pointer;
+}

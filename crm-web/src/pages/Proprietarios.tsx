@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getProprietarios, createProprietario, updateProprietario, deleteProprietario } from '../api';
+import { buscarPorCnpj } from '../brasilapi-cnpj';
 import type { Proprietario } from '../types';
 import AppLayout from '../components/AppLayout';
 import './Proprietarios.css';
@@ -32,6 +33,7 @@ export default function Proprietarios() {
   const [modal, setModal] = useState<'novo' | Proprietario | null>(null);
   const [form, setForm] = useState(emptyForm());
   const [saving, setSaving] = useState(false);
+  const [cnpjLoading, setCnpjLoading] = useState(false);
 
   async function load() {
     setLoading(true);
@@ -209,9 +211,10 @@ export default function Proprietarios() {
                   <input id="prop-nome" value={form.nome} onChange={(e) => setForm((f) => ({ ...f, nome: e.target.value }))} required />
                 </div>
                 <div className="field-row">
-                  <div className="field">
-                    <label htmlFor="prop-cpf">CPF</label>
-                    <input id="prop-cpf" value={form.cpf} onChange={(e) => setForm((f) => ({ ...f, cpf: e.target.value }))} placeholder="000.000.000-00" />
+<div className="field">
+                  <label htmlFor="prop-cpf">CPF</label>
+                  <input id="prop-cpf" value={form.cpf} onChange={(e) => setForm((f) => ({ ...f, cpf: e.target.value }))} placeholder="000.000.000-00" title="Preencha manualmente; não há API gratuita para consulta por CPF" />
+                  <p className="proprietarios-cpf-hint" aria-hidden>Não há API gratuita para consulta por CPF; preencha manualmente.</p>
                   </div>
                   <div className="field">
                     <label htmlFor="prop-rg">RG</label>
@@ -255,7 +258,33 @@ export default function Proprietarios() {
                 <div className="field-row">
                   <div className="field">
                     <label htmlFor="prop-cnpj">CNPJ</label>
-                    <input id="prop-cnpj" value={form.cnpj} onChange={(e) => setForm((f) => ({ ...f, cnpj: e.target.value }))} placeholder="00.000.000/0000-00" />
+                    <input
+                      id="prop-cnpj"
+                      value={form.cnpj}
+                      onChange={(e) => setForm((f) => ({ ...f, cnpj: e.target.value }))}
+                      onBlur={async () => {
+                        const digits = (form.cnpj || '').replace(/\D/g, '');
+                        if (digits.length !== 14) return;
+                        setCnpjLoading(true);
+                        try {
+                          const data = await buscarPorCnpj(form.cnpj);
+                          if (data) {
+                            setForm((f) => ({
+                              ...f,
+                              razaoSocial: data.razaoSocial || f.razaoSocial,
+                              endereco: data.endereco || f.endereco,
+                              repLegalContato: data.telefone || f.repLegalContato,
+                              repLegalEmail: data.email || f.repLegalEmail,
+                            }));
+                          }
+                        } finally {
+                          setCnpjLoading(false);
+                        }
+                      }}
+                      placeholder="00.000.000/0000-00"
+                      title="Ao sair do campo, os dados da empresa são preenchidos automaticamente (BrasilAPI)"
+                    />
+                    {cnpjLoading && <span className="proprietarios-cnpj-loading">Buscando...</span>}
                   </div>
                   <div className="field">
                     <label htmlFor="prop-inscricaoEstadual">Inscrição estadual</label>

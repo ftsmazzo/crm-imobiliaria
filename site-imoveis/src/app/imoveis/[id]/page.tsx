@@ -30,7 +30,10 @@ export default async function ImovelPage({ params }: { params: Promise<{ id: str
     notFound();
   }
 
-  const endereco = [imovel.rua, imovel.numero, imovel.bairro, imovel.cidade].filter(Boolean).join(', ') || '–';
+  const exibirEndereco = imovel.exibirEnderecoSite !== false;
+  const enderecoTexto = exibirEndereco
+    ? ([imovel.rua, imovel.numero, imovel.bairro, imovel.cidade].filter(Boolean).join(', ') || '–')
+    : 'Endereço sob consulta';
   const valorVenda = imovel.valorVenda ? formatValor(imovel.valorVenda) : null;
   const valorAluguel = imovel.valorAluguel ? formatValor(imovel.valorAluguel) : null;
   const fotos = imovel.fotos ?? [];
@@ -72,7 +75,7 @@ export default async function ImovelPage({ params }: { params: Promise<{ id: str
             {valorVenda && <span>Venda: {valorVenda}</span>}
             {valorAluguel && <span>Aluguel: {valorAluguel}</span>}
           </div>
-          <p className="imovel-detalhe-endereco">{endereco}</p>
+          <p className="imovel-detalhe-endereco">{enderecoTexto}</p>
           <ul className="imovel-detalhe-meta">
             {imovel.qtdQuartos != null && <li>{imovel.qtdQuartos} quartos</li>}
             {imovel.qtdBanheiros != null && <li>{imovel.qtdBanheiros} banheiros</li>}

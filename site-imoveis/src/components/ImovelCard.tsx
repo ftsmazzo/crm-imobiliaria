@@ -11,7 +11,10 @@ function formatValor(v: string | null | undefined): string {
 export default function ImovelCard({ imovel }: { imovel: ImovelPublic }) {
   const valor = imovel.valorVenda ? formatValor(imovel.valorVenda) : imovel.valorAluguel ? formatValor(imovel.valorAluguel) : '';
   const subtipo = imovel.valorVenda && imovel.valorAluguel ? 'Venda e locação' : imovel.valorVenda ? 'Venda' : 'Locação';
-  const endereco = [imovel.bairro, imovel.cidade].filter(Boolean).join(', ') || '–';
+  const exibirEndereco = imovel.exibirEnderecoSite !== false;
+  const endereco = exibirEndereco
+    ? ([imovel.bairro, imovel.cidade].filter(Boolean).join(', ') || '–')
+    : 'Consultar';
   const fotoCapa = imovel.fotos?.[0]?.url;
   return (
     <Link href={`/imoveis/${imovel.id}`} className="imovel-card">

@@ -74,6 +74,32 @@ export async function getEmpreendimentos(): Promise<Empreendimento[]> {
   return handleRes(res);
 }
 
+export async function createEmpreendimento(data: { nome: string; descricao?: string; endereco?: string }): Promise<Empreendimento> {
+  const res = await fetch(`${API_URL}/empreendimentos`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleRes(res);
+}
+
+export async function updateEmpreendimento(id: string, data: { nome?: string; descricao?: string; endereco?: string }): Promise<Empreendimento> {
+  const res = await fetch(`${API_URL}/empreendimentos/${id}`, {
+    method: 'PUT',
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleRes(res);
+}
+
+export async function deleteEmpreendimento(id: string): Promise<void> {
+  const res = await fetch(`${API_URL}/empreendimentos/${id}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  });
+  if (!res.ok) await handleRes(res);
+}
+
 // Proprietários
 export async function getProprietarios(): Promise<Proprietario[]> {
   const res = await fetch(`${API_URL}/proprietarios`, { headers: authHeaders() });

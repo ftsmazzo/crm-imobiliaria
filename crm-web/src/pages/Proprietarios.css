@@ -76,6 +76,17 @@
 }
 .proprietarios-form-section:first-child { margin-top: 0; }
 .proprietarios-form .field { margin-bottom: 1rem; }
+.proprietarios-cnpj-loading {
+  display: inline-block;
+  margin-left: 0.5rem;
+  font-size: var(--crm-text-sm);
+  color: var(--crm-text-muted);
+}
+.proprietarios-cpf-hint {
+  font-size: var(--crm-text-sm);
+  color: var(--crm-text-muted);
+  margin-top: 0.25rem;
+}
 .proprietarios-form .field label { display: block; font-size: var(--crm-text-sm); font-weight: 500; margin-bottom: 0.25rem; }
 .proprietarios-form .field input, .proprietarios-form .field textarea {
   width: 100%;

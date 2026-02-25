@@ -2,6 +2,7 @@ import { Navigate, Route, BrowserRouter, Routes } from 'react-router-dom';
 import { isLoggedIn } from './auth';
 import Contatos from './pages/Contatos';
 import Dashboard from './pages/Dashboard';
+import Empreendimentos from './pages/Empreendimentos';
 import Imoveis from './pages/Imoveis';
 import ImovelCadastro from './pages/ImovelCadastro';
 import ImovelDetalhe from './pages/ImovelDetalhe';
@@ -27,6 +28,7 @@ export default function App() {
         <Route path="/imoveis/:id/editar" element={<PrivateRoute><ImovelCadastro /></PrivateRoute>} />
         <Route path="/imoveis/:id" element={<PrivateRoute><ImovelDetalhe /></PrivateRoute>} />
         <Route path="/proprietarios" element={<PrivateRoute><Proprietarios /></PrivateRoute>} />
+        <Route path="/empreendimentos" element={<PrivateRoute><Empreendimentos /></PrivateRoute>} />
         <Route path="/tarefas" element={<PrivateRoute><Tarefas /></PrivateRoute>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

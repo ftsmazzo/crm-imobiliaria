@@ -600,6 +600,51 @@ label {
   border-top: 1px solid var(--site-border);
 }
 
+.imovel-detalhe-form .form-lead {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-width: 100%;
+}
+
+.imovel-detalhe-form .form-lead .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.imovel-detalhe-form .form-lead .form-group input,
+.imovel-detalhe-form .form-lead .form-group textarea {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--site-border);
+  border-radius: var(--site-radius);
+  font-size: 1rem;
+}
+
+.imovel-detalhe-form .form-lead .form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.imovel-detalhe-form .form-lead .btn-primary {
+  min-width: 140px;
+}
+
+@media (max-width: 640px) {
+  .imovel-detalhe-form .form-lead .form-row {
+    grid-template-columns: 1fr;
+  }
+  .imovel-detalhe-form .form-lead .form-actions {
+    justify-content: stretch;
+  }
+  .imovel-detalhe-form .form-lead .btn-primary {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
 .form-lead .form-group {
   margin-bottom: 1rem;
 }
