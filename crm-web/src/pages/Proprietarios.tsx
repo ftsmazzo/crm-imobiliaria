@@ -295,7 +295,7 @@ export default function Proprietarios() {
                         }}
                         placeholder="00.000.000/0000-00"
                       />
-                      <button type="button" className="proprietarios-cnpj-btn" onClick={buscarCnpj} disabled={cnpjLoading || (form.cnpj || '').replace(/\D/g, '').length !== 14}>
+                      <button type="button" className="proprietarios-cnpj-btn" onClick={() => buscarCnpj()} disabled={cnpjLoading || (form.cnpj || '').replace(/\D/g, '').length !== 14}>
                         {cnpjLoading ? 'Buscando...' : 'Buscar'}
                       </button>
                     </div>
