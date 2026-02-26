@@ -480,10 +480,14 @@ export default function ImovelCadastro() {
                 <label htmlFor="status">Status</label>
                 <select id="status" value={form.status} onChange={(e) => setForm((f) => ({ ...f, status: e.target.value }))}>
                   <option value="disponivel">Disponível</option>
+                  <option value="indisponivel">Indisponível</option>
                   <option value="reservado">Reservado</option>
                   <option value="vendido">Vendido</option>
                   <option value="alugado">Alugado</option>
                 </select>
+                <p className="hint">
+                  <strong>Indisponível:</strong> retira o imóvel do site e deixa só no CRM (não exclui). Use quando o proprietário quiser &quot;congelar&quot; a venda temporariamente.
+                </p>
               </div>
             </section>
           )}

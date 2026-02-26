@@ -142,7 +142,7 @@ function toNumber(val: string | undefined): number | undefined {
 
 /** Valores aceitos para tipo e status (normalizados). */
 const TIPOS_VALIDOS = new Set(['apartamento', 'casa', 'terreno', 'comercial']);
-const STATUS_VALIDOS = new Set(['disponivel', 'reservado', 'vendido', 'alugado']);
+const STATUS_VALIDOS = new Set(['disponivel', 'indisponivel', 'reservado', 'vendido', 'alugado']);
 
 export type ResultadoParse = {
   rows: ImovelCsvRow[];
@@ -190,7 +190,7 @@ export function parseCsvImoveis(csvText: string): ResultadoParse {
       errosLinha.push({ linha: i + 1, mensagem: `Tipo inválido: ${row.tipo}. Use: apartamento, casa, terreno, comercial` });
     }
     if (row.status !== undefined && row.status !== '' && !STATUS_VALIDOS.has(status)) {
-      errosLinha.push({ linha: i + 1, mensagem: `Status inválido: ${row.status}. Use: disponivel, reservado, vendido, alugado` });
+      errosLinha.push({ linha: i + 1, mensagem: `Status inválido: ${row.status}. Use: disponivel, indisponivel, reservado, vendido, alugado` });
     }
 
     const imovel: ImovelCsvRow = {

@@ -18,6 +18,14 @@ function formatValor(v: number | string | null | undefined): string {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(n);
 }
 
+const STATUS_LABEL: Record<string, string> = {
+  disponivel: 'Disponível',
+  indisponivel: 'Indisponível',
+  reservado: 'Reservado',
+  vendido: 'Vendido',
+  alugado: 'Alugado',
+};
+
 export default function Imoveis() {
   const navigate = useNavigate();
   const [lista, setLista] = useState<Imovel[]>([]);
@@ -155,7 +163,7 @@ export default function Imoveis() {
               <div key={i.id} className="imovel-card">
                 <div className="imovel-card-header">
                   <span className="imovel-card-tipo">{i.tipo}</span>
-                  <span className={`imovel-card-status ${i.status}`}>{i.status}</span>
+                  <span className={`imovel-card-status ${i.status}`}>{STATUS_LABEL[i.status] ?? i.status}</span>
                 </div>
                 <div className="imovel-card-endereco">
                   {[i.rua, i.numero, i.bairro, i.cidade].filter(Boolean).join(', ') || i.codigo || 'Sem endereço'}

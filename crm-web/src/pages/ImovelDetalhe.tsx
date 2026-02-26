@@ -16,6 +16,7 @@ const TIPO_LABELS: Record<string, string> = {
 
 const STATUS_LABELS: Record<string, string> = {
   disponivel: 'Disponível',
+  indisponivel: 'Indisponível',
   reservado: 'Reservado',
   vendido: 'Vendido',
   alugado: 'Alugado',
