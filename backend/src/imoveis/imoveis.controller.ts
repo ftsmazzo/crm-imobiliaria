@@ -52,7 +52,7 @@ export class ImoveisController {
     @Query('tipo') tipo?: string,
     @Query('status') status?: string,
   ) {
-    return this.service.findAll(cidade, bairro, tipo, status, user);
+    return this.service.findAll(cidade, bairro, tipo, status, undefined, user);
   }
 
   @Get(':id')
