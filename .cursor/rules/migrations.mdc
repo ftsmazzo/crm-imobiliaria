@@ -5,6 +5,6 @@ globs: backend/prisma/**/*
 
 # Migrations do Prisma
 
-- **As migrations devem ir pela implantação (deploy).** Não crie arquivos de migration manualmente (pastas em `backend/prisma/migrations/` com `migration.sql`).
-- **Altere apenas o `schema.prisma`** quando precisar de novo campo, tabela ou alteração no banco. A geração e aplicação da migration fica a cargo do processo de implantação (ex.: pipeline ou comando na hora do deploy).
-- Não execute `prisma migrate dev` nem crie migrations à mão no projeto; isso evita divergência com o ambiente de implantação.
+- **Alterações no banco:** altere o `schema.prisma` e **inclua o arquivo de migration** correspondente em `backend/prisma/migrations/<nome>/migration.sql`, para que o deploy (ex.: `prisma migrate deploy`) aplique as mudanças no banco.
+- **A aplicação das migrations deve ocorrer na implantação** (pipeline/deploy), não localmente. Não execute `prisma migrate dev` nem aplique migrations manualmente no seu ambiente; o deploy é que roda `prisma migrate deploy` (ou equivalente).
+- Sem o arquivo de migration no repositório, o banco em produção não recebe a coluna/tabela e o backend quebra (ex.: "column does not exist").
