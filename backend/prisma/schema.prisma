@@ -90,6 +90,7 @@ model Imovel {
   valorIptu             Decimal?  @map("valor_iptu") @db.Decimal(14, 2)
   valorCondominio       Decimal?  @map("valor_condominio") @db.Decimal(14, 2)
   status                String    @default("disponivel")
+  destaque              Boolean?  @default(false) // em destaque na página inicial do site
   codigo                String?
   quadra                String?
   lote                  String?

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getImoveis, createImovel, deleteImovel } from '../api';
+import { getImoveis, createImovel, deleteImovel, updateImovel } from '../api';
 import type { Imovel } from '../types';
 import {
   parseCsvImoveis,
@@ -36,6 +36,7 @@ export default function Imoveis() {
   const [importResult, setImportResult] = useState<ResultadoParse | null>(null);
   const [importing, setImporting] = useState(false);
   const [importProgress, setImportProgress] = useState({ current: 0, total: 0, ok: 0, errors: 0 });
+  const [togglingDestaque, setTogglingDestaque] = useState<string | null>(null);
 
   async function load() {
     setLoading(true);
@@ -47,6 +48,20 @@ export default function Imoveis() {
       setErro(e instanceof Error ? e.message : 'Erro ao carregar');
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function toggleDestaque(imovel: Imovel) {
+    setTogglingDestaque(imovel.id);
+    try {
+      await updateImovel(imovel.id, { destaque: !imovel.destaque });
+      setLista((prev) =>
+        prev.map((x) => (x.id === imovel.id ? { ...x, destaque: !x.destaque } : x)),
+      );
+    } catch (e) {
+      setErro(e instanceof Error ? e.message : 'Erro ao atualizar destaque');
+    } finally {
+      setTogglingDestaque(null);
     }
   }
 
@@ -164,6 +179,15 @@ export default function Imoveis() {
                 <div className="imovel-card-header">
                   <span className="imovel-card-tipo">{i.tipo}</span>
                   <span className={`imovel-card-status ${i.status}`}>{STATUS_LABEL[i.status] ?? i.status}</span>
+                  <button
+                    type="button"
+                    className={`imovel-card-destaque ${i.destaque ? 'active' : ''}`}
+                    onClick={(e) => { e.stopPropagation(); toggleDestaque(i); }}
+                    disabled={togglingDestaque === i.id}
+                    title={i.destaque ? 'Remover do destaque (página inicial)' : 'Colocar em destaque (página inicial)'}
+                  >
+                    {i.destaque ? '★ Destaque' : '☆ Destaque'}
+                  </button>
                 </div>
                 <div className="imovel-card-endereco">
                   {[i.rua, i.numero, i.bairro, i.cidade].filter(Boolean).join(', ') || i.codigo || 'Sem endereço'}

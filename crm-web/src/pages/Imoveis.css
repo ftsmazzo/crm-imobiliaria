@@ -85,11 +85,41 @@
 
 .imovel-card-header {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
+  gap: 0.5rem;
   padding: 1rem 1.25rem 0.75rem;
   background: linear-gradient(180deg, rgba(13, 148, 136, 0.06) 0%, transparent 100%);
   border-bottom: 1px solid var(--crm-border);
+}
+
+.imovel-card-destaque {
+  padding: 0.25rem 0.5rem;
+  font-size: var(--crm-text-xs);
+  font-weight: var(--crm-font-medium);
+  color: var(--crm-text-muted);
+  background: var(--crm-surface);
+  border: 1px solid var(--crm-border);
+  border-radius: var(--crm-radius);
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.imovel-card-destaque:hover:not(:disabled) {
+  border-color: var(--crm-accent);
+  color: var(--crm-accent);
+}
+
+.imovel-card-destaque.active {
+  border-color: var(--crm-accent);
+  background: var(--crm-accent-light);
+  color: var(--crm-accent-hover);
+}
+
+.imovel-card-destaque:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 .imovel-card-tipo {

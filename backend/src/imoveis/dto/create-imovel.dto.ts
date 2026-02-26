@@ -49,6 +49,10 @@ export class CreateImovelDto {
   status?: string;
 
   @IsOptional()
+  @IsBoolean()
+  destaque?: boolean;
+
+  @IsOptional()
   @IsString()
   codigo?: string;
 

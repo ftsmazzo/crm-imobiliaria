@@ -3,8 +3,11 @@ import { getImoveis } from '@/lib/api';
 import ImovelCard from '@/components/ImovelCard';
 
 export default async function Home() {
-  const imoveis = await getImoveis({ status: 'disponivel' });
-  const destaque = imoveis.slice(0, 6);
+  // Sem cache: lista sempre atualizada (excluídos não aparecem)
+  const destaque = await getImoveis(
+    { status: 'disponivel', destaque: true },
+    { cache: 'no-store' },
+  );
 
   return (
     <>
@@ -21,7 +24,9 @@ export default async function Home() {
       <section className="container" style={{ marginTop: '3rem' }}>
         <h2 style={{ marginBottom: '1.5rem' }}>Imóveis em destaque</h2>
         {destaque.length === 0 ? (
-          <p style={{ color: 'var(--site-muted)' }}>Nenhum imóvel disponível no momento.</p>
+          <p style={{ color: 'var(--site-muted)' }}>
+            Nenhum imóvel em destaque no momento. <Link href="/imoveis">Ver todos os imóveis</Link>
+          </p>
         ) : (
           <div className="imovel-grid">
             {destaque.map((i) => (
@@ -29,13 +34,11 @@ export default async function Home() {
             ))}
           </div>
         )}
-        {imoveis.length > 6 && (
-          <p style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-            <Link href="/imoveis" className="btn btn-outline">
-              Ver todos os imóveis
-            </Link>
-          </p>
-        )}
+        <p style={{ marginTop: '1.5rem', textAlign: 'center' }}>
+          <Link href="/imoveis" className="btn btn-outline">
+            Ver todos os imóveis
+          </Link>
+        </p>
       </section>
     </>
   );

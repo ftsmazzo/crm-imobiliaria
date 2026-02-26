@@ -1,0 +1,10 @@
+---
+description: Regra sobre migrations do Prisma neste projeto
+globs: backend/prisma/**/*
+---
+
+# Migrations do Prisma
+
+- **As migrations devem ir pela implantação (deploy).** Não crie arquivos de migration manualmente (pastas em `backend/prisma/migrations/` com `migration.sql`).
+- **Altere apenas o `schema.prisma`** quando precisar de novo campo, tabela ou alteração no banco. A geração e aplicação da migration fica a cargo do processo de implantação (ex.: pipeline ou comando na hora do deploy).
+- Não execute `prisma migrate dev` nem crie migrations à mão no projeto; isso evita divergência com o ambiente de implantação.

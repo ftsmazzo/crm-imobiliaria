@@ -6,7 +6,7 @@ import FormInteresse from './FormInteresse';
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   try {
-    const imovel = await getImovel(id);
+    const imovel = await getImovel(id, { cache: 'no-store' });
     const titulo = [imovel.tipo, imovel.bairro, imovel.cidade].filter(Boolean).join(' - ') || 'Imóvel';
     return { title: titulo };
   } catch {
@@ -47,8 +47,9 @@ export default async function ImovelPage({ params }: { params: Promise<{ id: str
   const { id } = await params;
   let imovel;
   try {
-    imovel = await getImovel(id);
+    imovel = await getImovel(id, { cache: 'no-store' });
   } catch {
+    // 404 (não encontrado) ou 400 (id inválido): exibir página não encontrada
     notFound();
   }
 

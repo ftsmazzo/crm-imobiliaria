@@ -61,6 +61,7 @@ export type Imovel = {
   valorIptu?: number | string | null;
   valorCondominio?: number | string | null;
   status: string;
+  destaque?: boolean | null;
   codigo: string | null;
   quadra: string | null;
   lote: string | null;

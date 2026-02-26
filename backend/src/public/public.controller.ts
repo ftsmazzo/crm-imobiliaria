@@ -23,8 +23,16 @@ export class PublicController {
     @Query('bairro') bairro?: string,
     @Query('tipo') tipo?: string,
     @Query('status') status?: string,
+    @Query('destaque') destaque?: string,
   ) {
-    const lista = await this.imoveis.findAll(cidade, bairro, tipo, status ?? 'disponivel');
+    const lista = await this.imoveis.findAll(
+      cidade,
+      bairro,
+      tipo,
+      status ?? 'disponivel',
+      destaque === 'true' ? true : undefined,
+      undefined,
+    );
     const result = await Promise.all(
       lista.map(async (i) => {
         let fotos: { id: string; url: string }[] = [];

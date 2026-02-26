@@ -44,25 +44,41 @@ export type LeadPayload = {
   origem?: string;
 };
 
-export async function getImoveis(params?: {
-  cidade?: string;
-  bairro?: string;
-  tipo?: string;
-  status?: string;
-}): Promise<ImovelPublic[]> {
+export type GetImoveisOptions = {
+  /** No Next.js: evita cache (ex.: página inicial sempre atualizada) */
+  cache?: RequestCache;
+  next?: { revalidate?: number };
+};
+
+export async function getImoveis(
+  params?: {
+    cidade?: string;
+    bairro?: string;
+    tipo?: string;
+    status?: string;
+    destaque?: boolean;
+  },
+  options?: GetImoveisOptions,
+): Promise<ImovelPublic[]> {
   const q = new URLSearchParams();
   if (params?.cidade) q.set('cidade', params.cidade);
   if (params?.bairro) q.set('bairro', params.bairro);
   if (params?.tipo) q.set('tipo', params.tipo);
   if (params?.status) q.set('status', params.status);
+  if (params?.destaque === true) q.set('destaque', 'true');
   const query = q.toString() ? `?${q}` : '';
-  const res = await fetch(`${API_URL}/api/public/imoveis${query}`);
+  const res = await fetch(`${API_URL}/api/public/imoveis${query}`, {
+    ...(options?.cache && { cache: options.cache }),
+    ...(options?.next && { next: options.next }),
+  });
   if (!res.ok) throw new Error('Erro ao carregar imóveis');
   return res.json();
 }
 
-export async function getImovel(id: string): Promise<ImovelPublic> {
-  const res = await fetch(`${API_URL}/api/public/imoveis/${id}`);
+export async function getImovel(id: string, options?: { cache?: RequestCache }): Promise<ImovelPublic> {
+  const res = await fetch(`${API_URL}/api/public/imoveis/${id}`, {
+    ...(options?.cache && { cache: options.cache }),
+  });
   if (!res.ok) {
     if (res.status === 404) throw new Error('Imóvel não encontrado');
     throw new Error('Erro ao carregar imóvel');

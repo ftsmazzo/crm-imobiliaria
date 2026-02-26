@@ -27,6 +27,7 @@ export class ImoveisService {
         valorIptu: dto.valorIptu != null ? dto.valorIptu : undefined,
         valorCondominio: dto.valorCondominio != null ? dto.valorCondominio : undefined,
         status: dto.status ?? 'disponivel',
+        destaque: dto.destaque ?? false,
         codigo: dto.codigo,
         quadra: dto.quadra,
         lote: dto.lote,
@@ -66,6 +67,7 @@ export class ImoveisService {
     bairro?: string,
     tipo?: string,
     status?: string,
+    destaque?: boolean,
     user?: Usuario,
   ) {
     const where: Prisma.ImovelWhereInput = {};
@@ -73,6 +75,7 @@ export class ImoveisService {
     if (bairro) where.bairro = { contains: bairro, mode: 'insensitive' };
     if (tipo) where.tipo = tipo;
     if (status) where.status = status;
+    if (destaque === true) where.destaque = true;
     if (user?.role === 'corretor') {
       where.usuarioResponsavelId = user.id;
     }
@@ -122,6 +125,7 @@ export class ImoveisService {
       ...(dto.valorIptu !== undefined && { valorIptu: dto.valorIptu }),
       ...(dto.valorCondominio !== undefined && { valorCondominio: dto.valorCondominio }),
       ...(dto.status !== undefined && { status: dto.status }),
+      ...(dto.destaque !== undefined && { destaque: dto.destaque }),
       ...(dto.codigo !== undefined && { codigo: dto.codigo }),
       ...(dto.quadra !== undefined && { quadra: dto.quadra }),
       ...(dto.lote !== undefined && { lote: dto.lote }),

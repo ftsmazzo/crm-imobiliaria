@@ -65,6 +65,7 @@ const emptyForm = (): FormState => ({
   valorIptu: undefined,
   valorCondominio: undefined,
   status: 'disponivel',
+  destaque: 0,
   codigo: '',
   quadra: '',
   lote: '',
@@ -160,6 +161,7 @@ export default function ImovelCadastro() {
             valorIptu: i.valorIptu != null ? Number(i.valorIptu) : undefined,
             valorCondominio: i.valorCondominio != null ? Number(i.valorCondominio) : undefined,
             status: i.status,
+            destaque: i.destaque ? 1 : 0,
             codigo: i.codigo ?? '',
             quadra: i.quadra ?? '',
             lote: i.lote ?? '',
@@ -239,6 +241,7 @@ export default function ImovelCadastro() {
       valorIptu: form.valorIptu != null ? Number(form.valorIptu) : undefined,
       valorCondominio: form.valorCondominio != null ? Number(form.valorCondominio) : undefined,
       status: String(form.status),
+      destaque: Boolean(form.destaque),
       codigo: form.codigo != null ? String(form.codigo) : undefined,
       quadra: form.quadra ? String(form.quadra) : undefined,
       lote: form.lote ? String(form.lote) : undefined,
@@ -488,6 +491,14 @@ export default function ImovelCadastro() {
                 <p className="hint">
                   <strong>Indisponível:</strong> retira o imóvel do site e deixa só no CRM (não exclui). Use quando o proprietário quiser &quot;congelar&quot; a venda temporariamente.
                 </p>
+              </div>
+              <div className="field">
+                <label>Em destaque na página inicial do site?</label>
+                <div className="imovel-cadastro-tipos imovel-cadastro-tipos-toggle">
+                  <button type="button" className={form.destaque ? 'active' : ''} onClick={() => setForm((f) => ({ ...f, destaque: 1 }))}>Sim</button>
+                  <button type="button" className={!form.destaque ? 'active' : ''} onClick={() => setForm((f) => ({ ...f, destaque: 0 }))}>Não</button>
+                </div>
+                <p className="hint">Apenas imóveis marcados como &quot;Em destaque&quot; aparecem na página inicial do site.</p>
               </div>
             </section>
           )}
