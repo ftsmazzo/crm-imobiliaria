@@ -1,19 +1,29 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getContatos, updateContato } from '../api';
+import { getContatos, getTarefas, updateContato } from '../api';
 import type { Contato, Estagio } from '../types';
 import { ESTAGIOS } from '../types';
 import AppLayout from '../components/AppLayout';
 import './Pipeline.css';
 
+function formatTelefone(t: string | null): string {
+  if (!t || !t.trim()) return '';
+  const d = t.replace(/\D/g, '');
+  if (d.length === 11) return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+  if (d.length === 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
+  return t;
+}
+
 function PipelineCard({
   c,
+  tarefasPendentes,
   onMudarEstagio,
   onDragStart,
   onDragEnd,
   isDragging,
 }: {
   c: Contato;
+  tarefasPendentes: number;
   onMudarEstagio: (c: Contato, e: string) => void;
   onDragStart: (e: React.DragEvent, contato: Contato) => void;
   onDragEnd: () => void;
@@ -23,7 +33,7 @@ function PipelineCard({
   const [showResumo, setShowResumo] = useState(false);
   return (
     <div
-      className={`pipeline-card ${isDragging ? 'pipeline-card-dragging' : ''}`}
+      className={`pipeline-card ${isDragging ? 'pipeline-card-dragging' : ''} ${showResumo ? 'pipeline-card-resumo-open' : ''}`}
       draggable
       onDragStart={(e) => {
         const t = e.target as HTMLElement;
@@ -37,11 +47,24 @@ function PipelineCard({
       onMouseEnter={() => setShowResumo(true)}
       onMouseLeave={() => setShowResumo(false)}
     >
-      <div className="pipeline-card-nome">{c.nome}</div>
-      <div className="pipeline-card-email">{c.email}</div>
+      <div className="pipeline-card-main">
+        <div className="pipeline-card-nome">{c.nome}</div>
+        <div className="pipeline-card-email">{c.email}</div>
+        {c.telefone && (
+          <div className="pipeline-card-tel">{formatTelefone(c.telefone)}</div>
+        )}
+        {c.origem && (
+          <div className="pipeline-card-origem">Origem: {c.origem}</div>
+        )}
+        {tarefasPendentes > 0 && (
+          <div className="pipeline-card-tarefas">
+            {tarefasPendentes} {tarefasPendentes === 1 ? 'tarefa pendente' : 'tarefas pendentes'}
+          </div>
+        )}
+      </div>
       {showResumo && (
         <div className="pipeline-card-resumo" role="tooltip">
-          {c.telefone && <p><strong>Telefone:</strong> {c.telefone}</p>}
+          {c.telefone && <p><strong>Telefone:</strong> {formatTelefone(c.telefone)}</p>}
           {c.origem && <p><strong>Origem:</strong> {c.origem}</p>}
           {c.observacoes && <p><strong>Observações:</strong> {c.observacoes}</p>}
           {!c.telefone && !c.origem && !c.observacoes && <p className="pipeline-card-resumo-vazio">Sem dados adicionais</p>}
@@ -82,6 +105,7 @@ const ESTAGIO_LABEL: Record<Estagio, string> = {
 
 export default function Pipeline() {
   const [contatos, setContatos] = useState<Contato[]>([]);
+  const [tarefasPendentesPorContato, setTarefasPendentesPorContato] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState('');
   const [draggingContatoId, setDraggingContatoId] = useState<string | null>(null);
@@ -91,8 +115,19 @@ export default function Pipeline() {
     setLoading(true);
     setErro('');
     try {
-      const data = await getContatos();
-      setContatos(data);
+      const [contatosData, tarefasData] = await Promise.all([
+        getContatos(),
+        getTarefas(),
+      ]);
+      setContatos(contatosData);
+      const pendentes: Record<string, number> = {};
+      tarefasData
+        .filter((t) => t.contatoId && !t.concluida)
+        .forEach((t) => {
+          const id = t.contatoId!;
+          pendentes[id] = (pendentes[id] ?? 0) + 1;
+        });
+      setTarefasPendentesPorContato(pendentes);
     } catch (e) {
       setErro(e instanceof Error ? e.message : 'Erro ao carregar');
     } finally {
@@ -183,6 +218,7 @@ export default function Pipeline() {
                   <PipelineCard
                     key={c.id}
                     c={c}
+                    tarefasPendentes={tarefasPendentesPorContato[c.id] ?? 0}
                     onMudarEstagio={handleMudarEstagio}
                     onDragStart={handleDragStart}
                     onDragEnd={handleDragEnd}
@@ -212,6 +248,7 @@ export default function Pipeline() {
                   <PipelineCard
                     key={c.id}
                     c={c}
+                    tarefasPendentes={tarefasPendentesPorContato[c.id] ?? 0}
                     onMudarEstagio={handleMudarEstagio}
                     onDragStart={handleDragStart}
                     onDragEnd={handleDragEnd}
