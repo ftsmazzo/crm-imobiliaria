@@ -56,11 +56,11 @@ function PipelineCard({
         {c.origem && (
           <div className="pipeline-card-origem">Origem: {c.origem}</div>
         )}
-        {tarefasPendentes > 0 && (
-          <div className="pipeline-card-tarefas">
-            {tarefasPendentes} {tarefasPendentes === 1 ? 'tarefa pendente' : 'tarefas pendentes'}
-          </div>
-        )}
+        <div className={`pipeline-card-tarefas ${tarefasPendentes > 0 ? 'pipeline-card-tarefas-pendentes' : ''}`}>
+          {tarefasPendentes === 0 && 'Nenhuma tarefa pendente'}
+          {tarefasPendentes === 1 && '1 tarefa pendente'}
+          {tarefasPendentes > 1 && `${tarefasPendentes} tarefas pendentes`}
+        </div>
       </div>
       {showResumo && (
         <div className="pipeline-card-resumo" role="tooltip">
