@@ -122,5 +122,5 @@ export type Tarefa = {
   imovel?: { id: string; codigo: string | null } | null;
 };
 
-export const ESTAGIOS = ['novo', 'qualificado', 'visita', 'proposta', 'fechado'] as const;
+export const ESTAGIOS = ['novo', 'lead', 'qualificado', 'visita', 'proposta', 'fechado'] as const;
 export type Estagio = (typeof ESTAGIOS)[number];

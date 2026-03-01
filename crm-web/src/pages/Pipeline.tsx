@@ -6,12 +6,34 @@ import { ESTAGIOS } from '../types';
 import AppLayout from '../components/AppLayout';
 import './Pipeline.css';
 
-function PipelineCard({ c, onMudarEstagio }: { c: Contato; onMudarEstagio: (c: Contato, e: string) => void }) {
+function PipelineCard({
+  c,
+  onMudarEstagio,
+  onDragStart,
+  onDragEnd,
+  isDragging,
+}: {
+  c: Contato;
+  onMudarEstagio: (c: Contato, e: string) => void;
+  onDragStart: (e: React.DragEvent, contato: Contato) => void;
+  onDragEnd: () => void;
+  isDragging: boolean;
+}) {
   const navigate = useNavigate();
   const [showResumo, setShowResumo] = useState(false);
   return (
     <div
-      className="pipeline-card"
+      className={`pipeline-card ${isDragging ? 'pipeline-card-dragging' : ''}`}
+      draggable
+      onDragStart={(e) => {
+        const t = e.target as HTMLElement;
+        if (t.closest('button') || t.closest('select')) {
+          e.preventDefault();
+          return;
+        }
+        onDragStart(e, c);
+      }}
+      onDragEnd={onDragEnd}
       onMouseEnter={() => setShowResumo(true)}
       onMouseLeave={() => setShowResumo(false)}
     >
@@ -51,6 +73,7 @@ function PipelineCard({ c, onMudarEstagio }: { c: Contato; onMudarEstagio: (c: C
 
 const ESTAGIO_LABEL: Record<Estagio, string> = {
   novo: 'Novo',
+  lead: 'Lead',
   qualificado: 'Qualificado',
   visita: 'Visita',
   proposta: 'Proposta',
@@ -61,6 +84,8 @@ export default function Pipeline() {
   const [contatos, setContatos] = useState<Contato[]>([]);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState('');
+  const [draggingContatoId, setDraggingContatoId] = useState<string | null>(null);
+  const [dragOverEstagio, setDragOverEstagio] = useState<string | null>(null);
 
   async function load() {
     setLoading(true);
@@ -90,26 +115,108 @@ export default function Pipeline() {
     }
   }
 
+  function handleDragStart(e: React.DragEvent, contato: Contato) {
+    e.dataTransfer.setData('application/json', JSON.stringify({ contatoId: contato.id }));
+    e.dataTransfer.effectAllowed = 'move';
+    setDraggingContatoId(contato.id);
+  }
+
+  function handleDragEnd() {
+    setDraggingContatoId(null);
+    setDragOverEstagio(null);
+  }
+
+  function handleDragOver(e: React.DragEvent, estagio: string) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDragOverEstagio(estagio);
+  }
+
+  function handleDragLeave() {
+    setDragOverEstagio(null);
+  }
+
+  function handleDrop(e: React.DragEvent, estagioAlvo: string) {
+    e.preventDefault();
+    setDragOverEstagio(null);
+    setDraggingContatoId(null);
+    try {
+      const data = JSON.parse(e.dataTransfer.getData('application/json') || '{}');
+      const contatoId = data.contatoId as string | undefined;
+      if (!contatoId) return;
+      const contato = contatos.find((c) => c.id === contatoId);
+      if (!contato || contato.estagio === estagioAlvo) return;
+      handleMudarEstagio(contato, estagioAlvo);
+    } catch {
+      // ignore invalid drop data
+    }
+  }
+
   if (loading) return <AppLayout><div className="pipeline-loading">Carregando...</div></AppLayout>;
   if (erro && contatos.length === 0) return <AppLayout><div className="pipeline-erro">{erro}</div></AppLayout>;
 
   const porEstagio = (estagio: string) => contatos.filter((c) => c.estagio === estagio);
+  const estagiosLinha1 = ESTAGIOS.slice(0, 3); // Novo, Lead, Qualificado
+  const estagiosLinha2 = ESTAGIOS.slice(3, 6); // Visita, Proposta, Fechado
 
   return (
     <AppLayout>
       <div className="pipeline-page">
         <h1>Pipeline</h1>
-        <p className="lead">Leads por estágio. Altere o estágio no card para mover.</p>
-        <div className="pipeline-board">
-          {ESTAGIOS.map((estagio) => (
-            <div key={estagio} className="pipeline-col">
+        <p className="lead">Arraste os cards entre colunas para mudar o estágio.</p>
+        <div className="pipeline-board pipeline-board-top">
+          {estagiosLinha1.map((estagio) => (
+            <div
+              key={estagio}
+              className={`pipeline-col ${dragOverEstagio === estagio ? 'pipeline-col-drag-over' : ''}`}
+              data-estagio={estagio}
+              onDragOver={(e) => handleDragOver(e, estagio)}
+              onDragLeave={handleDragLeave}
+              onDrop={(e) => handleDrop(e, estagio)}
+            >
               <div className="pipeline-col-header">
                 <span>{ESTAGIO_LABEL[estagio]}</span>
                 <span className="pipeline-col-count">{porEstagio(estagio).length}</span>
               </div>
               <div className="pipeline-cards">
                 {porEstagio(estagio).map((c) => (
-                  <PipelineCard key={c.id} c={c} onMudarEstagio={handleMudarEstagio} />
+                  <PipelineCard
+                    key={c.id}
+                    c={c}
+                    onMudarEstagio={handleMudarEstagio}
+                    onDragStart={handleDragStart}
+                    onDragEnd={handleDragEnd}
+                    isDragging={draggingContatoId === c.id}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="pipeline-board pipeline-board-bottom">
+          {estagiosLinha2.map((estagio) => (
+            <div
+              key={estagio}
+              className={`pipeline-col ${dragOverEstagio === estagio ? 'pipeline-col-drag-over' : ''}`}
+              data-estagio={estagio}
+              onDragOver={(e) => handleDragOver(e, estagio)}
+              onDragLeave={handleDragLeave}
+              onDrop={(e) => handleDrop(e, estagio)}
+            >
+              <div className="pipeline-col-header">
+                <span>{ESTAGIO_LABEL[estagio]}</span>
+                <span className="pipeline-col-count">{porEstagio(estagio).length}</span>
+              </div>
+              <div className="pipeline-cards">
+                {porEstagio(estagio).map((c) => (
+                  <PipelineCard
+                    key={c.id}
+                    c={c}
+                    onMudarEstagio={handleMudarEstagio}
+                    onDragStart={handleDragStart}
+                    onDragEnd={handleDragEnd}
+                    isDragging={draggingContatoId === c.id}
+                  />
                 ))}
               </div>
             </div>

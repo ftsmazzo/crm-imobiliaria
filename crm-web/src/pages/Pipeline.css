@@ -14,9 +14,17 @@
 
 .pipeline-board {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 1rem;
-  min-height: 420px;
+  min-height: 320px;
+}
+
+.pipeline-board-top {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: 1rem;
+}
+
+.pipeline-board-bottom {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .pipeline-col {
@@ -71,6 +79,19 @@
 .pipeline-card:hover {
   box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
   transform: translateY(-1px);
+}
+
+.pipeline-card-dragging {
+  opacity: 0.6;
+  cursor: grabbing;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.15);
+}
+
+.pipeline-col-drag-over {
+  background: var(--crm-accent-light);
+  border-color: var(--crm-accent);
+  outline: 2px dashed var(--crm-accent);
+  outline-offset: 2px;
 }
 
 .pipeline-card-resumo {
@@ -165,13 +186,17 @@
 }
 
 @media (max-width: 900px) {
-  .pipeline-board {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .pipeline-board-top {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .pipeline-board-bottom {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 600px) {
-  .pipeline-board {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .pipeline-board-top,
+  .pipeline-board-bottom {
+    grid-template-columns: 1fr;
   }
 }
