@@ -19,4 +19,8 @@ export class CreateTarefaDto {
   @IsOptional()
   @IsUUID()
   imovelId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  usuarioId?: string; // gestor pode atribuir a outro usuário
 }

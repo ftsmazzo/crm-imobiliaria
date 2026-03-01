@@ -30,6 +30,13 @@ export async function login(email: string, senha: string) {
   return handleRes(res);
 }
 
+export type UsuarioListItem = { id: string; nome: string };
+
+export async function getUsuarios(): Promise<UsuarioListItem[]> {
+  const res = await fetch(`${API_URL}/auth/usuarios`, { headers: authHeaders() });
+  return handleRes(res);
+}
+
 // Contatos
 export async function getContatos(estagio?: string): Promise<Contato[]> {
   const q = estagio ? `?estagio=${encodeURIComponent(estagio)}` : '';
@@ -235,7 +242,14 @@ export async function getTarefas(params?: { usuarioId?: string; dataPrevista?: s
   return handleRes(res);
 }
 
-export async function createTarefa(data: { titulo: string; descricao?: string; dataPrevista?: string; contatoId?: string; imovelId?: string }): Promise<Tarefa> {
+export async function createTarefa(data: {
+  titulo: string;
+  descricao?: string;
+  dataPrevista?: string;
+  contatoId?: string;
+  imovelId?: string;
+  usuarioId?: string;
+}): Promise<Tarefa> {
   const res = await fetch(`${API_URL}/tarefas`, {
     method: 'POST',
     headers: authHeaders(),

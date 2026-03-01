@@ -9,15 +9,19 @@ import { UpdateTarefaDto } from './dto/update-tarefa.dto';
 export class TarefasService {
   constructor(private prisma: PrismaService) {}
 
-  async create(usuarioId: string, dto: CreateTarefaDto) {
+  async create(user: Usuario, dto: CreateTarefaDto) {
+    const usuarioId =
+      user.role === 'gestor' && dto.usuarioId
+        ? dto.usuarioId
+        : user.id;
     return this.prisma.tarefa.create({
       data: {
         titulo: dto.titulo,
         descricao: dto.descricao,
         dataPrevista: dto.dataPrevista ? new Date(dto.dataPrevista) : undefined,
         usuarioId,
-        contatoId: dto.contatoId,
-        imovelId: dto.imovelId,
+        contatoId: dto.contatoId ?? undefined,
+        imovelId: dto.imovelId ?? undefined,
       },
     });
   }

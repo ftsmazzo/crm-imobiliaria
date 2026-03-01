@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { Usuario } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { LoginDto } from './dto/login.dto';
 
@@ -10,6 +11,20 @@ export class AuthService {
     private prisma: PrismaService,
     private jwt: JwtService,
   ) {}
+
+  async getUsuarios(currentUser: Usuario): Promise<{ id: string; nome: string }[]> {
+    if (currentUser.role === 'gestor') {
+      return this.prisma.usuario.findMany({
+        where: { ativo: true },
+        select: { id: true, nome: true },
+        orderBy: { nome: 'asc' },
+      });
+    }
+    return this.prisma.usuario.findMany({
+      where: { id: currentUser.id, ativo: true },
+      select: { id: true, nome: true },
+    });
+  }
 
   async login(dto: LoginDto) {
     const usuario = await this.prisma.usuario.findUnique({

@@ -11,7 +11,7 @@ export class TarefasController {
 
   @Post()
   create(@CurrentUser() user: Usuario, @Body() dto: CreateTarefaDto) {
-    return this.service.create(user.id, dto);
+    return this.service.create(user, dto);
   }
 
   @Get()

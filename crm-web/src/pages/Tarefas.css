@@ -148,6 +148,41 @@
   border: 1px solid var(--crm-border);
 }
 
+.tarefas-modal-wide {
+  max-width: 480px;
+}
+
+.tarefas-form select {
+  padding: var(--crm-space-3) var(--crm-space-4);
+  border: 1px solid var(--crm-border);
+  border-radius: var(--crm-radius);
+  font-size: var(--crm-text-base);
+  background: var(--crm-surface);
+}
+
+.tarefas-filtros {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.tarefas-filtro-select {
+  padding: 0.5rem 0.75rem;
+  font-size: var(--crm-text-sm);
+  border: 1px solid var(--crm-border);
+  border-radius: var(--crm-radius);
+  background: var(--crm-surface);
+  color: var(--crm-text);
+}
+
+.tarefas-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
 .tarefas-modal h2 {
   margin: 0 0 1.25rem;
   font-size: 1.25rem;

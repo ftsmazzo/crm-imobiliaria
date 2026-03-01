@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getContatos, updateContato } from '../api';
 import type { Contato, Estagio } from '../types';
 import { ESTAGIOS } from '../types';
@@ -6,6 +7,7 @@ import AppLayout from '../components/AppLayout';
 import './Pipeline.css';
 
 function PipelineCard({ c, onMudarEstagio }: { c: Contato; onMudarEstagio: (c: Contato, e: string) => void }) {
+  const navigate = useNavigate();
   const [showResumo, setShowResumo] = useState(false);
   return (
     <div
@@ -23,16 +25,26 @@ function PipelineCard({ c, onMudarEstagio }: { c: Contato; onMudarEstagio: (c: C
           {!c.telefone && !c.origem && !c.observacoes && <p className="pipeline-card-resumo-vazio">Sem dados adicionais</p>}
         </div>
       )}
-      <select
-        className="pipeline-card-select"
-        value={c.estagio}
-        onChange={(ev) => onMudarEstagio(c, ev.target.value)}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {ESTAGIOS.map((e) => (
-          <option key={e} value={e}>{ESTAGIO_LABEL[e]}</option>
-        ))}
-      </select>
+      <div className="pipeline-card-actions">
+        <button
+          type="button"
+          className="pipeline-card-btn-tarefa"
+          onClick={(e) => { e.stopPropagation(); navigate(`/tarefas?contatoId=${c.id}`); }}
+          title="Nova tarefa para este lead"
+        >
+          Nova tarefa
+        </button>
+        <select
+          className="pipeline-card-select"
+          value={c.estagio}
+          onChange={(ev) => onMudarEstagio(c, ev.target.value)}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {ESTAGIOS.map((e) => (
+            <option key={e} value={e}>{ESTAGIO_LABEL[e]}</option>
+          ))}
+        </select>
+      </div>
     </div>
   );
 }

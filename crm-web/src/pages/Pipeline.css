@@ -119,6 +119,29 @@
   margin-bottom: var(--crm-space-2);
 }
 
+.pipeline-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.pipeline-card-btn-tarefa {
+  padding: 0.4rem 0.75rem;
+  font-size: var(--crm-text-xs);
+  font-weight: var(--crm-font-medium);
+  color: var(--crm-accent);
+  background: var(--crm-accent-light);
+  border: 1px solid var(--crm-accent);
+  border-radius: var(--crm-radius);
+  cursor: pointer;
+  width: 100%;
+}
+
+.pipeline-card-btn-tarefa:hover {
+  background: var(--crm-accent);
+  color: #fff;
+}
+
 .pipeline-card-select {
   width: 100%;
   padding: var(--crm-space-2) var(--crm-space-3);

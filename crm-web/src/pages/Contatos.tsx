@@ -156,6 +156,9 @@ export default function Contatos() {
                   </td>
                   <td>
                     <div className="contatos-actions">
+                      <button type="button" onClick={() => navigate(`/tarefas?contatoId=${c.id}`)} title="Nova tarefa para este cliente">
+                        Tarefa
+                      </button>
                       <button type="button" onClick={() => openEdit(c)}>Editar</button>
                       <button type="button" onClick={() => handleDelete(c)}>Excluir</button>
                     </div>
