@@ -114,17 +114,40 @@ export class PublicController {
   @Post('lead')
   @UseGuards(LeadRateLimitGuard)
   async receberLead(@Body() dto: LeadPublicDto) {
-    const contato = await this.contatos.create(
-      {
-        nome: dto.nome,
-        email: dto.email,
-        telefone: dto.telefone,
-        origem: dto.origem ?? 'site',
-        observacoes: dto.mensagem ?? undefined,
-        estagio: 'novo',
-      },
-      undefined,
-    );
+    const emailNorm = dto.email.toLowerCase().trim();
+
+    // 1º registro: Contato (pessoa/lead) – buscar por e-mail para não duplicar; se já existir, reutilizar
+    let contato = await this.prisma.contato.findFirst({
+      where: { email: emailNorm },
+      orderBy: { criadoEm: 'desc' },
+    });
+    if (!contato) {
+      contato = await this.contatos.create(
+        {
+          nome: dto.nome,
+          email: dto.email,
+          telefone: dto.telefone,
+          origem: dto.origem ?? 'site',
+          observacoes: dto.mensagem ?? undefined,
+          estagio: 'novo',
+        },
+        undefined,
+      );
+    } else {
+      // Atualiza dados do contato existente com as informações mais recentes
+      await this.prisma.contato.update({
+        where: { id: contato.id },
+        data: {
+          nome: dto.nome,
+          telefone: dto.telefone ?? contato.telefone ?? undefined,
+          observacoes: dto.mensagem
+            ? [contato.observacoes, dto.mensagem].filter(Boolean).join('\n---\n')
+            : contato.observacoes,
+        },
+      });
+    }
+
+    // 2º registro: Interesse (lead ligado ao imóvel) – sempre criar quando houver imovelId
     if (dto.imovelId) {
       await this.prisma.interesse.create({
         data: {
@@ -135,6 +158,7 @@ export class PublicController {
         },
       });
     }
+
     return { id: contato.id, message: 'Lead recebido com sucesso' };
   }
 }

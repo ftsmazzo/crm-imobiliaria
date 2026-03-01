@@ -1,3 +1,11 @@
+export type InteresseContato = {
+  id: string;
+  tipo: string;
+  observacao: string | null;
+  imovelId: string;
+  imovel: { id: string; codigo: string | null; tipo: string; bairro: string | null; cidade: string | null };
+};
+
 export type Contato = {
   id: string;
   nome: string;
@@ -10,6 +18,7 @@ export type Contato = {
   criadoEm: string;
   atualizadoEm: string;
   usuarioResponsavel?: { id: string; nome: string; email: string } | null;
+  interesses?: InteresseContato[];
 };
 
 export type Proprietario = {

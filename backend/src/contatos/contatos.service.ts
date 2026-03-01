@@ -41,7 +41,10 @@ export class ContatosService {
     return this.prisma.contato.findMany({
       where,
       orderBy: { criadoEm: 'desc' },
-      include: { usuarioResponsavel: { select: { id: true, nome: true, email: true } } },
+      include: {
+        usuarioResponsavel: { select: { id: true, nome: true, email: true } },
+        interesses: { include: { imovel: { select: { id: true, codigo: true, tipo: true, bairro: true, cidade: true } } } },
+      },
     });
   }
 
@@ -50,7 +53,7 @@ export class ContatosService {
       where: { id },
       include: {
         usuarioResponsavel: { select: { id: true, nome: true, email: true } },
-        interesses: { include: { imovel: { select: { id: true, codigo: true, tipo: true } } } },
+        interesses: { include: { imovel: { select: { id: true, codigo: true, tipo: true, bairro: true, cidade: true } } } },
         tarefas: true,
       },
     });

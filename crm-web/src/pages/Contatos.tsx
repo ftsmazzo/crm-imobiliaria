@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getContatos, createContato, updateContato, deleteContato } from '../api';
 import type { Contato } from '../types';
 import { ESTAGIOS } from '../types';
@@ -15,6 +16,7 @@ const emptyForm = () => ({
 });
 
 export default function Contatos() {
+  const navigate = useNavigate();
   const [lista, setLista] = useState<Contato[]>([]);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState('');
@@ -121,6 +123,7 @@ export default function Contatos() {
                 <th>E-mail</th>
                 <th>Telefone</th>
                 <th>Estágio</th>
+                <th>Interesses (imóveis)</th>
                 <th></th>
               </tr>
             </thead>
@@ -131,6 +134,26 @@ export default function Contatos() {
                   <td>{c.email}</td>
                   <td>{c.telefone ?? '–'}</td>
                   <td className="estagio">{c.estagio}</td>
+                  <td className="contatos-interesses">
+                    {c.interesses && c.interesses.length > 0 ? (
+                      <ul className="contatos-interesses-list">
+                        {c.interesses.map((int) => (
+                          <li key={int.id}>
+                            <button
+                              type="button"
+                              className="contatos-interesse-link"
+                              onClick={() => navigate(`/imoveis/${int.imovel.id}`)}
+                            >
+                              {int.imovel.codigo || int.imovel.tipo}
+                              {[int.imovel.bairro, int.imovel.cidade].filter(Boolean).length ? ` – ${[int.imovel.bairro, int.imovel.cidade].filter(Boolean).join(', ')}` : ''}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      '–'
+                    )}
+                  </td>
                   <td>
                     <div className="contatos-actions">
                       <button type="button" onClick={() => openEdit(c)}>Editar</button>
