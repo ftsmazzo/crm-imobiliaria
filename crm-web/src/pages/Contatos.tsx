@@ -168,7 +168,7 @@ export default function Contatos() {
             </tbody>
           </table>
           {lista.length === 0 && (
-            <p style={{ padding: 'var(--crm-space-6)', textAlign: 'center', color: 'var(--crm-text-muted)' }}>
+            <p style={{ padding: 'var(--space-6)', textAlign: 'center', color: 'var(--text-muted)' }}>
               Nenhum contato. Clique em &quot;Novo contato&quot; para cadastrar.
             </p>
           )}

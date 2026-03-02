@@ -1,5 +1,5 @@
 .contatos-page {
-  margin-bottom: 2rem;
+  margin-bottom: var(--space-8);
 }
 
 .contatos-toolbar {
@@ -7,38 +7,38 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  padding: 1.25rem 1.5rem;
-  background: #fff;
-  border-radius: 0.75rem;
-  border: 1px solid var(--crm-border);
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  padding: var(--space-5) var(--space-6);
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-sm);
 }
 
 .contatos-btn-new {
   padding: 0.65rem 1.25rem;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #fff;
-  background: var(--crm-accent);
+  color: var(--text-inverse);
+  background: var(--accent);
   border: none;
-  border-radius: 0.5rem;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: background 0.2s, box-shadow 0.2s;
+  transition: background 150ms ease, box-shadow 150ms ease;
 }
 
 .contatos-btn-new:hover {
-  background: var(--crm-accent-hover);
-  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+  background: var(--accent-hover);
+  box-shadow: var(--shadow-accent);
 }
 
 .contatos-table-wrap {
-  background: #fff;
-  border-radius: 0.75rem;
-  border: 1px solid var(--crm-border);
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+  box-shadow: var(--shadow-sm);
 }
 
 .contatos-table {
@@ -48,18 +48,18 @@
 
 .contatos-table th,
 .contatos-table td {
-  padding: 1rem 1.25rem;
+  padding: var(--space-4) var(--space-5);
   text-align: left;
-  border-bottom: 1px solid var(--crm-border);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .contatos-table th {
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--crm-text-muted);
+  color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  background: var(--crm-bg);
+  background: var(--bg-elevated);
 }
 
 .contatos-table tr:last-child td {
@@ -67,12 +67,12 @@
 }
 
 .contatos-table tr:hover td {
-  background: var(--crm-bg);
+  background: var(--bg-elevated);
 }
 
 .contatos-table .estagio {
   text-transform: capitalize;
-  font-size: var(--crm-text-sm);
+  font-size: 0.875rem;
 }
 
 .contatos-interesses {
@@ -91,10 +91,10 @@
 .contatos-interesse-link {
   display: inline-block;
   padding: 0;
-  font-size: var(--crm-text-sm);
+  font-size: 0.875rem;
   background: none;
   border: none;
-  color: var(--crm-accent);
+  color: var(--accent);
   cursor: pointer;
   text-align: left;
   text-decoration: none;
@@ -102,89 +102,93 @@
 
 .contatos-interesse-link:hover {
   text-decoration: underline;
-  color: var(--crm-accent-hover);
+  color: var(--accent-hover);
 }
 
 .contatos-actions {
   display: flex;
-  gap: var(--crm-space-2);
+  gap: var(--space-2);
 }
 
 .contatos-actions button {
-  padding: var(--crm-space-1) var(--crm-space-2);
-  font-size: var(--crm-text-xs);
+  padding: var(--space-1) var(--space-2);
+  font-size: 0.75rem;
   background: none;
-  border: 1px solid var(--crm-border);
-  border-radius: var(--crm-radius);
-  color: var(--crm-text-muted);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
   cursor: pointer;
 }
 
 .contatos-actions button:hover {
-  border-color: var(--crm-accent);
-  color: var(--crm-accent);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .contatos-loading,
 .contatos-erro {
-  padding: var(--crm-space-8);
+  padding: var(--space-8);
   text-align: center;
-  color: var(--crm-text-muted);
+  color: var(--text-muted);
 }
 
 .contatos-erro {
-  color: var(--crm-error);
+  color: var(--danger);
 }
 
 /* Modal */
 .contatos-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.5);
-  backdrop-filter: blur(2px);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 200;
-  padding: 1rem;
+  padding: var(--space-4);
 }
 
 .contatos-modal {
-  background: #fff;
-  border-radius: 0.75rem;
-  padding: 1.5rem;
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
   width: 100%;
   max-width: 420px;
-  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.15);
-  border: 1px solid var(--crm-border);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-default);
 }
 
 .contatos-modal h2 {
-  margin: 0 0 1.25rem;
+  margin: 0 0 var(--space-5);
   font-size: 1.25rem;
   font-weight: 700;
+  font-family: var(--font-display);
+  color: var(--text-primary);
   letter-spacing: -0.02em;
 }
 
 .contatos-form {
   display: flex;
   flex-direction: column;
-  gap: var(--crm-space-4);
+  gap: var(--space-4);
 }
 
 .contatos-form label {
-  font-size: var(--crm-text-sm);
-  font-weight: var(--crm-font-medium);
-  color: var(--crm-text);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
 }
 
 .contatos-form input,
 .contatos-form select,
 .contatos-form textarea {
-  padding: var(--crm-space-3) var(--crm-space-4);
-  border: 1px solid var(--crm-border);
-  border-radius: var(--crm-radius);
-  font-size: var(--crm-text-base);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  background: var(--bg-overlay);
+  color: var(--text-primary);
 }
 
 .contatos-form textarea {
@@ -194,31 +198,36 @@
 
 .contatos-form-actions {
   display: flex;
-  gap: var(--crm-space-3);
-  margin-top: var(--crm-space-2);
+  gap: var(--space-3);
+  margin-top: var(--space-2);
 }
 
 .contatos-form-actions button {
-  padding: var(--crm-space-3) var(--crm-space-4);
-  border-radius: var(--crm-radius);
-  font-weight: var(--crm-font-medium);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  font-weight: 500;
   cursor: pointer;
 }
 
 .contatos-form-actions .primary {
-  background: var(--crm-accent);
-  color: #fff;
+  background: var(--accent);
+  color: var(--text-inverse);
   border: none;
 }
 
 .contatos-form-actions .primary:hover {
-  background: var(--crm-accent-hover);
+  background: var(--accent-hover);
 }
 
 .contatos-form-actions .secondary {
   background: none;
-  border: 1px solid var(--crm-border);
-  color: var(--crm-text-muted);
+  border: 1px solid var(--border-default);
+  color: var(--text-muted);
+}
+
+.contatos-form-actions .secondary:hover {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
 }
 
 @media (max-width: 640px) {

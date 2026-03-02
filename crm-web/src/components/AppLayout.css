@@ -1,10 +1,10 @@
-/* Shell do app – visual profissional */
+/* Shell do app – tema escuro, moderno (usa tokens) */
 
 .app-layout {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--crm-bg);
+  background: var(--bg-base);
 }
 
 .app-layout-body {
@@ -13,73 +13,75 @@
   min-height: 0;
 }
 
-/* Sidebar – menu lateral profissional */
+/* Sidebar – menu lateral */
 .app-sidebar {
-  width: 15rem;
-  background: #fff;
+  width: 220px;
+  background: var(--bg-surface);
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  transition: transform 0.2s ease;
-  border-right: 1px solid var(--crm-border);
-  box-shadow: 1px 0 0 rgba(0, 0, 0, 0.04);
+  transition: width 150ms ease, transform 200ms ease;
+  border-right: 1px solid var(--border-subtle);
 }
 
 .app-sidebar-logo {
-  padding: 1.5rem 1.25rem;
-  font-size: 1.05rem;
+  padding: var(--space-5) var(--space-4);
+  font-size: 1rem;
   font-weight: 700;
+  font-family: var(--font-display);
   letter-spacing: -0.02em;
-  color: var(--crm-primary);
-  border-bottom: 1px solid var(--crm-border);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-subtle);
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .app-sidebar-nav {
-  padding: 0.75rem 0.5rem;
+  padding: var(--space-3) var(--space-2);
   display: flex;
   flex-direction: column;
-  gap: 0.125rem;
+  gap: var(--space-1);
 }
 
 .app-sidebar-nav a {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.7rem 1rem;
-  border-radius: 0.5rem;
-  color: var(--crm-text-muted);
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 500;
-  transition: background 0.15s, color 0.15s;
+  transition: background 150ms ease, color 150ms ease;
   border-left: 3px solid transparent;
 }
 
 .app-sidebar-nav a:hover {
-  background: var(--crm-bg);
-  color: var(--crm-text);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
   text-decoration: none;
 }
 
 .app-sidebar-nav a.active {
-  background: var(--crm-accent-light);
-  color: var(--crm-accent-hover);
+  background: var(--accent-muted);
+  color: var(--accent);
   font-weight: 600;
-  border-left-color: var(--crm-accent);
+  border-left-color: var(--accent);
 }
 
 /* Header */
 .app-header {
-  height: 3.5rem;
-  background: #fff;
-  border-bottom: 1px solid var(--crm-border);
+  height: 56px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1.5rem;
+  padding: 0 var(--space-6);
   flex-shrink: 0;
-  gap: 1rem;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
+  gap: var(--space-4);
+  box-shadow: var(--shadow-sm);
 }
 
 .app-header-menu-btn {
@@ -90,52 +92,55 @@
   justify-content: center;
   background: none;
   border: none;
-  border-radius: var(--crm-radius);
-  color: var(--crm-text);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
   cursor: pointer;
+  transition: background 150ms ease, color 150ms ease;
 }
 
 .app-header-menu-btn:hover {
-  background: var(--crm-bg-subtle);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
 }
 
 .app-header-user {
   display: flex;
-  align-items: center;
-  gap: var(--crm-space-3);
-  font-size: var(--crm-text-sm);
-  color: var(--crm-text-muted);
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
 }
 
 .app-header-user strong {
-  color: var(--crm-text);
-  font-weight: var(--crm-font-medium);
+  color: var(--text-primary);
+  font-weight: 500;
 }
 
 .app-header-sair {
-  padding: var(--crm-space-2) var(--crm-space-4);
-  font-size: var(--crm-text-sm);
-  font-weight: var(--crm-font-medium);
-  color: var(--crm-text-muted);
-  background: none;
-  border: 1px solid var(--crm-border);
-  border-radius: var(--crm-radius);
+  padding: var(--space-2) var(--space-4);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: border-color 0.2s, color 0.2s, background 0.2s;
+  transition: border-color 150ms ease, color 150ms ease, background 150ms ease;
 }
 
 .app-header-sair:hover {
-  border-color: var(--crm-text-muted);
-  color: var(--crm-text);
-  background: var(--crm-bg-subtle);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+  background: var(--bg-overlay);
 }
 
-/* Main content – área delimitada e respirável */
+/* Main content */
 .app-main {
   flex: 1;
   overflow: auto;
-  padding: 2rem;
-  background: var(--crm-bg);
+  padding: var(--space-8);
+  background: var(--bg-base);
 }
 
 .app-main-inner {
@@ -150,8 +155,9 @@
     top: 0;
     left: 0;
     bottom: 0;
+    width: 220px !important;
     z-index: 100;
-    box-shadow: none;
+    box-shadow: var(--shadow-lg);
   }
 
   .app-sidebar.is-closed {
@@ -160,7 +166,6 @@
 
   .app-sidebar.is-open {
     transform: translateX(0);
-    box-shadow: var(--crm-shadow-lg);
   }
 
   .app-header-menu-btn {
@@ -172,7 +177,7 @@
   }
 
   .app-main {
-    padding: var(--crm-space-4);
+    padding: var(--space-4);
   }
 }
 
@@ -181,7 +186,8 @@
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.4);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
   z-index: 99;
 }
 

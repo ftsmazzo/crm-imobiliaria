@@ -14,7 +14,7 @@
   margin: 0 0 1rem;
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--crm-text);
+  color: var(--text);
 }
 
 .imovel-cadastro-stepper {
@@ -23,7 +23,7 @@
 
 .imovel-cadastro-stepper-bar-wrap {
   height: 6px;
-  background: var(--crm-bg-subtle);
+  background: var(--bg-subtle);
   border-radius: 999px;
   overflow: hidden;
   margin-bottom: 0.5rem;
@@ -31,16 +31,16 @@
 
 .imovel-cadastro-stepper-bar {
   height: 100%;
-  background: var(--crm-accent);
+  background: var(--accent);
   border-radius: 999px;
   transition: width 0.25s ease;
 }
 
 .imovel-cadastro-stepper-label {
   margin: 0;
-  font-size: var(--crm-text-sm);
+  font-size: var(--text-sm);
   font-weight: 500;
-  color: var(--crm-text-muted);
+  color: var(--text-muted);
 }
 
 .imovel-cadastro-stepper-dots {
@@ -54,29 +54,29 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--crm-border);
+  background: var(--border);
   transition: background 0.2s;
 }
 
 .imovel-cadastro-stepper-dots span.active {
-  background: var(--crm-accent);
+  background: var(--accent);
 }
 
 .imovel-cadastro-form {
-  background: #fff;
+  background: var(--bg-surface);
   border-radius: 0.75rem;
-  border: 1px solid var(--crm-border);
+  border: 1px solid var(--border);
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
 }
 
 .imovel-cadastro-erro {
-  color: var(--crm-error);
-  font-size: var(--crm-text-sm);
+  color: var(--error);
+  font-size: var(--text-sm);
   margin-bottom: 1rem;
   padding: 0.5rem;
-  background: var(--crm-error-light, #fef2f2);
-  border-radius: var(--crm-radius);
+  background: var(--error-light, #fef2f2);
+  border-radius: var(--radius);
 }
 
 .imovel-cadastro-section {
@@ -93,11 +93,11 @@
   margin: 0 0 1rem;
   font-size: 1rem;
   font-weight: 600;
-  color: var(--crm-text-muted);
+  color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--crm-border);
+  border-bottom: 1px solid var(--border);
 }
 
 .imovel-cadastro-section .field {
@@ -106,9 +106,9 @@
 
 .imovel-cadastro-section .field label {
   display: block;
-  font-size: var(--crm-text-sm);
+  font-size: var(--text-sm);
   font-weight: 500;
-  color: var(--crm-text);
+  color: var(--text);
   margin-bottom: 0.25rem;
 }
 
@@ -117,9 +117,9 @@
 .imovel-cadastro-section .field textarea {
   width: 100%;
   padding: 0.5rem 0.75rem;
-  border: 1px solid var(--crm-border);
-  border-radius: var(--crm-radius);
-  font-size: var(--crm-text-base);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: var(--text-base);
   font-family: inherit;
 }
 
@@ -127,8 +127,8 @@
 .imovel-cadastro-section .field select:focus,
 .imovel-cadastro-section .field textarea:focus {
   outline: none;
-  border-color: var(--crm-accent);
-  box-shadow: 0 0 0 2px var(--crm-accent-light);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-light);
 }
 
 .imovel-cadastro-section .field textarea {
@@ -174,11 +174,11 @@
 
 .imovel-cadastro-tipos button {
   padding: 0.5rem 0.75rem;
-  font-size: var(--crm-text-sm);
-  border: 1px solid var(--crm-border);
-  border-radius: var(--crm-radius);
-  background: var(--crm-surface);
-  color: var(--crm-text);
+  font-size: var(--text-sm);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
   cursor: pointer;
   transition: border-color 0.2s, background 0.2s;
   min-width: 0;
@@ -188,13 +188,13 @@
 }
 
 .imovel-cadastro-tipos button:hover {
-  border-color: var(--crm-text-muted);
+  border-color: var(--text-muted);
 }
 
 .imovel-cadastro-tipos button.active {
-  border-color: var(--crm-accent);
-  background: var(--crm-accent-light);
-  color: var(--crm-accent-hover);
+  border-color: var(--accent);
+  background: var(--accent-light);
+  color: var(--accent-hover);
 }
 
 /* Linha Subtipo + Exibir endereço: duas colunas iguais e alinhamento vertical */
@@ -219,21 +219,21 @@
 
 .imovel-cadastro-section .hint {
   display: block;
-  font-size: var(--crm-text-sm);
-  color: var(--crm-text-muted);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
   margin-top: 0.25rem;
 }
-.imovel-cadastro-section .hint a { color: var(--crm-accent); }
+.imovel-cadastro-section .hint a { color: var(--accent); }
 .imovel-cep-field .hint {
   display: block;
-  font-size: var(--crm-text-xs);
-  color: var(--crm-text-muted);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
   margin-top: 0.25rem;
 }
 
-.imovel-cep-field .hint.loading { color: var(--crm-accent); }
-.imovel-cep-field .hint.ok { color: var(--crm-success); }
-.imovel-cep-field .hint.not-found { color: var(--crm-error); }
+.imovel-cep-field .hint.loading { color: var(--accent); }
+.imovel-cep-field .hint.ok { color: var(--success); }
+.imovel-cep-field .hint.not-found { color: var(--error); }
 
 .imovel-cadastro-actions {
   display: flex;
@@ -242,35 +242,35 @@
   justify-content: space-between;
   margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid var(--crm-border);
+  border-top: 1px solid var(--border);
 }
 
 .imovel-cadastro-actions .secondary {
-  background: var(--crm-surface);
-  border: 1px solid var(--crm-border);
-  color: var(--crm-text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
   padding: 0.5rem 1rem;
-  border-radius: var(--crm-radius);
+  border-radius: var(--radius);
   font-weight: 500;
   cursor: pointer;
 }
 
 .imovel-cadastro-actions .secondary:hover {
-  border-color: var(--crm-text-muted);
+  border-color: var(--text-muted);
 }
 
 .imovel-cadastro-actions .primary {
-  background: var(--crm-accent);
-  color: #fff;
+  background: var(--accent);
+  color: var(--text-inverse);
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: var(--crm-radius);
+  border-radius: var(--radius);
   font-weight: 600;
   cursor: pointer;
 }
 
 .imovel-cadastro-actions .primary:hover:not(:disabled) {
-  background: var(--crm-accent-hover);
+  background: var(--accent-hover);
 }
 
 .imovel-cadastro-actions .primary:disabled {
@@ -288,9 +288,9 @@
 }
 
 .imovel-cadastro-fotos li {
-  border-radius: var(--crm-radius);
+  border-radius: var(--radius);
   overflow: hidden;
-  border: 1px solid var(--crm-border);
+  border: 1px solid var(--border);
 }
 
 .imovel-cadastro-fotos img,
@@ -302,7 +302,7 @@
 }
 
 .imovel-cadastro-fotos .thumb-placeholder {
-  background: var(--crm-bg-subtle);
+  background: var(--bg-subtle);
 }
 
 .imovel-cadastro-fotos button {
@@ -310,16 +310,16 @@
   width: 100%;
   padding: 0.25rem;
   font-size: 0.75rem;
-  background: var(--crm-bg);
+  background: var(--bg);
   border: none;
-  border-top: 1px solid var(--crm-border);
-  color: var(--crm-text-muted);
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
   cursor: pointer;
 }
 
 .imovel-cadastro-fotos button:hover {
-  background: var(--crm-error-light, #fef2f2);
-  color: var(--crm-error);
+  background: var(--error-light, #fef2f2);
+  color: var(--error);
 }
 
 .imovel-cadastro-caracteristicas {
@@ -331,24 +331,24 @@
 
 .imovel-cadastro-carac-btn {
   padding: 0.5rem 0.85rem;
-  font-size: var(--crm-text-sm);
+  font-size: var(--text-sm);
   font-family: inherit;
-  border: 1px solid var(--crm-border);
-  border-radius: var(--crm-radius);
-  background: var(--crm-surface);
-  color: var(--crm-text-muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text-muted);
   cursor: pointer;
   text-transform: capitalize;
   transition: border-color 0.2s, background 0.2s, color 0.2s;
 }
 
 .imovel-cadastro-carac-btn:hover {
-  border-color: var(--crm-text-muted);
-  color: var(--crm-text);
+  border-color: var(--text-muted);
+  color: var(--text);
 }
 
 .imovel-cadastro-carac-btn.active {
-  border-color: var(--crm-accent);
-  background: var(--crm-accent-light);
-  color: var(--crm-accent-hover);
+  border-color: var(--accent);
+  background: var(--accent-light);
+  color: var(--accent-hover);
 }

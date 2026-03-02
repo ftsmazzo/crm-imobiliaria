@@ -217,7 +217,7 @@ export default function Tarefas() {
           ))}
         </div>
         {listaFiltrada.length === 0 && (
-          <p style={{ padding: 'var(--crm-space-8)', textAlign: 'center', color: 'var(--crm-text-muted)' }}>
+          <p style={{ padding: 'var(--space-8)', textAlign: 'center', color: 'var(--text-muted)' }}>
             Nenhuma tarefa. Clique em &quot;Nova tarefa&quot; ou use &quot;Nova tarefa&quot; no Pipeline/Contatos.
           </p>
         )}

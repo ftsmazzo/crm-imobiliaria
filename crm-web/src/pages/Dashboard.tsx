@@ -8,6 +8,7 @@ import './Dashboard.css';
 
 const ESTAGIOS: { key: string; label: string }[] = [
   { key: 'novo', label: 'Novo' },
+  { key: 'lead', label: 'Lead' },
   { key: 'qualificado', label: 'Qualificado' },
   { key: 'visita', label: 'Visita' },
   { key: 'proposta', label: 'Proposta' },
