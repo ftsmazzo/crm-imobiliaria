@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { getTarefas, createTarefa, updateTarefa, deleteTarefa, getContatos, getUsuarios, getImoveis } from '../api';
 import type { Tarefa as TarefaType } from '../types';
+import { PRIORIDADES_TAREFA, PRIORIDADE_LABEL, type PrioridadeTarefa } from '../types';
 import type { Contato } from '../types';
 import type { Imovel } from '../types';
 import type { UsuarioListItem } from '../api';
@@ -25,6 +26,7 @@ const emptyForm = () => ({
   titulo: '',
   descricao: '',
   dataPrevista: '',
+  prioridade: 'media' as PrioridadeTarefa,
 });
 
 export default function Tarefas() {
@@ -119,6 +121,7 @@ export default function Tarefas() {
         titulo: form.titulo.trim(),
         descricao: form.descricao.trim() || undefined,
         dataPrevista: form.dataPrevista || undefined,
+        prioridade: form.prioridade || undefined,
         contatoId: form.contatoId || undefined,
         imovelId: form.imovelId || undefined,
         usuarioId: form.usuarioId || undefined,
@@ -203,6 +206,9 @@ export default function Tarefas() {
               <div className="tarefa-body">
                 <div className="tarefa-titulo">{t.titulo}</div>
                 <div className="tarefa-meta">
+                  <span className={`tarefa-prioridade tarefa-prioridade-${t.prioridade || 'media'}`}>
+                    {PRIORIDADE_LABEL[(t.prioridade as PrioridadeTarefa) || 'media']}
+                  </span>
                   {formatData(t.dataPrevista)}
                   {t.contato && ` · ${t.contato.nome}`}
                   {t.usuario && ` · ${t.usuario.nome}`}
@@ -273,6 +279,15 @@ export default function Tarefas() {
                 value={form.dataPrevista}
                 onChange={(e) => setForm((f) => ({ ...f, dataPrevista: e.target.value }))}
               />
+              <label>Prioridade</label>
+              <select
+                value={form.prioridade}
+                onChange={(e) => setForm((f) => ({ ...f, prioridade: e.target.value as PrioridadeTarefa }))}
+              >
+                {PRIORIDADES_TAREFA.map((p) => (
+                  <option key={p} value={p}>{PRIORIDADE_LABEL[p]}</option>
+                ))}
+              </select>
               <label>Descrição</label>
               <textarea
                 value={form.descricao}

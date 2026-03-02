@@ -1,4 +1,4 @@
-import { IsBoolean, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsBoolean, IsIn, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class UpdateTarefaDto {
   @IsOptional()
@@ -16,6 +16,10 @@ export class UpdateTarefaDto {
   @IsOptional()
   @IsBoolean()
   concluida?: boolean;
+
+  @IsOptional()
+  @IsIn(['baixa', 'media', 'alta'])
+  prioridade?: string;
 
   @IsOptional()
   @IsUUID()

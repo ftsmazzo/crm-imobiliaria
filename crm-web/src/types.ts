@@ -108,12 +108,23 @@ export type Imovel = {
   proprietario?: { id: string; nome: string; email: string | null; telefone: string | null } | null;
 };
 
+export type PrioridadeTarefa = 'baixa' | 'media' | 'alta';
+
+export const PRIORIDADES_TAREFA: PrioridadeTarefa[] = ['baixa', 'media', 'alta'];
+
+export const PRIORIDADE_LABEL: Record<PrioridadeTarefa, string> = {
+  baixa: 'Baixa',
+  media: 'Média',
+  alta: 'Alta',
+};
+
 export type Tarefa = {
   id: string;
   titulo: string;
   descricao: string | null;
   dataPrevista: string | null;
   concluida: boolean;
+  prioridade: string | null;
   usuarioId: string;
   contatoId: string | null;
   imovelId: string | null;

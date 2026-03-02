@@ -162,6 +162,7 @@ model Tarefa {
   descricao    String?
   dataPrevista DateTime? @map("data_prevista") @db.Date
   concluida    Boolean   @default(false)
+  prioridade   String?   @default("media") // baixa, media, alta
   usuarioId    String    @map("usuario_id")
   contatoId    String?   @map("contato_id")
   imovelId     String?   @map("imovel_id")

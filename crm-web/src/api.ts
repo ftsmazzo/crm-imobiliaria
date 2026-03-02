@@ -249,6 +249,7 @@ export async function createTarefa(data: {
   titulo: string;
   descricao?: string;
   dataPrevista?: string;
+  prioridade?: string;
   contatoId?: string;
   imovelId?: string;
   usuarioId?: string;

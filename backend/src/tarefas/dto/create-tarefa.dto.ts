@@ -1,4 +1,4 @@
-import { IsBoolean, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsBoolean, IsIn, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreateTarefaDto {
   @IsString()
@@ -11,6 +11,10 @@ export class CreateTarefaDto {
   @IsOptional()
   @IsString()
   dataPrevista?: string; // YYYY-MM-DD
+
+  @IsOptional()
+  @IsIn(['baixa', 'media', 'alta'])
+  prioridade?: string;
 
   @IsOptional()
   @IsUUID()
