@@ -38,9 +38,12 @@ export async function getUsuarios(): Promise<UsuarioListItem[]> {
 }
 
 // Contatos
-export async function getContatos(estagio?: string): Promise<Contato[]> {
-  const q = estagio ? `?estagio=${encodeURIComponent(estagio)}` : '';
-  const res = await fetch(`${API_URL}/contatos${q}`, { headers: authHeaders() });
+export async function getContatos(estagio?: string, usuarioResponsavelId?: string): Promise<Contato[]> {
+  const q = new URLSearchParams();
+  if (estagio) q.set('estagio', estagio);
+  if (usuarioResponsavelId) q.set('usuarioResponsavelId', usuarioResponsavelId);
+  const query = q.toString() ? `?${q}` : '';
+  const res = await fetch(`${API_URL}/contatos${query}`, { headers: authHeaders() });
   return handleRes(res);
 }
 

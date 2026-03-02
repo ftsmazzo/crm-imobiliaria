@@ -1,0 +1,168 @@
+.lead-detail-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: var(--space-4);
+}
+
+.lead-detail-modal {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow: auto;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-default);
+}
+
+.lead-detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.lead-detail-header h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.lead-detail-close {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+}
+
+.lead-detail-close:hover {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.lead-detail-form {
+  padding: var(--space-6);
+}
+
+.lead-detail-erro {
+  margin: 0 0 var(--space-4);
+  padding: var(--space-3);
+  background: rgba(235, 87, 87, 0.12);
+  color: var(--danger);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+}
+
+.lead-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+@media (max-width: 480px) {
+  .lead-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.lead-detail-form .form-group {
+  margin-bottom: 0;
+}
+
+.lead-detail-form .form-group label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-1);
+}
+
+.lead-detail-form .form-group input,
+.lead-detail-form .form-group select,
+.lead-detail-form .form-group textarea {
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.9375rem;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--bg-overlay);
+  color: var(--text-primary);
+}
+
+.lead-detail-form .form-group textarea {
+  resize: vertical;
+  min-height: 72px;
+}
+
+.lead-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.lead-detail-actions .btn-secondary {
+  background: transparent;
+  border: 1px solid var(--border-default);
+  color: var(--text-secondary);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.lead-detail-actions .btn-secondary:hover {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.lead-detail-actions .btn-nova-tarefa {
+  background: var(--accent-muted);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.lead-detail-actions .btn-nova-tarefa:hover {
+  background: var(--accent);
+  color: var(--text-inverse);
+}
+
+.lead-detail-actions .btn-primary {
+  background: var(--accent);
+  color: var(--text-inverse);
+  border: none;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.lead-detail-actions .btn-primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.lead-detail-actions .btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

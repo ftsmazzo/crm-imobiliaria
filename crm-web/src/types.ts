@@ -122,5 +122,27 @@ export type Tarefa = {
   imovel?: { id: string; codigo: string | null } | null;
 };
 
-export const ESTAGIOS = ['novo', 'lead', 'qualificado', 'visita', 'proposta', 'fechado'] as const;
+export const ESTAGIOS = [
+  'novo',
+  'lead',
+  'contato_inicial',
+  'qualificado',
+  'visita',
+  'proposta',
+  'fechado',
+  'perdido',
+  'perdido_remarketing',
+] as const;
 export type Estagio = (typeof ESTAGIOS)[number];
+
+export const ESTAGIO_LABEL: Record<Estagio, string> = {
+  novo: 'Novo',
+  lead: 'Lead',
+  contato_inicial: 'Contato inicial',
+  qualificado: 'Qualificado',
+  visita: 'Visita',
+  proposta: 'Proposta',
+  fechado: 'Fechado',
+  perdido: 'Perdido',
+  perdido_remarketing: 'Perdido com remarketing',
+};

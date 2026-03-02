@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getContatos, createContato, updateContato, deleteContato } from '../api';
 import type { Contato } from '../types';
-import { ESTAGIOS } from '../types';
+import { ESTAGIOS, ESTAGIO_LABEL } from '../types';
 import AppLayout from '../components/AppLayout';
+import LeadDetailModal from '../components/LeadDetailModal';
 import './Contatos.css';
 
 const emptyForm = () => ({
@@ -21,6 +22,7 @@ export default function Contatos() {
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState('');
   const [modal, setModal] = useState<'novo' | Contato | null>(null);
+  const [detailContato, setDetailContato] = useState<Contato | null>(null);
   const [form, setForm] = useState(emptyForm());
   const [saving, setSaving] = useState(false);
 
@@ -133,7 +135,7 @@ export default function Contatos() {
                   <td>{c.nome}</td>
                   <td>{c.email}</td>
                   <td>{c.telefone ?? '–'}</td>
-                  <td className="estagio">{c.estagio}</td>
+                  <td className="estagio">{ESTAGIO_LABEL[c.estagio as keyof typeof ESTAGIO_LABEL] ?? c.estagio}</td>
                   <td className="contatos-interesses">
                     {c.interesses && c.interesses.length > 0 ? (
                       <ul className="contatos-interesses-list">
@@ -156,6 +158,9 @@ export default function Contatos() {
                   </td>
                   <td>
                     <div className="contatos-actions">
+                      <button type="button" onClick={() => setDetailContato(c)} title="Ver detalhes do lead">
+                        Ver
+                      </button>
                       <button type="button" onClick={() => navigate(`/tarefas?contatoId=${c.id}`)} title="Nova tarefa para este cliente">
                         Tarefa
                       </button>
@@ -209,7 +214,7 @@ export default function Contatos() {
                 onChange={(e) => setForm((f) => ({ ...f, estagio: e.target.value }))}
               >
                 {ESTAGIOS.map((e) => (
-                  <option key={e} value={e}>{e}</option>
+                  <option key={e} value={e}>{ESTAGIO_LABEL[e]}</option>
                 ))}
               </select>
               <label>Observações</label>
@@ -228,6 +233,13 @@ export default function Contatos() {
             </form>
           </div>
         </div>
+      )}
+      {detailContato && (
+        <LeadDetailModal
+          contato={detailContato}
+          onClose={() => setDetailContato(null)}
+          onSaved={() => { setDetailContato(null); load(); }}
+        />
       )}
     </AppLayout>
   );

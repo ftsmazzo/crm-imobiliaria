@@ -9,10 +9,13 @@ import './Dashboard.css';
 const ESTAGIOS: { key: string; label: string }[] = [
   { key: 'novo', label: 'Novo' },
   { key: 'lead', label: 'Lead' },
+  { key: 'contato_inicial', label: 'Contato inicial' },
   { key: 'qualificado', label: 'Qualificado' },
   { key: 'visita', label: 'Visita' },
   { key: 'proposta', label: 'Proposta' },
   { key: 'fechado', label: 'Fechado' },
+  { key: 'perdido', label: 'Perdido' },
+  { key: 'perdido_remarketing', label: 'Perdido com remarketing' },
 ];
 
 const STATUS_IMOVEIS: { key: string; label: string }[] = [

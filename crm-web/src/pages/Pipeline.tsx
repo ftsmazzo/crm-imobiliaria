@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getContatos, getTarefas, updateContato } from '../api';
+import { getContatos, getTarefas, updateContato, getUsuarios } from '../api';
+import type { UsuarioListItem } from '../api';
 import type { Contato, Estagio } from '../types';
-import { ESTAGIOS } from '../types';
+import { ESTAGIOS, ESTAGIO_LABEL as ESTAGIO_LABEL_TYPES } from '../types';
 import AppLayout from '../components/AppLayout';
+import LeadDetailModal from '../components/LeadDetailModal';
 import './Pipeline.css';
 
 function formatTelefone(t: string | null): string {
@@ -21,6 +23,7 @@ function PipelineCard({
   onDragStart,
   onDragEnd,
   isDragging,
+  onOpenDetail,
 }: {
   c: Contato;
   tarefasPendentes: number;
@@ -28,6 +31,7 @@ function PipelineCard({
   onDragStart: (e: React.DragEvent, contato: Contato) => void;
   onDragEnd: () => void;
   isDragging: boolean;
+  onOpenDetail?: (c: Contato) => void;
 }) {
   const navigate = useNavigate();
   const [showResumo, setShowResumo] = useState(false);
@@ -44,6 +48,11 @@ function PipelineCard({
         onDragStart(e, c);
       }}
       onDragEnd={onDragEnd}
+      onClick={(e) => {
+        const t = e.target as HTMLElement;
+        if (t.closest('button') || t.closest('select')) return;
+        onOpenDetail?.(c);
+      }}
       onMouseEnter={() => setShowResumo(true)}
       onMouseLeave={() => setShowResumo(false)}
     >
@@ -94,29 +103,25 @@ function PipelineCard({
   );
 }
 
-const ESTAGIO_LABEL: Record<Estagio, string> = {
-  novo: 'Novo',
-  lead: 'Lead',
-  qualificado: 'Qualificado',
-  visita: 'Visita',
-  proposta: 'Proposta',
-  fechado: 'Fechado',
-};
+const ESTAGIO_LABEL = ESTAGIO_LABEL_TYPES;
 
 export default function Pipeline() {
   const [contatos, setContatos] = useState<Contato[]>([]);
   const [tarefasPendentesPorContato, setTarefasPendentesPorContato] = useState<Record<string, number>>({});
+  const [usuarios, setUsuarios] = useState<UsuarioListItem[]>([]);
+  const [filtroResponsavelId, setFiltroResponsavelId] = useState('');
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState('');
   const [draggingContatoId, setDraggingContatoId] = useState<string | null>(null);
   const [dragOverEstagio, setDragOverEstagio] = useState<string | null>(null);
+  const [leadDetailContato, setLeadDetailContato] = useState<Contato | null>(null);
 
   async function load() {
     setLoading(true);
     setErro('');
     try {
       const [contatosData, tarefasData] = await Promise.all([
-        getContatos(),
+        getContatos(undefined, filtroResponsavelId || undefined),
         getTarefas(),
       ]);
       setContatos(contatosData);
@@ -136,8 +141,12 @@ export default function Pipeline() {
   }
 
   useEffect(() => {
-    load();
+    getUsuarios().then(setUsuarios).catch(() => setUsuarios([]));
   }, []);
+
+  useEffect(() => {
+    load();
+  }, [filtroResponsavelId]);
 
   async function handleMudarEstagio(contato: Contato, novoEstagio: string) {
     try {
@@ -191,14 +200,29 @@ export default function Pipeline() {
   if (erro && contatos.length === 0) return <AppLayout><div className="pipeline-erro">{erro}</div></AppLayout>;
 
   const porEstagio = (estagio: string) => contatos.filter((c) => c.estagio === estagio);
-  const estagiosLinha1 = ESTAGIOS.slice(0, 3); // Novo, Lead, Qualificado
-  const estagiosLinha2 = ESTAGIOS.slice(3, 6); // Visita, Proposta, Fechado
+  const estagiosLinha1 = ESTAGIOS.slice(0, 3);   // Novo, Lead, Contato inicial
+  const estagiosLinha2 = ESTAGIOS.slice(3, 6);   // Qualificado, Visita, Proposta
+  const estagiosLinha3 = ESTAGIOS.slice(6, 9);  // Fechado, Perdido, Perdido com remarketing
 
   return (
     <AppLayout>
       <div className="pipeline-page">
         <h1>Pipeline</h1>
         <p className="lead">Arraste os cards entre colunas para mudar o estágio.</p>
+        <div className="pipeline-filtros">
+          <label htmlFor="pipeline-filtro-responsavel">Responsável</label>
+          <select
+            id="pipeline-filtro-responsavel"
+            className="pipeline-filtro-select"
+            value={filtroResponsavelId}
+            onChange={(e) => setFiltroResponsavelId(e.target.value)}
+          >
+            <option value="">Todos</option>
+            {usuarios.map((u) => (
+              <option key={u.id} value={u.id}>{u.nome}</option>
+            ))}
+          </select>
+        </div>
         <div className="pipeline-board pipeline-board-top">
           {estagiosLinha1.map((estagio) => (
             <div
@@ -223,13 +247,14 @@ export default function Pipeline() {
                     onDragStart={handleDragStart}
                     onDragEnd={handleDragEnd}
                     isDragging={draggingContatoId === c.id}
+                    onOpenDetail={setLeadDetailContato}
                   />
                 ))}
               </div>
             </div>
           ))}
         </div>
-        <div className="pipeline-board pipeline-board-bottom">
+        <div className="pipeline-board pipeline-board-middle">
           {estagiosLinha2.map((estagio) => (
             <div
               key={estagio}
@@ -253,6 +278,38 @@ export default function Pipeline() {
                     onDragStart={handleDragStart}
                     onDragEnd={handleDragEnd}
                     isDragging={draggingContatoId === c.id}
+                    onOpenDetail={setLeadDetailContato}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="pipeline-board pipeline-board-bottom">
+          {estagiosLinha3.map((estagio) => (
+            <div
+              key={estagio}
+              className={`pipeline-col ${dragOverEstagio === estagio ? 'pipeline-col-drag-over' : ''}`}
+              data-estagio={estagio}
+              onDragOver={(e) => handleDragOver(e, estagio)}
+              onDragLeave={handleDragLeave}
+              onDrop={(e) => handleDrop(e, estagio)}
+            >
+              <div className="pipeline-col-header">
+                <span>{ESTAGIO_LABEL[estagio]}</span>
+                <span className="pipeline-col-count">{porEstagio(estagio).length}</span>
+              </div>
+              <div className="pipeline-cards">
+                {porEstagio(estagio).map((c) => (
+                  <PipelineCard
+                    key={c.id}
+                    c={c}
+                    tarefasPendentes={tarefasPendentesPorContato[c.id] ?? 0}
+                    onMudarEstagio={handleMudarEstagio}
+                    onDragStart={handleDragStart}
+                    onDragEnd={handleDragEnd}
+                    isDragging={draggingContatoId === c.id}
+                    onOpenDetail={setLeadDetailContato}
                   />
                 ))}
               </div>
@@ -260,6 +317,18 @@ export default function Pipeline() {
           ))}
         </div>
       </div>
+      {leadDetailContato && (
+        <LeadDetailModal
+          contato={leadDetailContato}
+          onClose={() => setLeadDetailContato(null)}
+          onSaved={(updated) => {
+            setContatos((prev) =>
+              prev.map((c) => (c.id === updated.id ? { ...c, ...updated } : c))
+            );
+            setLeadDetailContato(null);
+          }}
+        />
+      )}
     </AppLayout>
   );
 }
