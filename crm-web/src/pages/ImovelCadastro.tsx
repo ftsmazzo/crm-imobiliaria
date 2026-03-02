@@ -66,6 +66,7 @@ const emptyForm = (): FormState => ({
   valorCondominio: undefined,
   status: 'disponivel',
   destaque: 0,
+  promocao: 0,
   codigo: '',
   quadra: '',
   lote: '',
@@ -162,6 +163,7 @@ export default function ImovelCadastro() {
             valorCondominio: i.valorCondominio != null ? Number(i.valorCondominio) : undefined,
             status: i.status,
             destaque: i.destaque ? 1 : 0,
+            promocao: i.promocao ? 1 : 0,
             codigo: i.codigo ?? '',
             quadra: i.quadra ?? '',
             lote: i.lote ?? '',
@@ -242,6 +244,7 @@ export default function ImovelCadastro() {
       valorCondominio: form.valorCondominio != null ? Number(form.valorCondominio) : undefined,
       status: String(form.status),
       destaque: Boolean(form.destaque),
+      promocao: Boolean(form.promocao),
       codigo: form.codigo != null ? String(form.codigo) : undefined,
       quadra: form.quadra ? String(form.quadra) : undefined,
       lote: form.lote ? String(form.lote) : undefined,
@@ -499,6 +502,14 @@ export default function ImovelCadastro() {
                   <button type="button" className={!form.destaque ? 'active' : ''} onClick={() => setForm((f) => ({ ...f, destaque: 0 }))}>Não</button>
                 </div>
                 <p className="hint">Apenas imóveis marcados como &quot;Em destaque&quot; aparecem na página inicial do site.</p>
+              </div>
+              <div className="field">
+                <label>Promoção?</label>
+                <div className="imovel-cadastro-tipos imovel-cadastro-tipos-toggle">
+                  <button type="button" className={form.promocao ? 'active' : ''} onClick={() => setForm((f) => ({ ...f, promocao: 1 }))}>Sim</button>
+                  <button type="button" className={!form.promocao ? 'active' : ''} onClick={() => setForm((f) => ({ ...f, promocao: 0 }))}>Não</button>
+                </div>
+                <p className="hint">Tag &quot;Promoção&quot; para o imóvel (site pode exibir junto com destaque).</p>
               </div>
             </section>
           )}

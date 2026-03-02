@@ -7,18 +7,33 @@ export type DashboardStats = {
   tarefasAtrasadas: number;
   imoveisPorStatus: Record<string, number>;
   novosLeads: number;
+  leadsNoPeriodo?: number;
+  imoveisNoPeriodo?: number;
 };
 
 @Injectable()
 export class DashboardService {
   constructor(private prisma: PrismaService) {}
 
-  async getStats(user: Usuario): Promise<DashboardStats> {
+  async getStats(
+    user: Usuario,
+    dataInicio?: string,
+    dataFim?: string,
+  ): Promise<DashboardStats> {
     const baseContato = user.role === 'corretor' ? { usuarioResponsavelId: user.id } : {};
     const baseImovel = user.role === 'corretor' ? { usuarioResponsavelId: user.id } : {};
     const baseTarefa = user.role === 'corretor' ? { usuarioId: user.id } : {};
 
-    const [contatos, imoveis, tarefasAtrasadas, novosLeads] = await Promise.all([
+    const periodoContato =
+      dataInicio && dataFim
+        ? { criadoEm: { gte: new Date(dataInicio), lte: new Date(dataFim) } }
+        : {};
+    const periodoImovel =
+      dataInicio && dataFim
+        ? { criadoEm: { gte: new Date(dataInicio), lte: new Date(dataFim) } }
+        : {};
+
+    const [contatos, imoveis, tarefasAtrasadas, novosLeads, leadsNoPeriodo, imoveisNoPeriodo] = await Promise.all([
       this.prisma.contato.groupBy({
         by: ['estagio'],
         where: baseContato,
@@ -39,6 +54,16 @@ export class DashboardService {
       this.prisma.contato.count({
         where: { ...baseContato, estagio: 'novo' },
       }),
+      dataInicio && dataFim
+        ? this.prisma.contato.count({
+            where: { ...baseContato, ...periodoContato },
+          })
+        : Promise.resolve(undefined),
+      dataInicio && dataFim
+        ? this.prisma.imovel.count({
+            where: { ...baseImovel, ...periodoImovel },
+          })
+        : Promise.resolve(undefined),
     ]);
 
     const contatosPorEstagio: Record<string, number> = {};
@@ -56,6 +81,8 @@ export class DashboardService {
       tarefasAtrasadas,
       imoveisPorStatus,
       novosLeads,
+      leadsNoPeriodo: leadsNoPeriodo ?? undefined,
+      imoveisNoPeriodo: imoveisNoPeriodo ?? undefined,
     };
   }
 }

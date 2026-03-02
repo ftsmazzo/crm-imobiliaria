@@ -1,6 +1,19 @@
 .empreendimentos-page { margin-bottom: 2rem; }
 .empreendimentos-page .lead { color: var(--text-muted); margin-bottom: 1rem; }
-.empreendimentos-toolbar { margin-bottom: 1.5rem; }
+.empreendimentos-toolbar {
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+.empreendimentos-busca {
+  min-width: 200px;
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.875rem;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+}
 .empreendimentos-btn-new {
   display: inline-flex;
   align-items: center;

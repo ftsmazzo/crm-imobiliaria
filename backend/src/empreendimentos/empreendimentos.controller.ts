@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Post, Put, Query } from '@nestjs/common';
 import { Usuario } from '@prisma/client';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { EmpreendimentosService } from './empreendimentos.service';
@@ -15,8 +15,8 @@ export class EmpreendimentosController {
   }
 
   @Get()
-  findAll() {
-    return this.service.findAll();
+  findAll(@Query('nome') nome?: string) {
+    return this.service.findAll(nome);
   }
 
   @Get(':id')

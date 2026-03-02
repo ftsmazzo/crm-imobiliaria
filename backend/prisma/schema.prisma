@@ -92,6 +92,7 @@ model Imovel {
   valorCondominio       Decimal?  @map("valor_condominio") @db.Decimal(14, 2)
   status                String    @default("disponivel")
   destaque              Boolean?  @default(false) // em destaque na página inicial do site
+  promocao              Boolean?  @default(false) // tag Promoção
   codigo                String?
   quadra                String?
   lote                  String?

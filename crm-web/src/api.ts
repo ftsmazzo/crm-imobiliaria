@@ -79,8 +79,9 @@ export async function deleteContato(id: string): Promise<void> {
 }
 
 // Empreendimentos
-export async function getEmpreendimentos(): Promise<Empreendimento[]> {
-  const res = await fetch(`${API_URL}/empreendimentos`, { headers: authHeaders() });
+export async function getEmpreendimentos(nome?: string): Promise<Empreendimento[]> {
+  const q = nome?.trim() ? `?nome=${encodeURIComponent(nome.trim())}` : '';
+  const res = await fetch(`${API_URL}/empreendimentos${q}`, { headers: authHeaders() });
   return handleRes(res);
 }
 
@@ -150,12 +151,33 @@ export async function deleteProprietario(id: string): Promise<void> {
 }
 
 // Imóveis
-export async function getImoveis(params?: { cidade?: string; bairro?: string; tipo?: string; status?: string }): Promise<Imovel[]> {
+export async function getImoveis(params?: {
+  cidade?: string;
+  bairro?: string;
+  tipo?: string;
+  status?: string;
+  usuarioResponsavelId?: string;
+  valorVendaMin?: number;
+  valorVendaMax?: number;
+  valorAluguelMin?: number;
+  valorAluguelMax?: number;
+  qtdQuartosMin?: number;
+  areaMin?: number;
+  busca?: string;
+}): Promise<Imovel[]> {
   const q = new URLSearchParams();
   if (params?.cidade) q.set('cidade', params.cidade);
   if (params?.bairro) q.set('bairro', params.bairro);
   if (params?.tipo) q.set('tipo', params.tipo);
   if (params?.status) q.set('status', params.status);
+  if (params?.usuarioResponsavelId) q.set('usuarioResponsavelId', params.usuarioResponsavelId);
+  if (params?.valorVendaMin != null) q.set('valorVendaMin', String(params.valorVendaMin));
+  if (params?.valorVendaMax != null) q.set('valorVendaMax', String(params.valorVendaMax));
+  if (params?.valorAluguelMin != null) q.set('valorAluguelMin', String(params.valorAluguelMin));
+  if (params?.valorAluguelMax != null) q.set('valorAluguelMax', String(params.valorAluguelMax));
+  if (params?.qtdQuartosMin != null) q.set('qtdQuartosMin', String(params.qtdQuartosMin));
+  if (params?.areaMin != null) q.set('areaMin', String(params.areaMin));
+  if (params?.busca) q.set('busca', params.busca);
   const query = q.toString() ? `?${q}` : '';
   const res = await fetch(`${API_URL}/imoveis${query}`, { headers: authHeaders() });
   return handleRes(res);
@@ -228,10 +250,16 @@ export type DashboardStats = {
   tarefasAtrasadas: number;
   imoveisPorStatus: Record<string, number>;
   novosLeads: number;
+  leadsNoPeriodo?: number;
+  imoveisNoPeriodo?: number;
 };
 
-export async function getDashboardStats(): Promise<DashboardStats> {
-  const res = await fetch(`${API_URL}/dashboard/estatisticas`, { headers: authHeaders() });
+export async function getDashboardStats(params?: { dataInicio?: string; dataFim?: string }): Promise<DashboardStats> {
+  const q = new URLSearchParams();
+  if (params?.dataInicio) q.set('dataInicio', params.dataInicio);
+  if (params?.dataFim) q.set('dataFim', params.dataFim);
+  const query = q.toString() ? `?${q}` : '';
+  const res = await fetch(`${API_URL}/dashboard/estatisticas${query}`, { headers: authHeaders() });
   return handleRes(res);
 }
 

@@ -54,6 +54,10 @@ export class UpdateImovelDto {
   destaque?: boolean;
 
   @IsOptional()
+  @IsBoolean()
+  promocao?: boolean;
+
+  @IsOptional()
   @IsString()
   codigo?: string;
 

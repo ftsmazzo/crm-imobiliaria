@@ -10,12 +10,13 @@ export default function Empreendimentos() {
   const [lista, setLista] = useState<Empreendimento[]>([]);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState('');
+  const [busca, setBusca] = useState('');
 
   async function load() {
     setLoading(true);
     setErro('');
     try {
-      const data = await getEmpreendimentos();
+      const data = await getEmpreendimentos(busca.trim() || undefined);
       setLista(data);
     } catch (e) {
       setErro(e instanceof Error ? e.message : 'Erro ao carregar');
@@ -26,7 +27,7 @@ export default function Empreendimentos() {
 
   useEffect(() => {
     load();
-  }, []);
+  }, [busca]);
 
   async function handleDelete(e: Empreendimento) {
     if (!confirm(`Excluir empreendimento "${e.nome}"? Imóveis vinculados ficarão sem empreendimento.`)) return;
@@ -49,6 +50,13 @@ export default function Empreendimentos() {
         <p className="lead">Cadastre empreendimentos e condomínios para vincular aos imóveis.</p>
         {erro && <p className="empreendimentos-erro">{erro}</p>}
         <div className="empreendimentos-toolbar">
+          <input
+            type="text"
+            className="empreendimentos-busca"
+            placeholder="Buscar por nome"
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+          />
           <button type="button" className="empreendimentos-btn-new" onClick={() => navigate('/empreendimentos/novo')}>
             + Novo empreendimento
           </button>

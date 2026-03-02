@@ -13,6 +13,11 @@ export class ImoveisService {
     const usuarioResponsavelId =
       dto.usuarioResponsavelId ??
       (user?.role === 'corretor' ? user.id : undefined);
+    let codigo = dto.codigo?.trim() || undefined;
+    if (!codigo) {
+      const count = await this.prisma.imovel.count();
+      codigo = `IMV-${String(count + 1).padStart(5, '0')}`;
+    }
     return this.prisma.imovel.create({
       data: {
         tipo: dto.tipo,
@@ -28,7 +33,8 @@ export class ImoveisService {
         valorCondominio: dto.valorCondominio != null ? dto.valorCondominio : undefined,
         status: dto.status ?? 'disponivel',
         destaque: dto.destaque ?? false,
-        codigo: dto.codigo,
+        promocao: dto.promocao ?? false,
+        codigo,
         quadra: dto.quadra,
         lote: dto.lote,
         numeroMatricula: dto.numeroMatricula,
@@ -69,6 +75,16 @@ export class ImoveisService {
     status?: string,
     destaque?: boolean,
     user?: Usuario,
+    opts?: {
+      usuarioResponsavelId?: string;
+      valorVendaMin?: number;
+      valorVendaMax?: number;
+      valorAluguelMin?: number;
+      valorAluguelMax?: number;
+      qtdQuartosMin?: number;
+      areaMin?: number;
+      busca?: string;
+    },
   ) {
     const where: Prisma.ImovelWhereInput = {};
     if (cidade) where.cidade = { contains: cidade, mode: 'insensitive' };
@@ -78,6 +94,30 @@ export class ImoveisService {
     if (destaque === true) where.destaque = true;
     if (user?.role === 'corretor') {
       where.usuarioResponsavelId = user.id;
+    } else if (opts?.usuarioResponsavelId) {
+      where.usuarioResponsavelId = opts.usuarioResponsavelId;
+    }
+    if (opts?.valorVendaMin != null || opts?.valorVendaMax != null) {
+      where.valorVenda = {};
+      if (opts.valorVendaMin != null) (where.valorVenda as Prisma.DecimalNullableFilter).gte = opts.valorVendaMin;
+      if (opts.valorVendaMax != null) (where.valorVenda as Prisma.DecimalNullableFilter).lte = opts.valorVendaMax;
+    }
+    if (opts?.valorAluguelMin != null || opts?.valorAluguelMax != null) {
+      where.valorAluguel = {};
+      if (opts.valorAluguelMin != null) (where.valorAluguel as Prisma.DecimalNullableFilter).gte = opts.valorAluguelMin;
+      if (opts.valorAluguelMax != null) (where.valorAluguel as Prisma.DecimalNullableFilter).lte = opts.valorAluguelMax;
+    }
+    if (opts?.qtdQuartosMin != null) where.qtdQuartos = { gte: opts.qtdQuartosMin };
+    if (opts?.areaMin != null) where.area = { gte: opts.areaMin };
+    if (opts?.busca?.trim()) {
+      const term = opts.busca.trim();
+      where.OR = [
+        { codigo: { contains: term, mode: 'insensitive' } },
+        { bairro: { contains: term, mode: 'insensitive' } },
+        { cidade: { contains: term, mode: 'insensitive' } },
+        { descricao: { contains: term, mode: 'insensitive' } },
+        { empreendimento: { nome: { contains: term, mode: 'insensitive' } } },
+      ];
     }
     return this.prisma.imovel.findMany({
       where,
@@ -126,6 +166,7 @@ export class ImoveisService {
       ...(dto.valorCondominio !== undefined && { valorCondominio: dto.valorCondominio }),
       ...(dto.status !== undefined && { status: dto.status }),
       ...(dto.destaque !== undefined && { destaque: dto.destaque }),
+      ...(dto.promocao !== undefined && { promocao: dto.promocao }),
       ...(dto.codigo !== undefined && { codigo: dto.codigo }),
       ...(dto.quadra !== undefined && { quadra: dto.quadra }),
       ...(dto.lote !== undefined && { lote: dto.lote }),
@@ -157,7 +198,10 @@ export class ImoveisService {
       ...(dto.proprietarioId !== undefined && { proprietarioId: dto.proprietarioId }),
       ...(dto.usuarioResponsavelId !== undefined && { usuarioResponsavelId: dto.usuarioResponsavelId }),
     };
-    if (user?.role === 'corretor') delete (data as Record<string, unknown>).usuarioResponsavelId;
+    if (user?.role === 'corretor') {
+      delete (data as Record<string, unknown>).usuarioResponsavelId;
+      delete (data as Record<string, unknown>).destaque; // apenas gestor pode alterar destaque (Fase 2.6)
+    }
     return this.prisma.imovel.update({ where: { id }, data });
   }
 

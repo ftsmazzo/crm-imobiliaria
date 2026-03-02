@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getImoveis, createImovel, deleteImovel, updateImovel } from '../api';
+import { getImoveis, createImovel, deleteImovel, updateImovel, getUsuarios } from '../api';
 import type { Imovel } from '../types';
+import type { UsuarioListItem } from '../api';
+import { getUser } from '../auth';
 import {
   parseCsvImoveis,
   gerarModeloCsv,
@@ -37,12 +39,31 @@ export default function Imoveis() {
   const [importing, setImporting] = useState(false);
   const [importProgress, setImportProgress] = useState({ current: 0, total: 0, ok: 0, errors: 0 });
   const [togglingDestaque, setTogglingDestaque] = useState<string | null>(null);
+  const [usuarios, setUsuarios] = useState<UsuarioListItem[]>([]);
+  const [filtros, setFiltros] = useState<{
+    busca?: string;
+    usuarioResponsavelId?: string;
+    valorVendaMin?: number;
+    valorVendaMax?: number;
+    qtdQuartosMin?: number;
+    areaMin?: number;
+  }>({});
+
+  const user = getUser();
+  const isGestor = user?.role === 'gestor';
 
   async function load() {
     setLoading(true);
     setErro('');
     try {
-      const data = await getImoveis();
+      const data = await getImoveis({
+        ...(filtros.busca && { busca: filtros.busca }),
+        ...(filtros.usuarioResponsavelId && { usuarioResponsavelId: filtros.usuarioResponsavelId }),
+        ...(filtros.valorVendaMin != null && { valorVendaMin: filtros.valorVendaMin }),
+        ...(filtros.valorVendaMax != null && { valorVendaMax: filtros.valorVendaMax }),
+        ...(filtros.qtdQuartosMin != null && { qtdQuartosMin: filtros.qtdQuartosMin }),
+        ...(filtros.areaMin != null && { areaMin: filtros.areaMin }),
+      });
       setLista(data);
     } catch (e) {
       setErro(e instanceof Error ? e.message : 'Erro ao carregar');
@@ -50,6 +71,10 @@ export default function Imoveis() {
       setLoading(false);
     }
   }
+
+  useEffect(() => {
+    if (isGestor) getUsuarios().then(setUsuarios).catch(() => setUsuarios([]));
+  }, [isGestor]);
 
   async function toggleDestaque(imovel: Imovel) {
     setTogglingDestaque(imovel.id);
@@ -67,7 +92,7 @@ export default function Imoveis() {
 
   useEffect(() => {
     load();
-  }, []);
+  }, [filtros.busca, filtros.usuarioResponsavelId, filtros.valorVendaMin, filtros.valorVendaMax, filtros.qtdQuartosMin, filtros.areaMin]);
 
   async function handleDelete(i: Imovel) {
     if (!confirm(`Excluir imóvel ${i.codigo || i.id}?`)) return;
@@ -156,6 +181,57 @@ export default function Imoveis() {
         <h1>Imóveis</h1>
         <p className="lead">Cadastre e gerencie imóveis para venda e locação.</p>
         {erro && <p className="imoveis-erro">{erro}</p>}
+        <div className="imoveis-filtros">
+          <input
+            type="text"
+            className="imoveis-filtro-busca"
+            placeholder="Buscar (código, bairro, cidade, condomínio)"
+            value={filtros.busca ?? ''}
+            onChange={(e) => setFiltros((f) => ({ ...f, busca: e.target.value || undefined }))}
+          />
+          {isGestor && (
+            <select
+              className="imoveis-filtro-select"
+              value={filtros.usuarioResponsavelId ?? ''}
+              onChange={(e) => setFiltros((f) => ({ ...f, usuarioResponsavelId: e.target.value || undefined }))}
+            >
+              <option value="">Todos os responsáveis</option>
+              {usuarios.map((u) => (
+                <option key={u.id} value={u.id}>{u.nome}</option>
+              ))}
+            </select>
+          )}
+          <input
+            type="number"
+            className="imoveis-filtro-num"
+            placeholder="Valor venda min"
+            value={filtros.valorVendaMin ?? ''}
+            onChange={(e) => setFiltros((f) => ({ ...f, valorVendaMin: e.target.value ? Number(e.target.value) : undefined }))}
+          />
+          <input
+            type="number"
+            className="imoveis-filtro-num"
+            placeholder="Valor venda max"
+            value={filtros.valorVendaMax ?? ''}
+            onChange={(e) => setFiltros((f) => ({ ...f, valorVendaMax: e.target.value ? Number(e.target.value) : undefined }))}
+          />
+          <input
+            type="number"
+            className="imoveis-filtro-num"
+            placeholder="Quartos mín"
+            min={0}
+            value={filtros.qtdQuartosMin ?? ''}
+            onChange={(e) => setFiltros((f) => ({ ...f, qtdQuartosMin: e.target.value ? Number(e.target.value) : undefined }))}
+          />
+          <input
+            type="number"
+            className="imoveis-filtro-num"
+            placeholder="Área mín (m²)"
+            min={0}
+            value={filtros.areaMin ?? ''}
+            onChange={(e) => setFiltros((f) => ({ ...f, areaMin: e.target.value ? Number(e.target.value) : undefined }))}
+          />
+        </div>
         <div className="imoveis-toolbar">
           <button type="button" className="imoveis-btn-import" onClick={openImportModal}>
             Importar CSV
@@ -185,6 +261,7 @@ export default function Imoveis() {
                     onClick={(e) => { e.stopPropagation(); toggleDestaque(i); }}
                     disabled={togglingDestaque === i.id}
                     title={i.destaque ? 'Remover do destaque (página inicial)' : 'Colocar em destaque (página inicial)'}
+                    style={{ display: isGestor ? undefined : 'none' }}
                   >
                     {i.destaque ? '★ Destaque' : '☆ Destaque'}
                   </button>

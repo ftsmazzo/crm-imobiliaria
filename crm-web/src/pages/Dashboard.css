@@ -14,6 +14,26 @@
   border: 1px solid rgba(235, 87, 87, 0.25);
 }
 
+.dashboard-periodo {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.dashboard-periodo label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.dashboard-periodo input[type="date"] {
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.875rem;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+}
+
 .dashboard-novos-leads {
   margin-bottom: var(--space-8);
   padding: var(--space-5) var(--space-6);

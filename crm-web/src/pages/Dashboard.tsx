@@ -25,15 +25,23 @@ const STATUS_IMOVEIS: { key: string; label: string }[] = [
   { key: 'alugado', label: 'Alugado' },
 ];
 
+function getMesAtual(): { dataInicio: string; dataFim: string } {
+  const now = new Date();
+  const dataFim = now.toISOString().slice(0, 10);
+  const dataInicio = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0, 10);
+  return { dataInicio, dataFim };
+}
+
 export default function Dashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState('');
+  const [periodo, setPeriodo] = useState<{ dataInicio: string; dataFim: string }>(() => getMesAtual());
   const user = getUser();
 
   useEffect(() => {
     let cancelled = false;
-    getDashboardStats()
+    getDashboardStats({ dataInicio: periodo.dataInicio, dataFim: periodo.dataFim })
       .then((data) => {
         if (!cancelled) setStats(data);
       })
@@ -44,7 +52,7 @@ export default function Dashboard() {
         if (!cancelled) setLoading(false);
       });
     return () => { cancelled = true; };
-  }, []);
+  }, [periodo.dataInicio, periodo.dataFim]);
 
   if (loading) {
     return (
@@ -66,6 +74,21 @@ export default function Dashboard() {
         </p>
         {erro && <p className="dashboard-erro">{erro}</p>}
 
+        <div className="dashboard-periodo">
+          <label>Período (leads e imóveis):</label>
+          <input
+            type="date"
+            value={periodo.dataInicio}
+            onChange={(e) => setPeriodo((p) => ({ ...p, dataInicio: e.target.value }))}
+          />
+          <span>até</span>
+          <input
+            type="date"
+            value={periodo.dataFim}
+            onChange={(e) => setPeriodo((p) => ({ ...p, dataFim: e.target.value }))}
+          />
+        </div>
+
         {stats && stats.novosLeads > 0 && (
           <div className="dashboard-novos-leads">
             <Link to="/pipeline?estagio=novo">
@@ -76,6 +99,20 @@ export default function Dashboard() {
 
         {stats && (
           <div className="dashboard-grid">
+            {stats.leadsNoPeriodo !== undefined && stats.imoveisNoPeriodo !== undefined && (
+              <>
+                <section className="dashboard-card">
+                  <h2>Leads no período</h2>
+                  <p className="dashboard-number">{stats.leadsNoPeriodo}</p>
+                  <p className="dashboard-hint">Contatos criados entre {periodo.dataInicio} e {periodo.dataFim}</p>
+                </section>
+                <section className="dashboard-card">
+                  <h2>Imóveis no período</h2>
+                  <p className="dashboard-number">{stats.imoveisNoPeriodo}</p>
+                  <p className="dashboard-hint">Imóveis cadastrados entre {periodo.dataInicio} e {periodo.dataFim}</p>
+                </section>
+              </>
+            )}
             <section className="dashboard-card dashboard-card-funil">
               <h2>Leads por estágio</h2>
               <ul className="dashboard-funil-list">

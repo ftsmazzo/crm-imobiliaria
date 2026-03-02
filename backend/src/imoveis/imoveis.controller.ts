@@ -51,8 +51,26 @@ export class ImoveisController {
     @Query('bairro') bairro?: string,
     @Query('tipo') tipo?: string,
     @Query('status') status?: string,
+    @Query('usuarioResponsavelId') usuarioResponsavelId?: string,
+    @Query('valorVendaMin') valorVendaMin?: string,
+    @Query('valorVendaMax') valorVendaMax?: string,
+    @Query('valorAluguelMin') valorAluguelMin?: string,
+    @Query('valorAluguelMax') valorAluguelMax?: string,
+    @Query('qtdQuartosMin') qtdQuartosMin?: string,
+    @Query('areaMin') areaMin?: string,
+    @Query('busca') busca?: string,
   ) {
-    return this.service.findAll(cidade, bairro, tipo, status, undefined, user);
+    const opts = {
+      ...(usuarioResponsavelId && { usuarioResponsavelId }),
+      ...(valorVendaMin !== undefined && valorVendaMin !== '' && { valorVendaMin: Number(valorVendaMin) }),
+      ...(valorVendaMax !== undefined && valorVendaMax !== '' && { valorVendaMax: Number(valorVendaMax) }),
+      ...(valorAluguelMin !== undefined && valorAluguelMin !== '' && { valorAluguelMin: Number(valorAluguelMin) }),
+      ...(valorAluguelMax !== undefined && valorAluguelMax !== '' && { valorAluguelMax: Number(valorAluguelMax) }),
+      ...(qtdQuartosMin !== undefined && qtdQuartosMin !== '' && { qtdQuartosMin: Number(qtdQuartosMin) }),
+      ...(areaMin !== undefined && areaMin !== '' && { areaMin: Number(areaMin) }),
+      ...(busca?.trim() && { busca: busca.trim() }),
+    };
+    return this.service.findAll(cidade, bairro, tipo, status, undefined, user, opts);
   }
 
   @Get(':id')

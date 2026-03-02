@@ -17,8 +17,12 @@ export class EmpreendimentosService {
     });
   }
 
-  async findAll() {
+  async findAll(nome?: string) {
+    const where = nome?.trim()
+      ? { nome: { contains: nome.trim(), mode: 'insensitive' as const } }
+      : {};
     return this.prisma.empreendimento.findMany({
+      where,
       orderBy: { nome: 'asc' },
       include: { _count: { select: { imoveis: true } } },
     });
