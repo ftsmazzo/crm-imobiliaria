@@ -20,7 +20,7 @@ export default function ImovelCard({ imovel }: { imovel: ImovelPublic }) {
     <Link href={`/imoveis/${imovel.id}`} className="imovel-card">
       <div className="imovel-card-capa">
         {fotoCapa ? (
-          <img src={fotoCapa} alt="" className="imovel-card-capa-img" />
+          <img src={fotoCapa} alt="" className="imovel-card-capa-img" loading="lazy" />
         ) : (
           <div className="imovel-card-capa-placeholder" aria-hidden>
             <span className="imovel-card-capa-icon">🏠</span>

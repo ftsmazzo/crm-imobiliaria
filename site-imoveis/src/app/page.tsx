@@ -3,7 +3,6 @@ import { getImoveis } from '@/lib/api';
 import ImovelCard from '@/components/ImovelCard';
 
 export default async function Home() {
-  // Sem cache: lista sempre atualizada (excluídos não aparecem)
   const destaque = await getImoveis(
     { status: 'disponivel', destaque: true },
     { cache: 'no-store' },
@@ -14,17 +13,22 @@ export default async function Home() {
       <section className="hero">
         <div className="container">
           <h1>Encontre o imóvel ideal</h1>
-          <p className="hero-lead">Venda e locação com atendimento personalizado.</p>
+          <p className="hero-lead">
+            Imóveis para venda e locação com atendimento personalizado. Confira nossos destaques.
+          </p>
           <Link href="/imoveis" className="btn btn-primary">
             Ver imóveis
           </Link>
         </div>
       </section>
 
-      <section className="container" style={{ marginTop: '3rem' }}>
-        <h2 style={{ marginBottom: '1.5rem' }}>Imóveis em destaque</h2>
+      <section className="container" style={{ marginTop: 'var(--site-space-12)' }}>
+        <h2 className="section-title">Imóveis em destaque</h2>
+        <p className="section-subtitle">
+          Seleção de imóveis disponíveis para você.
+        </p>
         {destaque.length === 0 ? (
-          <p style={{ color: 'var(--site-muted)' }}>
+          <p className="imoveis-empty-msg">
             Nenhum imóvel em destaque no momento. <Link href="/imoveis">Ver todos os imóveis</Link>
           </p>
         ) : (
@@ -34,7 +38,7 @@ export default async function Home() {
             ))}
           </div>
         )}
-        <p style={{ marginTop: '1.5rem', textAlign: 'center' }}>
+        <p style={{ marginTop: 'var(--site-space-8)', textAlign: 'center' }}>
           <Link href="/imoveis" className="btn btn-outline">
             Ver todos os imóveis
           </Link>
