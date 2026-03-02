@@ -26,6 +26,10 @@ export class UpdateContatoDto {
   estagio?: string;
 
   @IsOptional()
+  @IsNumber()
+  valorDisponivel?: number;
+
+  @IsOptional()
   @IsUUID()
   usuarioResponsavelId?: string;
 }

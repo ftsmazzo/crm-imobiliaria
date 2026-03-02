@@ -21,6 +21,7 @@ export class ContatosService {
         origem: dto.origem ?? undefined,
         observacoes: dto.observacoes ?? undefined,
         estagio: dto.estagio ?? 'novo',
+        valorDisponivel: dto.valorDisponivel ?? undefined,
         usuarioResponsavelId: usuarioResponsavelId ?? undefined,
       },
     });
@@ -73,12 +74,14 @@ export class ContatosService {
       ...(dto.origem !== undefined && { origem: dto.origem }),
       ...(dto.observacoes !== undefined && { observacoes: dto.observacoes }),
       ...(dto.estagio !== undefined && { estagio: dto.estagio }),
+      ...(dto.valorDisponivel !== undefined && { valorDisponivel: dto.valorDisponivel }),
       ...(dto.usuarioResponsavelId !== undefined && { usuarioResponsavelId: dto.usuarioResponsavelId }),
     };
     if (user?.role === 'gestor' && dto.usuarioResponsavelId === undefined) {
       // gestor pode manter qualquer valor
     } else if (user?.role === 'corretor') {
-      delete (data as Record<string, unknown>).usuarioResponsavelId;
+      // corretor pode alterar usuarioResponsavelId para "passar" o lead para outro corretor
+      // (só consegue chegar aqui se já for o responsável atual — findOne exige isso)
     }
     return this.prisma.contato.update({ where: { id }, data });
   }

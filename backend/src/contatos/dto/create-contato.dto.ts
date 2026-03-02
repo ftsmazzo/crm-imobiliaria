@@ -1,4 +1,4 @@
-import { IsEmail, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsEmail, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreateContatoDto {
   @IsString()
@@ -22,6 +22,10 @@ export class CreateContatoDto {
   @IsOptional()
   @IsString()
   estagio?: string;
+
+  @IsOptional()
+  @IsNumber()
+  valorDisponivel?: number;
 
   @IsOptional()
   @IsUUID()

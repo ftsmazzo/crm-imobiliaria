@@ -14,6 +14,7 @@ export type Contato = {
   origem: string | null;
   observacoes: string | null;
   estagio: string;
+  valorDisponivel?: number | string | null;
   usuarioResponsavelId: string | null;
   criadoEm: string;
   atualizadoEm: string;

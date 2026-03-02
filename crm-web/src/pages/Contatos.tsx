@@ -14,6 +14,7 @@ const emptyForm = () => ({
   origem: '',
   observacoes: '',
   estagio: 'novo',
+  valorDisponivel: '',
 });
 
 export default function Contatos() {
@@ -25,12 +26,13 @@ export default function Contatos() {
   const [detailContato, setDetailContato] = useState<Contato | null>(null);
   const [form, setForm] = useState(emptyForm());
   const [saving, setSaving] = useState(false);
+  const [filtroEstagio, setFiltroEstagio] = useState('');
 
   async function load() {
     setLoading(true);
     setErro('');
     try {
-      const data = await getContatos();
+      const data = await getContatos(filtroEstagio || undefined);
       setLista(data);
     } catch (e) {
       setErro(e instanceof Error ? e.message : 'Erro ao carregar');
@@ -41,7 +43,7 @@ export default function Contatos() {
 
   useEffect(() => {
     load();
-  }, []);
+  }, [filtroEstagio]);
 
   function openNew() {
     setForm(emptyForm());
@@ -49,6 +51,7 @@ export default function Contatos() {
   }
 
   function openEdit(c: Contato) {
+    const v = c.valorDisponivel != null ? Number(c.valorDisponivel) : undefined;
     setForm({
       nome: c.nome,
       email: c.email,
@@ -56,6 +59,7 @@ export default function Contatos() {
       origem: c.origem ?? '',
       observacoes: c.observacoes ?? '',
       estagio: c.estagio,
+      valorDisponivel: v !== undefined && !Number.isNaN(v) ? String(v) : '',
     });
     setModal(c);
   }
@@ -65,6 +69,8 @@ export default function Contatos() {
     setSaving(true);
     setErro('');
     try {
+      const valorNum = form.valorDisponivel ? parseFloat(form.valorDisponivel) : undefined;
+      const valorDisponivel = valorNum !== undefined && !Number.isNaN(valorNum) ? valorNum : undefined;
       if (modal === 'novo') {
         await createContato({
           nome: form.nome,
@@ -73,6 +79,7 @@ export default function Contatos() {
           origem: form.origem || undefined,
           observacoes: form.observacoes || undefined,
           estagio: form.estagio,
+          valorDisponivel,
         });
       } else if (modal) {
         await updateContato(modal.id, {
@@ -82,6 +89,7 @@ export default function Contatos() {
           origem: form.origem || undefined,
           observacoes: form.observacoes || undefined,
           estagio: form.estagio,
+          valorDisponivel,
         });
       }
       setModal(null);
@@ -103,6 +111,37 @@ export default function Contatos() {
     }
   }
 
+  function formatValor(v: number | string | null | undefined): string {
+    if (v == null || v === '') return '';
+    const n = Number(v);
+    return Number.isNaN(n) ? '' : n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function handleExportar() {
+    const cols = ['Nome', 'E-mail', 'Telefone', 'Origem', 'Estágio', 'Valor disponível', 'Responsável', 'Observações'];
+    const header = cols.join(';');
+    const rows = lista.map((c) =>
+      [
+        (c.nome ?? '').replace(/;/g, ','),
+        (c.email ?? '').replace(/;/g, ','),
+        (c.telefone ?? '').replace(/;/g, ','),
+        (c.origem ?? '').replace(/;/g, ',').replace(/\n/g, ' '),
+        ESTAGIO_LABEL[c.estagio as keyof typeof ESTAGIO_LABEL] ?? c.estagio,
+        formatValor(c.valorDisponivel),
+        (c.usuarioResponsavel?.nome ?? '').replace(/;/g, ','),
+        (c.observacoes ?? '').replace(/;/g, ',').replace(/\n/g, ' '),
+      ].join(';')
+    );
+    const csv = '\uFEFF' + header + '\r\n' + rows.join('\r\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `contatos-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   if (loading) return <AppLayout><div className="contatos-loading">Carregando...</div></AppLayout>;
 
   return (
@@ -112,10 +151,28 @@ export default function Contatos() {
         <p className="lead">Leads e contatos do CRM.</p>
         {erro && <p className="contatos-erro">{erro}</p>}
         <div className="contatos-toolbar">
-          <span />
-          <button type="button" className="contatos-btn-new" onClick={openNew}>
-            Novo contato
-          </button>
+          <div className="contatos-filtros">
+            <label htmlFor="contatos-filtro-estagio">Estágio</label>
+            <select
+              id="contatos-filtro-estagio"
+              className="contatos-filtro-select"
+              value={filtroEstagio}
+              onChange={(e) => setFiltroEstagio(e.target.value)}
+            >
+              <option value="">Todos</option>
+              {ESTAGIOS.map((e) => (
+                <option key={e} value={e}>{ESTAGIO_LABEL[e]}</option>
+              ))}
+            </select>
+          </div>
+          <div className="contatos-toolbar-actions">
+            <button type="button" className="contatos-btn-export" onClick={handleExportar} disabled={lista.length === 0}>
+              Exportar planilha
+            </button>
+            <button type="button" className="contatos-btn-new" onClick={openNew}>
+              Novo contato
+            </button>
+          </div>
         </div>
         <div className="contatos-table-wrap">
           <table className="contatos-table">
@@ -217,6 +274,15 @@ export default function Contatos() {
                   <option key={e} value={e}>{ESTAGIO_LABEL[e]}</option>
                 ))}
               </select>
+              <label>Valor disponível (R$)</label>
+              <input
+                type="number"
+                min={0}
+                step={0.01}
+                placeholder="Ex.: valor máximo para imóvel"
+                value={form.valorDisponivel}
+                onChange={(e) => setForm((f) => ({ ...f, valorDisponivel: e.target.value }))}
+              />
               <label>Observações</label>
               <textarea
                 value={form.observacoes}

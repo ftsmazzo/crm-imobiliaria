@@ -29,6 +29,7 @@ model Contato {
   origem               String?
   observacoes          String?   @map("observacoes")
   estagio              String    @default("novo") // novo, qualificado, visita, proposta, fechado
+  valorDisponivel      Decimal?  @map("valor_disponivel") @db.Decimal(14, 2) // valor máximo para imóvel
   usuarioResponsavelId String?   @map("usuario_responsavel_id")
   criadoEm             DateTime  @default(now()) @map("criado_em")
   atualizadoEm         DateTime  @updatedAt @map("atualizado_em")

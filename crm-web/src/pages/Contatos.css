@@ -16,6 +16,57 @@
   box-shadow: var(--shadow-sm);
 }
 
+.contatos-filtros {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.contatos-filtros label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.contatos-filtro-select {
+  min-width: 160px;
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.875rem;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--bg-overlay);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.contatos-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.contatos-btn-export {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--accent);
+  background: var(--accent-muted);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease;
+}
+
+.contatos-btn-export:hover:not(:disabled) {
+  background: var(--accent);
+  color: var(--text-inverse);
+}
+
+.contatos-btn-export:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .contatos-btn-new {
   padding: 0.65rem 1.25rem;
   font-size: 0.9rem;

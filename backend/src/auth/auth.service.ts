@@ -13,16 +13,11 @@ export class AuthService {
   ) {}
 
   async getUsuarios(currentUser: Usuario): Promise<{ id: string; nome: string }[]> {
-    if (currentUser.role === 'gestor') {
-      return this.prisma.usuario.findMany({
-        where: { ativo: true },
-        select: { id: true, nome: true },
-        orderBy: { nome: 'asc' },
-      });
-    }
+    // Gestor: lista todos. Corretor: lista todos para poder "passar lead" para outro usuário.
     return this.prisma.usuario.findMany({
-      where: { id: currentUser.id, ativo: true },
+      where: { ativo: true },
       select: { id: true, nome: true },
+      orderBy: { nome: 'asc' },
     });
   }
 

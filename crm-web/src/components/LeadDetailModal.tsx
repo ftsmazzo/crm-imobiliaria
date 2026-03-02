@@ -17,7 +17,10 @@ export default function LeadDetailModal({ contato, onClose, onSaved }: Props) {
   const navigate = useNavigate();
   const user = getUser();
   const isGestor = user?.role === 'gestor';
+  const isCorretor = user?.role === 'corretor';
+  const canReassign = isGestor || (isCorretor && contato.usuarioResponsavelId === user?.id);
   const [usuarios, setUsuarios] = useState<UsuarioListItem[]>([]);
+  const valorDisponivelNum = contato.valorDisponivel != null ? Number(contato.valorDisponivel) : undefined;
   const [form, setForm] = useState({
     nome: contato.nome,
     email: contato.email,
@@ -25,22 +28,24 @@ export default function LeadDetailModal({ contato, onClose, onSaved }: Props) {
     origem: contato.origem ?? '',
     observacoes: contato.observacoes ?? '',
     estagio: contato.estagio,
+    valorDisponivel: valorDisponivelNum !== undefined && !Number.isNaN(valorDisponivelNum) ? String(valorDisponivelNum) : '',
     usuarioResponsavelId: contato.usuarioResponsavelId ?? '',
   });
   const [saving, setSaving] = useState(false);
   const [erro, setErro] = useState('');
 
   useEffect(() => {
-    if (isGestor) {
+    if (canReassign) {
       getUsuarios().then(setUsuarios).catch(() => setUsuarios([]));
     }
-  }, [isGestor]);
+  }, [canReassign]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
     setErro('');
     try {
+      const valorNum = form.valorDisponivel ? parseFloat(form.valorDisponivel) : undefined;
       const updated = await updateContato(contato.id, {
         nome: form.nome,
         email: form.email,
@@ -48,7 +53,8 @@ export default function LeadDetailModal({ contato, onClose, onSaved }: Props) {
         origem: form.origem || undefined,
         observacoes: form.observacoes || undefined,
         estagio: form.estagio,
-        ...(isGestor && { usuarioResponsavelId: form.usuarioResponsavelId || undefined }),
+        valorDisponivel: valorNum !== undefined && !Number.isNaN(valorNum) ? valorNum : undefined,
+        ...(canReassign && { usuarioResponsavelId: form.usuarioResponsavelId || undefined }),
       });
       onSaved?.(updated as Contato);
       onClose();
@@ -108,6 +114,17 @@ export default function LeadDetailModal({ contato, onClose, onSaved }: Props) {
               />
             </div>
             <div className="form-group">
+              <label>Valor disponível (R$)</label>
+              <input
+                type="number"
+                min={0}
+                step={0.01}
+                placeholder="Ex.: valor máximo para imóvel"
+                value={form.valorDisponivel}
+                onChange={(e) => setForm((f) => ({ ...f, valorDisponivel: e.target.value }))}
+              />
+            </div>
+            <div className="form-group">
               <label>Estágio</label>
               <select
                 value={form.estagio}
@@ -118,9 +135,9 @@ export default function LeadDetailModal({ contato, onClose, onSaved }: Props) {
                 ))}
               </select>
             </div>
-            {isGestor && (
+            {canReassign && (
               <div className="form-group">
-                <label>Responsável</label>
+                <label>{isGestor ? 'Responsável' : 'Passar para'}</label>
                 <select
                   value={form.usuarioResponsavelId}
                   onChange={(e) => setForm((f) => ({ ...f, usuarioResponsavelId: e.target.value }))}
