@@ -194,9 +194,9 @@ export class ImoveisService {
       ...(dto.totalUnidades !== undefined && { totalUnidades: dto.totalUnidades }),
       ...(dto.qtdTorres !== undefined && { qtdTorres: dto.qtdTorres }),
       ...(dto.caracteristicas !== undefined && { caracteristicas: dto.caracteristicas }),
-      ...(dto.empreendimentoId !== undefined && { empreendimentoId: dto.empreendimentoId }),
-      ...(dto.proprietarioId !== undefined && { proprietarioId: dto.proprietarioId }),
-      ...(dto.usuarioResponsavelId !== undefined && { usuarioResponsavelId: dto.usuarioResponsavelId }),
+      ...(dto.empreendimentoId !== undefined && { empreendimentoId: dto.empreendimentoId?.trim() || null }),
+      ...(dto.proprietarioId !== undefined && { proprietarioId: dto.proprietarioId?.trim() || null }),
+      ...(dto.usuarioResponsavelId !== undefined && { usuarioResponsavelId: dto.usuarioResponsavelId?.trim() || null }),
     };
     if (user?.role === 'corretor') {
       delete (data as Record<string, unknown>).usuarioResponsavelId;

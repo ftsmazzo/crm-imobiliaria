@@ -204,6 +204,74 @@
   color: var(--text-muted);
 }
 
+.pipeline-card-tarefas-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.pipeline-card-tarefas-list li {
+  margin: 0 0 var(--space-1);
+}
+
+.pipeline-card-tarefas-list li:last-child {
+  margin-bottom: 0;
+}
+
+.pipeline-card-tarefa-link {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: var(--space-1) 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.75rem;
+  color: var(--accent);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+}
+
+.pipeline-card-tarefa-link:hover {
+  text-decoration: underline;
+  color: var(--accent-hover);
+}
+
+.pipeline-card-tarefa-titulo {
+  display: block;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.pipeline-card-tarefa-prioridade {
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+  margin-right: var(--space-1);
+}
+
+.pipeline-card-tarefa-prioridade-baixa {
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+}
+
+.pipeline-card-tarefa-prioridade-media {
+  background: rgba(59, 130, 246, 0.15);
+  color: #2563eb;
+}
+
+.pipeline-card-tarefa-prioridade-alta {
+  background: rgba(239, 68, 68, 0.15);
+  color: #dc2626;
+}
+
+.pipeline-card-tarefa-dias {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+}
+
 .pipeline-card-tarefas-pendentes {
   background: rgba(242, 153, 74, 0.15);
   border-color: var(--accent-warm);

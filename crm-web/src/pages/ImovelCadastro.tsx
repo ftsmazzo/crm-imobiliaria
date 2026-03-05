@@ -198,7 +198,10 @@ export default function ImovelCadastro() {
         })
         .then((list) => { setFotos(list); setFotosLoading(false); })
         .catch(() => { setFotos([]); setFotosLoading(false); })
-        .finally(() => setLoading(false));
+        .finally(() => {
+          setLoading(false);
+          if (!searchParams.get('step')) setStep(1);
+        });
     }
   }, [id, isNew]);
 
@@ -285,7 +288,7 @@ export default function ImovelCadastro() {
       const payload = buildPayload();
       if (isNew) {
         const created = await createImovel(payload);
-        navigate(`/imoveis/${created.id}/editar?step=7`, { replace: true });
+        navigate(`/imoveis/${created.id}/editar?step=6`, { replace: true });
         return;
       } else if (id) {
         const updated = await updateImovel(id, payload);
@@ -372,7 +375,13 @@ export default function ImovelCadastro() {
           </div>
         </header>
 
-        <form onSubmit={handleSubmit} className="imovel-cadastro-form">
+        <form
+          onSubmit={handleSubmit}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && isNew && step === 6) e.preventDefault();
+          }}
+          className="imovel-cadastro-form"
+        >
           {erro && <p className="imovel-cadastro-erro">{erro}</p>}
 
           {step === 1 && (

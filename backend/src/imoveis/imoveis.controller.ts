@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Post, Put, Query, 
 import { Usuario } from '@prisma/client';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CurrentUser } from '../auth/current-user.decorator';
+import { ImoveisDocumentosService } from './imoveis-documentos.service';
 import { ImoveisFotosService } from './imoveis-fotos.service';
 import { ImoveisService } from './imoveis.service';
 import { CreateImovelDto } from './dto/create-imovel.dto';
@@ -12,6 +13,7 @@ export class ImoveisController {
   constructor(
     private service: ImoveisService,
     private fotosService: ImoveisFotosService,
+    private documentosService: ImoveisDocumentosService,
   ) {}
 
   @Post()
@@ -42,6 +44,41 @@ export class ImoveisController {
     @Param('fotoId', ParseUUIDPipe) fotoId: string,
   ) {
     return this.fotosService.remove(id, fotoId, user);
+  }
+
+  @Post(':id/documentos')
+  @UseInterceptors(FileInterceptor('file', { limits: { fileSize: 15 * 1024 * 1024 } })) // 15MB
+  async uploadDocumento(
+    @CurrentUser() user: Usuario,
+    @Param('id', ParseUUIDPipe) id: string,
+    @UploadedFile() file: { buffer: Buffer; mimetype: string; originalname: string },
+    @Body('tipo') tipo?: string,
+  ) {
+    if (!file?.buffer) throw new Error('Arquivo não enviado');
+    return this.documentosService.upload(id, file, tipo || 'outro', user);
+  }
+
+  @Get(':id/documentos')
+  listDocumentos(@CurrentUser() user: Usuario, @Param('id', ParseUUIDPipe) id: string) {
+    return this.documentosService.list(id, user);
+  }
+
+  @Get(':id/documentos/:docId/url')
+  async getDocumentoUrl(
+    @CurrentUser() user: Usuario,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('docId', ParseUUIDPipe) docId: string,
+  ) {
+    return { url: await this.documentosService.getViewUrl(id, docId, user) };
+  }
+
+  @Delete(':id/documentos/:docId')
+  removeDocumento(
+    @CurrentUser() user: Usuario,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('docId', ParseUUIDPipe) docId: string,
+  ) {
+    return this.documentosService.remove(id, docId, user);
   }
 
   @Get()

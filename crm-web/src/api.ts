@@ -244,6 +244,39 @@ export async function deleteImovelFoto(imovelId: string, fotoId: string): Promis
   if (!res.ok) await handleRes(res);
 }
 
+export type ImovelDocumento = { id: string; tipo: string; nome: string | null; criadoEm: string; url: string };
+
+export async function getImovelDocumentos(imovelId: string): Promise<ImovelDocumento[]> {
+  const res = await fetch(`${API_URL}/imoveis/${imovelId}/documentos`, { headers: authHeaders() });
+  return handleRes(res);
+}
+
+export async function uploadImovelDocumento(imovelId: string, file: File, tipo: string): Promise<{ id: string; tipo: string; nome: string | null }> {
+  const form = new FormData();
+  form.append('file', file);
+  form.append('tipo', tipo);
+  const token = getToken();
+  const res = await fetch(`${API_URL}/imoveis/${imovelId}/documentos`, {
+    method: 'POST',
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    body: form,
+  });
+  return handleRes(res);
+}
+
+export async function getImovelDocumentoUrl(imovelId: string, docId: string): Promise<{ url: string }> {
+  const res = await fetch(`${API_URL}/imoveis/${imovelId}/documentos/${docId}/url`, { headers: authHeaders() });
+  return handleRes(res);
+}
+
+export async function deleteImovelDocumento(imovelId: string, docId: string): Promise<void> {
+  const res = await fetch(`${API_URL}/imoveis/${imovelId}/documentos/${docId}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  });
+  if (!res.ok) await handleRes(res);
+}
+
 // Dashboard
 export type DashboardStats = {
   contatosPorEstagio: Record<string, number>;

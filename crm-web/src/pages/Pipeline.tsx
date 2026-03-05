@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getContatos, getTarefas, updateContato, getUsuarios } from '../api';
 import type { UsuarioListItem } from '../api';
-import type { Contato, Estagio } from '../types';
-import { ESTAGIOS, ESTAGIO_LABEL as ESTAGIO_LABEL_TYPES } from '../types';
+import type { Contato, Estagio, Tarefa } from '../types';
+import { ESTAGIOS, ESTAGIO_LABEL as ESTAGIO_LABEL_TYPES, PRIORIDADE_LABEL, type PrioridadeTarefa } from '../types';
 import AppLayout from '../components/AppLayout';
 import LeadDetailModal from '../components/LeadDetailModal';
 import './Pipeline.css';
@@ -16,9 +16,20 @@ function formatTelefone(t: string | null): string {
   return t;
 }
 
+function diasParaPrazo(dataPrevista: string | null): number | null {
+  if (!dataPrevista) return null;
+  const prev = new Date(dataPrevista);
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+  prev.setHours(0, 0, 0, 0);
+  const diff = Math.ceil((prev.getTime() - hoje.getTime()) / (1000 * 60 * 60 * 24));
+  return diff;
+}
+
 function PipelineCard({
   c,
   tarefasPendentes,
+  tarefasPendentesList,
   onMudarEstagio,
   onDragStart,
   onDragEnd,
@@ -27,6 +38,7 @@ function PipelineCard({
 }: {
   c: Contato;
   tarefasPendentes: number;
+  tarefasPendentesList: Tarefa[];
   onMudarEstagio: (c: Contato, e: string) => void;
   onDragStart: (e: React.DragEvent, contato: Contato) => void;
   onDragEnd: () => void;
@@ -67,8 +79,29 @@ function PipelineCard({
         )}
         <div className={`pipeline-card-tarefas ${tarefasPendentes > 0 ? 'pipeline-card-tarefas-pendentes' : ''}`}>
           {tarefasPendentes === 0 && 'Nenhuma tarefa pendente'}
-          {tarefasPendentes === 1 && '1 tarefa pendente'}
-          {tarefasPendentes > 1 && `${tarefasPendentes} tarefas pendentes`}
+          {tarefasPendentes > 0 && (
+            <ul className="pipeline-card-tarefas-list">
+              {tarefasPendentesList.map((t) => {
+                const dias = diasParaPrazo(t.dataPrevista);
+                const textoDias = dias === null ? 'Sem data' : dias < 0 ? `Vencida há ${Math.abs(dias)} dia(s)` : dias === 0 ? 'Vence hoje' : `${dias} dia(s) para vencer`;
+                const prioridade = (t.prioridade as PrioridadeTarefa) || 'media';
+                return (
+                  <li key={t.id}>
+                    <button
+                      type="button"
+                      className="pipeline-card-tarefa-link"
+                      onClick={(e) => { e.stopPropagation(); navigate(`/tarefas?contatoId=${c.id}`); }}
+                      title="Abrir tarefas do lead"
+                    >
+                      <span className="pipeline-card-tarefa-titulo">{t.titulo}</span>
+                      <span className={`pipeline-card-tarefa-prioridade pipeline-card-tarefa-prioridade-${prioridade}`}>{PRIORIDADE_LABEL[prioridade]}</span>
+                      <span className="pipeline-card-tarefa-dias">{textoDias}</span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </div>
       </div>
       {showResumo && (
@@ -108,6 +141,7 @@ const ESTAGIO_LABEL = ESTAGIO_LABEL_TYPES;
 export default function Pipeline() {
   const [contatos, setContatos] = useState<Contato[]>([]);
   const [tarefasPendentesPorContato, setTarefasPendentesPorContato] = useState<Record<string, number>>({});
+  const [tarefasPendentesListPorContato, setTarefasPendentesListPorContato] = useState<Record<string, Tarefa[]>>({});
   const [usuarios, setUsuarios] = useState<UsuarioListItem[]>([]);
   const [filtroResponsavelId, setFiltroResponsavelId] = useState('');
   const [loading, setLoading] = useState(true);
@@ -126,13 +160,24 @@ export default function Pipeline() {
       ]);
       setContatos(contatosData);
       const pendentes: Record<string, number> = {};
+      const pendentesList: Record<string, Tarefa[]> = {};
       tarefasData
         .filter((t) => t.contatoId && !t.concluida)
         .forEach((t) => {
           const id = t.contatoId!;
           pendentes[id] = (pendentes[id] ?? 0) + 1;
+          if (!pendentesList[id]) pendentesList[id] = [];
+          pendentesList[id].push(t);
         });
+      Object.keys(pendentesList).forEach((id) => {
+        pendentesList[id].sort((a, b) => {
+          if (!a.dataPrevista) return 1;
+          if (!b.dataPrevista) return -1;
+          return new Date(a.dataPrevista).getTime() - new Date(b.dataPrevista).getTime();
+        });
+      });
       setTarefasPendentesPorContato(pendentes);
+      setTarefasPendentesListPorContato(pendentesList);
     } catch (e) {
       setErro(e instanceof Error ? e.message : 'Erro ao carregar');
     } finally {
@@ -243,6 +288,7 @@ export default function Pipeline() {
                     key={c.id}
                     c={c}
                     tarefasPendentes={tarefasPendentesPorContato[c.id] ?? 0}
+                    tarefasPendentesList={tarefasPendentesListPorContato[c.id] ?? []}
                     onMudarEstagio={handleMudarEstagio}
                     onDragStart={handleDragStart}
                     onDragEnd={handleDragEnd}
@@ -274,6 +320,7 @@ export default function Pipeline() {
                     key={c.id}
                     c={c}
                     tarefasPendentes={tarefasPendentesPorContato[c.id] ?? 0}
+                    tarefasPendentesList={tarefasPendentesListPorContato[c.id] ?? []}
                     onMudarEstagio={handleMudarEstagio}
                     onDragStart={handleDragStart}
                     onDragEnd={handleDragEnd}
@@ -305,6 +352,7 @@ export default function Pipeline() {
                     key={c.id}
                     c={c}
                     tarefasPendentes={tarefasPendentesPorContato[c.id] ?? 0}
+                    tarefasPendentesList={tarefasPendentesListPorContato[c.id] ?? []}
                     onMudarEstagio={handleMudarEstagio}
                     onDragStart={handleDragStart}
                     onDragEnd={handleDragEnd}

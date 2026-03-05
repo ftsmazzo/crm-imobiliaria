@@ -62,7 +62,7 @@ Objetivo: só após o cliente usar Fase 1 e 2; evita travar MVP em regras comple
 | 3.5 | **Valor vendido no Dashboard** | Gráfico ou número de “valor vendido” com filtro de mês. Só viável se existir registro de vendas (ex.: estágio “Fechado” + valor do imóvel, ou tabela de negócios). | Definir com cliente a fonte dos dados. |
 | 3.6 | **Cadastro de imóvel em uma aba** | Reorganizar edição do imóvel em uma única tela com seções e “Salvar alterações”. | UX; pode quebrar fluxo atual se não for planejado. |
 | 3.7 | **Proprietário obrigatório no imóvel** | Validação: não permitir salvar imóvel sem proprietário vinculado. | Regra de validação. |
-| 3.8 | **Docs do imóvel (IPTU, autorização)** | Nova área de anexos do imóvel (documentos), separada de fotos. | Storage + UI. |
+| 3.8 | **Docs do imóvel (IPTU, autorização)** | Nova área de anexos do imóvel (documentos), separada de fotos. **Entregue:** upload PDF, listagem, “Ver” (abre PDF em nova aba), MinIO. Ver `docs/DOCUMENTOS-PDF-DESENHO.md` para doc do processo (cliente+imóvel) e plus (converter para PDF). | Storage + UI. |
 | 3.9 | **Empreendimento: características e fotos** | Campos ou lista de características (ex.: pet-friendly, segurança 24h). Galeria de fotos do empreendimento. | Modelo + upload. |
 | 3.10 | **Mapa no cadastro do imóvel** | Endereço com marcador no mapa (ex.: Google Maps) e, se vincular a empreendimento, opção de pular endereço manual. | Integração e UX. |
 
@@ -98,5 +98,13 @@ Objetivo: só após o cliente usar Fase 1 e 2; evita travar MVP em regras comple
 | **1** | Fundação e clareza | Detalhe do lead, novos estágios, filtros (corretor/estágio), exportação, permissões Corretor/Admin |
 | **2** | Refinamento | Valor disponível, prioridade em tarefas, código imóvel, promoção, filtros imóveis, Dashboard com período, busca empreendimentos |
 | **3** | Após uso | Automações, anexos, tempo no funil, valor vendido, mapa, docs imóvel, empreendimento (características/fotos) |
+
+## Ajustes e melhorias recentes
+
+| Item | Descrição |
+|------|-----------|
+| **Correção: edição do imóvel** | IDs de relação (empreendimento, proprietário) vazios passam a ser enviados como `null` no backend; alterações passam a persistir corretamente. |
+| **Pipeline: tarefas no card** | Tarefas pendentes exibem dias para o prazo, prioridade (badge) e link para a tela de Tarefas do contato. |
+| **Documentos PDF do imóvel** | Na tela de detalhe do imóvel: seção Documentos (PDF) com upload (IPTU, Autorização, Outro), listagem, "Ver" (abre PDF em nova aba) e Excluir. MinIO. Ver `docs/DOCUMENTOS-PDF-DESENHO.md` para doc do processo e conversão para PDF. |
 
 Usar este plano como guia para desenvolvimento e para alinhar expectativas com o cliente (“primeiro Fase 1, depois refinamos”).

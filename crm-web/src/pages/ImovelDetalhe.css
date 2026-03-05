@@ -52,3 +52,37 @@
 .imovel-detalhe-fotos li { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
 .imovel-detalhe-fotos img { display: block; width: 100%; aspect-ratio: 4/3; object-fit: cover; }
 .imovel-detalhe-foto-placeholder { display: block; width: 100%; aspect-ratio: 4/3; background: var(--bg-subtle); }
+
+.imovel-detalhe-docs-hint { font-size: var(--text-sm); color: var(--text-muted); margin: 0 0 0.75rem; }
+.imovel-detalhe-docs-upload { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.imovel-detalhe-doc-tipo { padding: 0.35rem 0.5rem; border-radius: var(--radius); border: 1px solid var(--border); font-size: var(--text-sm); }
+.imovel-detalhe-docs-upload-btn {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  font-size: var(--text-sm);
+  border-radius: var(--radius);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  cursor: pointer;
+  background: var(--surface);
+}
+.imovel-detalhe-docs-upload-btn:hover { background: var(--accent-light); color: var(--accent-hover); }
+.imovel-detalhe-docs-list { list-style: none; padding: 0; margin: 0; }
+.imovel-detalhe-docs-list li {
+  display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+  padding: 0.5rem 0; border-bottom: 1px solid var(--border);
+}
+.imovel-detalhe-docs-list li:last-child { border-bottom: none; }
+.imovel-detalhe-doc-nome { flex: 1; min-width: 120px; font-size: var(--text-sm); }
+.imovel-detalhe-doc-tipo-badge {
+  font-size: 0.7rem; padding: 2px 6px; border-radius: 999px;
+  background: var(--bg-subtle); color: var(--text-muted); text-transform: capitalize;
+}
+.imovel-detalhe-doc-ver, .imovel-detalhe-doc-excluir {
+  padding: 0.25rem 0.5rem; font-size: var(--text-xs); border-radius: var(--radius);
+  border: 1px solid var(--border); background: var(--surface); cursor: pointer;
+}
+.imovel-detalhe-doc-ver { border-color: var(--accent); color: var(--accent); }
+.imovel-detalhe-doc-excluir { color: var(--text-muted); }
+.imovel-detalhe-doc-excluir:hover { border-color: var(--error); color: var(--error); }
+.imovel-detalhe-docs-vazio { margin: 0; font-size: var(--text-sm); color: var(--text-muted); }

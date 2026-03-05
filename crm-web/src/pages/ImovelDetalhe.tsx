@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getImovel, getImovelFotos, type ImovelFoto } from '../api';
+import { getImovel, getImovelFotos, getImovelDocumentos, uploadImovelDocumento, getImovelDocumentoUrl, deleteImovelDocumento, type ImovelFoto, type ImovelDocumento } from '../api';
 import type { Imovel } from '../types';
 import AppLayout from '../components/AppLayout';
 import './ImovelDetalhe.css';
@@ -65,6 +65,8 @@ export default function ImovelDetalhe() {
   const navigate = useNavigate();
   const [imovel, setImovel] = useState<Imovel | null>(null);
   const [fotos, setFotos] = useState<ImovelFoto[]>([]);
+  const [documentos, setDocumentos] = useState<ImovelDocumento[]>([]);
+  const [uploadingDoc, setUploadingDoc] = useState(false);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState('');
 
@@ -77,7 +79,44 @@ export default function ImovelDetalhe() {
       .catch((e) => setErro(e instanceof Error ? e.message : 'Erro ao carregar'))
       .finally(() => setLoading(false));
     getImovelFotos(id).then(setFotos).catch(() => setFotos([]));
+    getImovelDocumentos(id).then(setDocumentos).catch(() => setDocumentos([]));
   }, [id]);
+
+  async function handleUploadDocumento(e: React.ChangeEvent<HTMLInputElement>, tipo: string) {
+    const file = e.target.files?.[0];
+    if (!file || !id) return;
+    e.target.value = '';
+    setUploadingDoc(true);
+    try {
+      await uploadImovelDocumento(id, file, tipo);
+      const list = await getImovelDocumentos(id);
+      setDocumentos(list);
+    } catch (err) {
+      setErro(err instanceof Error ? err.message : 'Erro ao enviar documento');
+    } finally {
+      setUploadingDoc(false);
+    }
+  }
+
+  async function handleVerDocumento(docId: string) {
+    if (!id) return;
+    try {
+      const { url } = await getImovelDocumentoUrl(id, docId);
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } catch (err) {
+      setErro(err instanceof Error ? err.message : 'Erro ao abrir documento');
+    }
+  }
+
+  async function handleExcluirDocumento(docId: string) {
+    if (!id || !confirm('Excluir este documento?')) return;
+    try {
+      await deleteImovelDocumento(id, docId);
+      setDocumentos((prev) => prev.filter((d) => d.id !== docId));
+    } catch (err) {
+      setErro(err instanceof Error ? err.message : 'Erro ao excluir');
+    }
+  }
 
   if (!id || id === 'novo') {
     navigate('/imoveis', { replace: true });
@@ -206,6 +245,44 @@ export default function ImovelDetalhe() {
             </ul>
           </Block>
         )}
+
+        <Block title="Documentos (PDF)">
+          <p className="imovel-detalhe-docs-hint">IPTU, autorização e outros documentos do imóvel. Clique em &quot;Ver&quot; para visualizar o PDF.</p>
+          <div className="imovel-detalhe-docs-upload">
+            <select id="doc-tipo" defaultValue="outro" className="imovel-detalhe-doc-tipo">
+              <option value="iptu">IPTU</option>
+              <option value="autorizacao">Autorização</option>
+              <option value="outro">Outro</option>
+            </select>
+            <label className="imovel-detalhe-docs-upload-btn">
+              <input
+                type="file"
+                accept=".pdf,application/pdf"
+                disabled={uploadingDoc}
+                onChange={(e) => {
+                  const tipo = (document.getElementById('doc-tipo') as HTMLSelectElement)?.value || 'outro';
+                  handleUploadDocumento(e, tipo);
+                }}
+                style={{ display: 'none' }}
+              />
+              {uploadingDoc ? 'Enviando...' : 'Enviar PDF'}
+            </label>
+          </div>
+          {documentos.length > 0 ? (
+            <ul className="imovel-detalhe-docs-list">
+              {documentos.map((d) => (
+                <li key={d.id}>
+                  <span className="imovel-detalhe-doc-nome">{d.nome || d.tipo}</span>
+                  <span className="imovel-detalhe-doc-tipo-badge">{d.tipo}</span>
+                  <button type="button" className="imovel-detalhe-doc-ver" onClick={() => handleVerDocumento(d.id)}>Ver</button>
+                  <button type="button" className="imovel-detalhe-doc-excluir" onClick={() => handleExcluirDocumento(d.id)}>Excluir</button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="imovel-detalhe-docs-vazio">Nenhum documento. Envie um PDF acima.</p>
+          )}
+        </Block>
       </div>
     </AppLayout>
   );
