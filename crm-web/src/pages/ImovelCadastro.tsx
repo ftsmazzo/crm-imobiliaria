@@ -376,9 +376,9 @@ export default function ImovelCadastro() {
         </header>
 
         <form
-          onSubmit={handleSubmit}
+          onSubmit={(e) => { e.preventDefault(); handleSubmit(e); }}
           onKeyDown={(e) => {
-            if (e.key === 'Enter' && isNew && step === 6) e.preventDefault();
+            if (e.key === 'Enter') e.preventDefault();
           }}
           className="imovel-cadastro-form"
         >
@@ -780,11 +780,11 @@ export default function ImovelCadastro() {
                 Próximo
               </button>
             ) : step === 7 && id ? (
-              <button type="submit" className="primary" disabled={saving}>
+              <button type="button" className="primary" disabled={saving} onClick={(e) => { e.preventDefault(); handleSubmit(e as unknown as React.FormEvent); }}>
                 {saving ? 'Salvando...' : 'Salvar e concluir'}
               </button>
             ) : (
-              <button type="submit" className="primary" disabled={saving}>
+              <button type="button" className="primary" disabled={saving} onClick={(e) => { e.preventDefault(); handleSubmit(e as unknown as React.FormEvent); }}>
                 {saving ? 'Salvando...' : 'Salvar imóvel'}
               </button>
             )}
