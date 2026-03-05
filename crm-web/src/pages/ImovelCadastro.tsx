@@ -272,8 +272,8 @@ export default function ImovelCadastro() {
       totalUnidades: form.totalUnidades != null ? Number(form.totalUnidades) : undefined,
       qtdTorres: form.qtdTorres != null ? Number(form.qtdTorres) : undefined,
       caracteristicas: form.caracteristicas && form.caracteristicas !== '[]' ? String(form.caracteristicas) : undefined,
-      empreendimentoId: form.empreendimentoId ? String(form.empreendimentoId) : undefined,
-      proprietarioId: form.proprietarioId ? String(form.proprietarioId) : undefined,
+      empreendimentoId: form.empreendimentoId?.toString().trim() || null,
+      proprietarioId: form.proprietarioId?.toString().trim() || null,
     };
   }
 
@@ -288,8 +288,53 @@ export default function ImovelCadastro() {
         navigate(`/imoveis/${created.id}/editar?step=7`, { replace: true });
         return;
       } else if (id) {
-        await updateImovel(id, payload);
-        // Não avançar de step ao salvar; usuário permanece na etapa atual (evita "pular" do proprietário)
+        const updated = await updateImovel(id, payload);
+        // Sincronizar formulário com o retorno do backend para refletir o que foi persistido
+        setForm({
+          tipo: updated.tipo,
+          rua: updated.rua ?? '',
+          numero: updated.numero ?? '',
+          complemento: updated.complemento ?? '',
+          bairro: updated.bairro ?? '',
+          cidade: updated.cidade ?? '',
+          cep: updated.cep ?? '',
+          valorVenda: updated.valorVenda != null ? Number(updated.valorVenda) : undefined,
+          valorAluguel: updated.valorAluguel != null ? Number(updated.valorAluguel) : undefined,
+          valorIptu: updated.valorIptu != null ? Number(updated.valorIptu) : undefined,
+          valorCondominio: updated.valorCondominio != null ? Number(updated.valorCondominio) : undefined,
+          status: updated.status,
+          destaque: updated.destaque ? 1 : 0,
+          promocao: updated.promocao ? 1 : 0,
+          codigo: updated.codigo ?? '',
+          quadra: updated.quadra ?? '',
+          lote: updated.lote ?? '',
+          numeroMatricula: updated.numeroMatricula ?? '',
+          numeroIptu: updated.numeroIptu ?? '',
+          cartorio: updated.cartorio ?? '',
+          tipoListing: updated.tipoListing ?? 'residencial',
+          subtipo: updated.subtipo ?? '',
+          exibirEnderecoSite: updated.exibirEnderecoSite !== false ? 1 : 0,
+          descricao: updated.descricao ?? '',
+          qtdQuartos: updated.qtdQuartos ?? undefined,
+          qtdBanheiros: updated.qtdBanheiros ?? undefined,
+          qtdSalas: updated.qtdSalas ?? undefined,
+          lavabo: updated.lavabo ?? 0,
+          qtdVagas: updated.qtdVagas ?? undefined,
+          tipoVaga: updated.tipoVaga ?? '',
+          area: updated.area != null ? Number(updated.area) : undefined,
+          areaTerreno: updated.areaTerreno != null ? Number(updated.areaTerreno) : undefined,
+          anoConstrucao: updated.anoConstrucao ?? undefined,
+          tipoPiso: updated.tipoPiso ?? '',
+          pontosReferencia: updated.pontosReferencia ?? '',
+          eletrodomesticos: updated.eletrodomesticos ?? '',
+          andarUnidade: updated.andarUnidade ?? undefined,
+          qtdAndares: updated.qtdAndares ?? undefined,
+          totalUnidades: updated.totalUnidades ?? undefined,
+          qtdTorres: updated.qtdTorres ?? undefined,
+          caracteristicas: updated.caracteristicas ?? '[]',
+          empreendimentoId: updated.empreendimentoId ?? '',
+          proprietarioId: updated.proprietarioId ?? '',
+        });
       }
     } catch (e) {
       setErro(e instanceof Error ? e.message : 'Erro ao salvar');
