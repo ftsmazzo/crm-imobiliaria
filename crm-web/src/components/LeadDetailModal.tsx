@@ -1,8 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { updateContato, getUsuarios } from '../api';
+import {
+  updateContato,
+  getUsuarios,
+  getTiposDocumento,
+  getContatoDocumentos,
+  uploadContatoDocumento,
+  getContatoDocumentoUrl,
+  deleteContatoDocumento,
+} from '../api';
 import type { Contato } from '../types';
-import type { UsuarioListItem } from '../api';
+import type { UsuarioListItem, TipoDocumento, ProcessoDocumento } from '../api';
 import { ESTAGIOS, ESTAGIO_LABEL } from '../types';
 import { getUser } from '../auth';
 import './LeadDetailModal.css';
@@ -33,12 +41,20 @@ export default function LeadDetailModal({ contato, onClose, onSaved }: Props) {
   });
   const [saving, setSaving] = useState(false);
   const [erro, setErro] = useState('');
+  const [tiposDoc, setTiposDoc] = useState<TipoDocumento[]>([]);
+  const [documentosProcesso, setDocumentosProcesso] = useState<ProcessoDocumento[]>([]);
+  const [uploadingDoc, setUploadingDoc] = useState(false);
 
   useEffect(() => {
     if (canReassign) {
       getUsuarios().then(setUsuarios).catch(() => setUsuarios([]));
     }
   }, [canReassign]);
+
+  useEffect(() => {
+    getTiposDocumento('processo').then(setTiposDoc).catch(() => setTiposDoc([]));
+    getContatoDocumentos(contato.id).then(setDocumentosProcesso).catch(() => setDocumentosProcesso([]));
+  }, [contato.id]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -68,6 +84,43 @@ export default function LeadDetailModal({ contato, onClose, onSaved }: Props) {
   function handleNovaTarefa() {
     navigate(`/tarefas?contatoId=${contato.id}`);
     onClose();
+  }
+
+  async function handleUploadDoc(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file || !contato.id) return;
+    e.target.value = '';
+    setUploadingDoc(true);
+    try {
+      const tipoSelect = document.getElementById('lead-doc-tipo') as HTMLSelectElement | null;
+      const tipoDocumentoId = tipoSelect?.value || undefined;
+      await uploadContatoDocumento(contato.id, file, { tipoDocumentoId });
+      const list = await getContatoDocumentos(contato.id);
+      setDocumentosProcesso(list);
+    } catch (err) {
+      setErro(err instanceof Error ? err.message : 'Erro ao enviar documento');
+    } finally {
+      setUploadingDoc(false);
+    }
+  }
+
+  async function handleVerDoc(docId: string) {
+    try {
+      const { url } = await getContatoDocumentoUrl(contato.id, docId);
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } catch (err) {
+      setErro(err instanceof Error ? err.message : 'Erro ao abrir documento');
+    }
+  }
+
+  async function handleExcluirDoc(docId: string) {
+    if (!confirm('Excluir este documento?')) return;
+    try {
+      await deleteContatoDocumento(contato.id, docId);
+      setDocumentosProcesso((prev) => prev.filter((d) => d.id !== docId));
+    } catch (err) {
+      setErro(err instanceof Error ? err.message : 'Erro ao excluir');
+    }
   }
 
   return (
@@ -158,6 +211,44 @@ export default function LeadDetailModal({ contato, onClose, onSaved }: Props) {
               rows={3}
             />
           </div>
+
+          <div className="lead-detail-docs">
+            <h3>Documentos do processo</h3>
+            <p className="lead-detail-docs-hint">Proposta, contrato, laudo e outros PDFs do lead.</p>
+            <div className="lead-detail-docs-upload">
+              <select id="lead-doc-tipo" className="lead-detail-doc-tipo">
+                <option value="">Tipo (opcional)</option>
+                {tiposDoc.map((t) => (
+                  <option key={t.id} value={t.id}>{t.nome}</option>
+                ))}
+              </select>
+              <label className="lead-detail-docs-upload-btn">
+                <input
+                  type="file"
+                  accept=".pdf,application/pdf"
+                  disabled={uploadingDoc}
+                  onChange={handleUploadDoc}
+                  style={{ display: 'none' }}
+                />
+                {uploadingDoc ? 'Enviando...' : 'Enviar PDF'}
+              </label>
+            </div>
+            {documentosProcesso.length > 0 ? (
+              <ul className="lead-detail-docs-list">
+                {documentosProcesso.map((d) => (
+                  <li key={d.id}>
+                    <span className="lead-detail-doc-nome">{d.nomeOriginal || d.tipoDocumento?.nome || 'Documento'}</span>
+                    {d.tipoDocumento && <span className="lead-detail-doc-tipo-badge">{d.tipoDocumento.nome}</span>}
+                    <button type="button" className="lead-detail-doc-ver" onClick={() => handleVerDoc(d.id)}>Ver</button>
+                    <button type="button" className="lead-detail-doc-excluir" onClick={() => handleExcluirDoc(d.id)}>Excluir</button>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="lead-detail-docs-vazio">Nenhum documento. Envie um PDF acima.</p>
+            )}
+          </div>
+
           <div className="lead-detail-actions">
             <button type="button" className="btn-secondary" onClick={onClose}>
               Cancelar

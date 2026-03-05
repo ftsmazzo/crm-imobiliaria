@@ -109,6 +109,125 @@
   min-height: 72px;
 }
 
+.lead-detail-docs {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.lead-detail-docs h3 {
+  margin: 0 0 var(--space-2);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.lead-detail-docs-hint {
+  margin: 0 0 var(--space-3);
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.lead-detail-docs-upload {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+  margin-bottom: var(--space-4);
+}
+
+.lead-detail-doc-tipo {
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.875rem;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--bg-overlay);
+  color: var(--text-primary);
+}
+
+.lead-detail-docs-upload-btn {
+  display: inline-block;
+  padding: var(--space-2) var(--space-4);
+  font-size: 0.875rem;
+  font-weight: 500;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.lead-detail-docs-upload-btn:hover {
+  background: var(--border-subtle);
+}
+
+.lead-detail-docs-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.lead-detail-docs-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 0.875rem;
+}
+
+.lead-detail-doc-nome {
+  flex: 1;
+  min-width: 0;
+  color: var(--text-primary);
+}
+
+.lead-detail-doc-tipo-badge {
+  padding: 2px var(--space-2);
+  font-size: 0.75rem;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+}
+
+.lead-detail-doc-ver,
+.lead-detail-doc-excluir {
+  padding: var(--space-1) var(--space-2);
+  font-size: 0.8125rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.lead-detail-doc-ver {
+  background: var(--accent-muted);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.lead-detail-doc-ver:hover {
+  background: var(--accent);
+  color: var(--text-inverse);
+}
+
+.lead-detail-doc-excluir {
+  background: transparent;
+  color: var(--text-muted);
+  border-color: var(--border-default);
+}
+
+.lead-detail-doc-excluir:hover {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.lead-detail-docs-vazio {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
 .lead-detail-actions {
   display: flex;
   flex-wrap: wrap;

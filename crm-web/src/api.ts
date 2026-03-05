@@ -277,6 +277,63 @@ export async function deleteImovelDocumento(imovelId: string, docId: string): Pr
   if (!res.ok) await handleRes(res);
 }
 
+// Tipos de documento (imóvel / processo)
+export type TipoDocumento = { id: string; nome: string; contexto: string };
+
+export async function getTiposDocumento(contexto?: 'imovel' | 'processo'): Promise<TipoDocumento[]> {
+  const q = contexto ? `?contexto=${contexto}` : '';
+  const res = await fetch(`${API_URL}/tipo-documento${q}`, { headers: authHeaders() });
+  return handleRes(res);
+}
+
+// Documentos do processo (lead/contato)
+export type ProcessoDocumento = {
+  id: string;
+  contatoId: string;
+  imovelId: string | null;
+  tipoDocumentoId: string | null;
+  tipoDocumento: { id: string; nome: string } | null;
+  nomeOriginal: string | null;
+  criadoEm: string;
+  url: string;
+};
+
+export async function getContatoDocumentos(contatoId: string): Promise<ProcessoDocumento[]> {
+  const res = await fetch(`${API_URL}/contatos/${contatoId}/documentos`, { headers: authHeaders() });
+  return handleRes(res);
+}
+
+export async function uploadContatoDocumento(
+  contatoId: string,
+  file: File,
+  opts?: { tipoDocumentoId?: string; imovelId?: string },
+): Promise<ProcessoDocumento> {
+  const form = new FormData();
+  form.append('file', file);
+  if (opts?.tipoDocumentoId) form.append('tipoDocumentoId', opts.tipoDocumentoId);
+  if (opts?.imovelId) form.append('imovelId', opts.imovelId);
+  const token = getToken();
+  const res = await fetch(`${API_URL}/contatos/${contatoId}/documentos`, {
+    method: 'POST',
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    body: form,
+  });
+  return handleRes(res);
+}
+
+export async function getContatoDocumentoUrl(contatoId: string, docId: string): Promise<{ url: string }> {
+  const res = await fetch(`${API_URL}/contatos/${contatoId}/documentos/${docId}/url`, { headers: authHeaders() });
+  return handleRes(res);
+}
+
+export async function deleteContatoDocumento(contatoId: string, docId: string): Promise<void> {
+  const res = await fetch(`${API_URL}/contatos/${contatoId}/documentos/${docId}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  });
+  if (!res.ok) await handleRes(res);
+}
+
 // Dashboard
 export type DashboardStats = {
   contatosPorEstagio: Record<string, number>;

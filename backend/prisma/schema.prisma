@@ -36,6 +36,32 @@ model Contato {
   usuarioResponsavel   Usuario?  @relation(fields: [usuarioResponsavelId], references: [id])
   interesses           Interesse[]
   tarefas              Tarefa[]
+  documentosProcesso   ProcessoDocumento[]
+}
+
+model TipoDocumento {
+  id                 String              @id @default(uuid())
+  nome               String
+  contexto           String              // 'imovel' | 'processo'
+  criadoEm           DateTime            @default(now()) @map("criado_em")
+  documentosProcesso ProcessoDocumento[]
+
+  @@map("tipo_documento")
+}
+
+model ProcessoDocumento {
+  id               String        @id @default(uuid())
+  contatoId        String        @map("contato_id")
+  imovelId         String?       @map("imovel_id")
+  tipoDocumentoId   String?       @map("tipo_documento_id")
+  key              String        // objeto no storage (documentos/processo/{contatoId}/...)
+  nomeOriginal     String?       @map("nome_original")
+  criadoEm         DateTime      @default(now()) @map("criado_em")
+  contato          Contato       @relation(fields: [contatoId], references: [id], onDelete: Cascade)
+  imovel           Imovel?       @relation(fields: [imovelId], references: [id], onDelete: SetNull)
+  tipoDocumento    TipoDocumento? @relation(fields: [tipoDocumentoId], references: [id], onDelete: SetNull)
+
+  @@map("processo_documento")
 }
 
 model Proprietario {
@@ -130,6 +156,7 @@ model Imovel {
   proprietario          Proprietario? @relation(fields: [proprietarioId], references: [id], onDelete: SetNull)
   fotos                 ImovelFoto[]
   documentos            ImovelDocumento[]
+  documentosProcesso   ProcessoDocumento[]
   interesses            Interesse[]
   tarefas               Tarefa[]
 }
