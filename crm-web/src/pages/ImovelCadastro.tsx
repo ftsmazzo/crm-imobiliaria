@@ -335,6 +335,7 @@ export default function ImovelCadastro() {
           empreendimentoId: updated.empreendimentoId ?? '',
           proprietarioId: updated.proprietarioId ?? '',
         });
+        if (step === 7) navigate('/imoveis');
       }
     } catch (e) {
       setErro(e instanceof Error ? e.message : 'Erro ao salvar');
@@ -770,8 +771,8 @@ export default function ImovelCadastro() {
                 Próximo
               </button>
             ) : step === 7 && id ? (
-              <button type="button" className="primary" onClick={() => navigate('/imoveis')}>
-                Concluir
+              <button type="submit" className="primary" disabled={saving}>
+                {saving ? 'Salvando...' : 'Salvar e concluir'}
               </button>
             ) : (
               <button type="submit" className="primary" disabled={saving}>
