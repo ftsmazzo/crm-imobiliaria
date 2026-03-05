@@ -6,10 +6,10 @@ WORKDIR /app
 
 # Build context no EasyPanel = raiz do repo (não a pasta backend)
 COPY backend/package*.json ./
+COPY backend/prisma ./prisma
 RUN npm install
 
 COPY backend/ .
-RUN npx prisma generate
 RUN npm run build
 
 FROM node:20-slim
