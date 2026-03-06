@@ -32,6 +32,7 @@ const emptyForm = () => ({
 export default function Tarefas() {
   const [searchParams, setSearchParams] = useSearchParams();
   const contatoIdFromUrl = searchParams.get('contatoId') || '';
+  const tarefaIdFromUrl = searchParams.get('tarefaId') || '';
 
   const [lista, setLista] = useState<TarefaType[]>([]);
   const [contatos, setContatos] = useState<Contato[]>([]);
@@ -75,6 +76,26 @@ export default function Tarefas() {
   }, [filtroUsuario]);
 
   useEffect(() => {
+    if (tarefaIdFromUrl) setFiltroStatus('todas');
+  }, [tarefaIdFromUrl]);
+
+  useEffect(() => {
+    if (tarefaIdFromUrl && lista.length > 0) {
+      const el = document.getElementById(`tarefa-${tarefaIdFromUrl}`);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        el.classList.add('tarefa-item-destacada');
+        setTimeout(() => el.classList.remove('tarefa-item-destacada'), 2500);
+        setTimeout(() => {
+          setSearchParams((p) => {
+            const next = new URLSearchParams(p);
+            next.delete('tarefaId');
+            return next;
+          }, { replace: true });
+        }, 600);
+      }
+      return;
+    }
     if (!contatoIdFromUrl || contatos.length === 0 || usuarios.length === 0 || openedFromUrlRef.current) return;
     openedFromUrlRef.current = true;
     setForm((f) => ({
@@ -84,7 +105,7 @@ export default function Tarefas() {
     }));
     setModal(true);
     setSearchParams({}, { replace: true });
-  }, [contatoIdFromUrl, contatos.length, usuarios.length, setSearchParams]);
+  }, [tarefaIdFromUrl, contatoIdFromUrl, lista.length, contatos.length, usuarios.length, setSearchParams]);
 
   const listaFiltrada = lista.filter((t) => {
     if (filtroStatus === 'todas') return true;
@@ -195,7 +216,7 @@ export default function Tarefas() {
         </div>
         <div className="tarefas-list">
           {listaFiltrada.map((t) => (
-            <div key={t.id} className={`tarefa-item ${t.concluida ? 'concluida' : ''}`}>
+            <div id={`tarefa-${t.id}`} key={t.id} className={`tarefa-item ${t.concluida ? 'concluida' : ''}`}>
               <input
                 type="checkbox"
                 className="tarefa-check"

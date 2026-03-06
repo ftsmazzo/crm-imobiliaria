@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Post, Put, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Put, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { Usuario } from '@prisma/client';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CurrentUser } from '../auth/current-user.decorator';
@@ -44,6 +44,15 @@ export class ImoveisController {
     @Param('fotoId', ParseUUIDPipe) fotoId: string,
   ) {
     return this.fotosService.remove(id, fotoId, user);
+  }
+
+  @Patch(':id/fotos/:fotoId/capa')
+  setFotoCapa(
+    @CurrentUser() user: Usuario,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('fotoId', ParseUUIDPipe) fotoId: string,
+  ) {
+    return this.fotosService.setCapa(id, fotoId, user);
   }
 
   @Post(':id/documentos')

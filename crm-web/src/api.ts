@@ -214,7 +214,7 @@ export async function deleteImovel(id: string): Promise<void> {
   if (!res.ok) await handleRes(res);
 }
 
-export type ImovelFoto = { id: string; ordem: number; url: string };
+export type ImovelFoto = { id: string; ordem: number; capa?: boolean; url: string };
 
 export async function getImovelFotos(imovelId: string): Promise<ImovelFoto[]> {
   const token = getToken();
@@ -232,6 +232,14 @@ export async function uploadImovelFoto(imovelId: string, file: File): Promise<{ 
     method: 'POST',
     headers: token ? { Authorization: `Bearer ${token}` } : {},
     body: form,
+  });
+  return handleRes(res);
+}
+
+export async function setImovelFotoCapa(imovelId: string, fotoId: string): Promise<ImovelFoto[]> {
+  const res = await fetch(`${API_URL}/imoveis/${imovelId}/fotos/${fotoId}/capa`, {
+    method: 'PATCH',
+    headers: authHeaders(),
   });
   return handleRes(res);
 }

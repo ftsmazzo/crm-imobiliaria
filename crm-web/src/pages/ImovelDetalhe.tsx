@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getImovel, getImovelFotos, getImovelDocumentos, uploadImovelDocumento, getImovelDocumentoUrl, deleteImovelDocumento, type ImovelFoto, type ImovelDocumento } from '../api';
+import { getImovel, getImovelFotos, getImovelDocumentos, uploadImovelDocumento, getImovelDocumentoUrl, deleteImovelDocumento, setImovelFotoCapa, type ImovelFoto, type ImovelDocumento } from '../api';
 import type { Imovel } from '../types';
 import AppLayout from '../components/AppLayout';
 import './ImovelDetalhe.css';
@@ -236,10 +236,29 @@ export default function ImovelDetalhe() {
 
         {fotos.length > 0 && (
           <Block title="Fotos">
+            <p className="imovel-detalhe-fotos-hint">A primeira foto (ou a marcada como capa) é exibida no site. Use &quot;Definir como capa&quot; para escolher a foto de capa.</p>
             <ul className="imovel-detalhe-fotos">
               {fotos.map((f) => (
-                <li key={f.id}>
+                <li key={f.id} className={f.capa ? 'imovel-detalhe-foto-capa' : ''}>
                   {f.url ? <img src={f.url} alt="" /> : <span className="imovel-detalhe-foto-placeholder" />}
+                  {f.capa && <span className="imovel-detalhe-foto-capa-badge">Capa (site)</span>}
+                  {!f.capa && (
+                    <button
+                      type="button"
+                      className="imovel-detalhe-foto-btn-capa"
+                      onClick={async () => {
+                        if (!id) return;
+                        try {
+                          const list = await setImovelFotoCapa(id, f.id);
+                          setFotos(list);
+                        } catch (err) {
+                          setErro(err instanceof Error ? err.message : 'Erro ao definir capa');
+                        }
+                      }}
+                    >
+                      Definir como capa
+                    </button>
+                  )}
                 </li>
               ))}
             </ul>

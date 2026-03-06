@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getImovel } from '@/lib/api';
 import FormInteresse from './FormInteresse';
+import ImovelDetalheCapaCarousel from './ImovelDetalheCapaCarousel';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -62,9 +63,6 @@ export default async function ImovelPage({ params }: { params: Promise<{ id: str
   const valorIptu = imovel.valorIptu ? formatValor(imovel.valorIptu) : null;
   const valorCondominio = imovel.valorCondominio ? formatValor(imovel.valorCondominio) : null;
   const fotos = imovel.fotos ?? [];
-  const temFotos = fotos.length > 0;
-  const fotoCapa = temFotos ? fotos[0] : null;
-  const fotosRestantes = fotos.length > 1 ? fotos.slice(1) : [];
   const caracteristicas = parseCaracteristicas(imovel.caracteristicas);
   const tipoVagaLabel = imovel.tipoVaga === 'coberta' ? 'Coberta' : imovel.tipoVaga === 'descoberta' ? 'Descoberta' : imovel.tipoVaga === 'ambos' ? 'Coberta e descoberta' : null;
 
@@ -87,22 +85,8 @@ export default async function ImovelPage({ params }: { params: Promise<{ id: str
         </header>
 
         <div className="imovel-detalhe-capa">
-          {fotoCapa ? (
-            <img src={fotoCapa.url} alt="" className="imovel-detalhe-capa-img" />
-          ) : (
-            <div className="imovel-detalhe-capa-placeholder">
-              <span className="imovel-detalhe-capa-icon" aria-hidden>🏠</span>
-            </div>
-          )}
+          <ImovelDetalheCapaCarousel fotos={fotos} />
         </div>
-
-        {fotosRestantes.length > 0 && (
-          <div className="imovel-detalhe-galeria">
-            {fotosRestantes.map((f) => (
-              <img key={f.id} src={f.url} alt="" className="imovel-detalhe-galeria-img" />
-            ))}
-          </div>
-        )}
 
         <div className="imovel-detalhe-body">
           <section className="imovel-detalhe-valores-cart">

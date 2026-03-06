@@ -49,23 +49,39 @@
   color: var(--text-muted);
 }
 
-.imovel-cadastro-stepper-dots {
+.imovel-cadastro-stepper-links {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.35rem;
   margin-top: 0.5rem;
   flex-wrap: wrap;
 }
 
-.imovel-cadastro-stepper-dots span {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--border);
-  transition: background 0.2s;
+.imovel-cadastro-stepper-link {
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
 }
 
-.imovel-cadastro-stepper-dots span.active {
+.imovel-cadastro-stepper-link:hover {
+  background: var(--bg-subtle);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.imovel-cadastro-stepper-link.active {
   background: var(--accent);
+  border-color: var(--accent);
+  color: var(--text-inverse);
 }
 
 .imovel-cadastro-form {
@@ -299,6 +315,56 @@
   border: 1px solid var(--border);
 }
 
+.imovel-cadastro-fotos li.imovel-cadastro-foto-capa {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-light, rgba(59, 130, 246, 0.2));
+}
+
+.imovel-cadastro-foto-capa-badge {
+  display: block;
+  padding: 0.2rem 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-align: center;
+  background: var(--accent);
+  color: var(--text-inverse);
+}
+
+.imovel-cadastro-foto-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.imovel-cadastro-foto-actions button {
+  flex: 1;
+  min-width: 0;
+  padding: 0.25rem;
+  font-size: 0.7rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.imovel-cadastro-foto-actions button:hover {
+  background: var(--error-light, #fef2f2);
+  color: var(--error);
+}
+
+.imovel-cadastro-foto-btn-capa {
+  color: var(--accent) !important;
+}
+
+.imovel-cadastro-foto-btn-capa:hover {
+  background: var(--accent-light) !important;
+  color: var(--accent-hover) !important;
+}
+
 .imovel-cadastro-fotos img,
 .imovel-cadastro-fotos .thumb-placeholder {
   display: block;
@@ -309,23 +375,6 @@
 
 .imovel-cadastro-fotos .thumb-placeholder {
   background: var(--bg-subtle);
-}
-
-.imovel-cadastro-fotos button {
-  display: block;
-  width: 100%;
-  padding: 0.25rem;
-  font-size: 0.75rem;
-  background: var(--bg);
-  border: none;
-  border-top: 1px solid var(--border);
-  color: var(--text-muted);
-  cursor: pointer;
-}
-
-.imovel-cadastro-fotos button:hover {
-  background: var(--error-light, #fef2f2);
-  color: var(--error);
 }
 
 .imovel-cadastro-caracteristicas {

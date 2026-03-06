@@ -34,7 +34,7 @@ export class ImoveisFotosService {
   async list(imovelId: string, user?: Usuario) {
     const imovel = await this.prisma.imovel.findUnique({
       where: { id: imovelId },
-      include: { fotos: { orderBy: { ordem: 'asc' } } },
+      include: { fotos: { orderBy: [{ capa: 'desc' }, { ordem: 'asc' }] } },
     });
     if (!imovel) throw new NotFoundException('Imóvel não encontrado');
     if (user?.role === 'corretor' && imovel.usuarioResponsavelId !== user.id) {
@@ -45,14 +45,38 @@ export class ImoveisFotosService {
         imovel.fotos.map(async (f) => ({
           id: f.id,
           ordem: f.ordem,
+          capa: f.capa ?? false,
           url: await this.storage.getPresignedUrl(f.key),
         })),
       );
       return fotos;
     } catch (err) {
       this.logger.warn(`Fotos do imóvel ${imovelId}: MinIO/storage falhou, retornando lista vazia`, err);
-      return imovel.fotos.map((f) => ({ id: f.id, ordem: f.ordem, url: '' }));
+      return imovel.fotos.map((f) => ({ id: f.id, ordem: f.ordem, capa: f.capa ?? false, url: '' }));
     }
+  }
+
+  async setCapa(imovelId: string, fotoId: string, user?: Usuario) {
+    const imovel = await this.prisma.imovel.findUnique({ where: { id: imovelId } });
+    if (!imovel) throw new NotFoundException('Imóvel não encontrado');
+    if (user?.role === 'corretor' && imovel.usuarioResponsavelId !== user.id) {
+      throw new ForbiddenException('Sem permissão');
+    }
+    const foto = await this.prisma.imovelFoto.findFirst({
+      where: { id: fotoId, imovelId },
+    });
+    if (!foto) throw new NotFoundException('Foto não encontrada');
+    await this.prisma.$transaction([
+      this.prisma.imovelFoto.updateMany({
+        where: { imovelId },
+        data: { capa: false },
+      }),
+      this.prisma.imovelFoto.update({
+        where: { id: fotoId },
+        data: { capa: true },
+      }),
+    ]);
+    return this.list(imovelId, user);
   }
 
   async remove(imovelId: string, fotoId: string, user?: Usuario) {
@@ -69,16 +93,17 @@ export class ImoveisFotosService {
     return { ok: true };
   }
 
-  async getPresignedUrlsForImovel(imovelId: string): Promise<{ id: string; url: string }[]> {
+  async getPresignedUrlsForImovel(imovelId: string): Promise<{ id: string; url: string; capa?: boolean }[]> {
     const fotos = await this.prisma.imovelFoto.findMany({
       where: { imovelId },
-      orderBy: { ordem: 'asc' },
+      orderBy: [{ capa: 'desc' }, { ordem: 'asc' }],
     });
     try {
       return await Promise.all(
         fotos.map(async (f) => ({
           id: f.id,
           url: await this.storage.getPresignedUrl(f.key),
+          capa: f.capa ?? false,
         })),
       );
     } catch (err) {

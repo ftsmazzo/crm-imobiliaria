@@ -90,8 +90,8 @@ function PipelineCard({
                     <button
                       type="button"
                       className="pipeline-card-tarefa-link"
-                      onClick={(e) => { e.stopPropagation(); navigate(`/tarefas?contatoId=${c.id}`); }}
-                      title="Abrir tarefas do lead"
+                      onClick={(e) => { e.stopPropagation(); navigate(`/tarefas?tarefaId=${t.id}`); }}
+                      title="Abrir esta tarefa"
                     >
                       <span className="pipeline-card-tarefa-titulo">{t.titulo}</span>
                       <span className={`pipeline-card-tarefa-prioridade pipeline-card-tarefa-prioridade-${prioridade}`}>{PRIORIDADE_LABEL[prioridade]}</span>

@@ -7,6 +7,7 @@ import {
   getImovelFotos,
   uploadImovelFoto,
   deleteImovelFoto,
+  setImovelFotoCapa,
   getEmpreendimentos,
   getProprietarios,
   type ImovelFoto,
@@ -367,9 +368,17 @@ export default function ImovelCadastro() {
               <div className="imovel-cadastro-stepper-bar" style={{ width: `${(100 * (step - 1)) / Math.max(1, totalSteps - 1)}%` }} />
             </div>
             <p className="imovel-cadastro-stepper-label">Etapa {step} de {totalSteps}: {currentLabel}</p>
-            <div className="imovel-cadastro-stepper-dots">
+            <div className="imovel-cadastro-stepper-links" role="navigation" aria-label="Ir para etapa">
               {Array.from({ length: totalSteps }, (_, i) => i + 1).map((s) => (
-                <span key={s} className={s <= step ? 'active' : ''} aria-hidden />
+                <button
+                  key={s}
+                  type="button"
+                  className={`imovel-cadastro-stepper-link ${s === step ? 'active' : ''}`}
+                  onClick={() => goToStep(s)}
+                  title={`Ir para: ${STEP_LABELS[s - 1]}`}
+                >
+                  {s}
+                </button>
               ))}
             </div>
           </div>
@@ -712,22 +721,25 @@ export default function ImovelCadastro() {
             <section className="imovel-cadastro-section">
               <h2>Fotos do imóvel</h2>
               <div className="field">
-                <label>Enviar foto (até 10 MB)</label>
+                <label>Enviar fotos (até 10 MB cada, várias de uma vez)</label>
                 <input
                   type="file"
                   accept="image/*"
+                  multiple
                   disabled={uploadingFoto}
                   onChange={async (e) => {
-                    const file = e.target.files?.[0];
-                    if (!file || !id) return;
+                    const files = e.target.files;
+                    if (!files?.length || !id) return;
                     setUploadingFoto(true);
                     try {
-                      await uploadImovelFoto(id, file);
+                      for (let i = 0; i < files.length; i++) {
+                        await uploadImovelFoto(id, files[i]);
+                      }
                       const list = await getImovelFotos(id);
                       setFotos(list);
                     } catch (err) {
                       console.error(err);
-                      alert('Falha ao enviar foto.');
+                      alert('Falha ao enviar uma ou mais fotos.');
                     } finally {
                       setUploadingFoto(false);
                       e.target.value = '';
@@ -741,22 +753,42 @@ export default function ImovelCadastro() {
               ) : fotos.length > 0 ? (
                 <ul className="imovel-cadastro-fotos">
                   {fotos.map((f) => (
-                    <li key={f.id}>
+                    <li key={f.id} className={f.capa ? 'imovel-cadastro-foto-capa' : ''}>
                       {f.url ? <img src={f.url} alt="" /> : <span className="thumb-placeholder" />}
-                      <button
-                        type="button"
-                        onClick={async () => {
-                          if (!confirm('Remover esta foto?')) return;
-                          try {
-                            await deleteImovelFoto(id, f.id);
-                            setFotos((prev) => prev.filter((x) => x.id !== f.id));
-                          } catch (err) {
-                            alert('Falha ao remover.');
-                          }
-                        }}
-                      >
-                        Remover
-                      </button>
+                      {f.capa && <span className="imovel-cadastro-foto-capa-badge">Capa (site)</span>}
+                      <div className="imovel-cadastro-foto-actions">
+                        {!f.capa && (
+                          <button
+                            type="button"
+                            className="imovel-cadastro-foto-btn-capa"
+                            onClick={async () => {
+                              if (!id) return;
+                              try {
+                                const list = await setImovelFotoCapa(id, f.id);
+                                setFotos(list);
+                              } catch (err) {
+                                alert('Falha ao definir capa.');
+                              }
+                            }}
+                          >
+                            Definir como capa
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            if (!confirm('Remover esta foto?')) return;
+                            try {
+                              await deleteImovelFoto(id, f.id);
+                              setFotos((prev) => prev.filter((x) => x.id !== f.id));
+                            } catch (err) {
+                              alert('Falha ao remover.');
+                            }
+                          }}
+                        >
+                          Remover
+                        </button>
+                      </div>
                     </li>
                   ))}
                 </ul>

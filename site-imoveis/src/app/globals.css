@@ -327,6 +327,7 @@ label {
   aspect-ratio: 4 / 3;
   overflow: hidden;
   background: var(--site-bg-soft);
+  background: var(--site-bg-soft);
 }
 
 .imovel-card-capa-img {
@@ -368,6 +369,28 @@ label {
   color: #fff;
   padding: var(--site-space-2) var(--site-space-3);
   border-radius: var(--site-radius);
+}
+
+.imovel-card-carousel-dots {
+  position: absolute;
+  bottom: var(--site-space-3);
+  right: var(--site-space-3);
+  z-index: 1;
+  display: flex;
+  gap: 6px;
+}
+
+.imovel-card-carousel-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.imovel-card-carousel-dot.active {
+  background: #fff;
+  transform: scale(1.2);
 }
 
 .imovel-card-body {
@@ -521,6 +544,8 @@ label {
   margin: var(--site-space-5) var(--site-space-6) 0;
   border-radius: var(--site-radius-lg);
   overflow: hidden;
+  position: relative;
+  background: var(--site-bg-soft);
   aspect-ratio: 16 / 10;
   max-height: 440px;
   background: var(--site-bg-soft);
@@ -547,6 +572,57 @@ label {
 .imovel-detalhe-capa-icon {
   font-size: 4rem;
   opacity: 0.5;
+}
+
+.imovel-detalhe-capa-carousel {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  max-height: 440px;
+  overflow: hidden;
+}
+
+.imovel-detalhe-capa-carousel--empty .imovel-detalhe-capa-placeholder {
+  width: 100%;
+  height: 100%;
+  min-height: 280px;
+}
+
+.imovel-detalhe-capa-carousel .imovel-detalhe-capa-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.imovel-detalhe-capa-carousel-dots {
+  position: absolute;
+  bottom: var(--site-space-4);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 1;
+}
+
+.imovel-detalhe-capa-carousel-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  background: rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.imovel-detalhe-capa-carousel-dot:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.imovel-detalhe-capa-carousel-dot.active {
+  background: #fff;
+  transform: scale(1.15);
 }
 
 .imovel-detalhe-galeria {

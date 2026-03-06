@@ -58,7 +58,8 @@ export class PublicController {
           qtdQuartos: i.qtdQuartos,
           qtdBanheiros: i.qtdBanheiros,
           area: i.area?.toString(),
-          fotos: fotos.map((f) => ({ id: f.id, url: f.url })),
+          // fotos já vêm ordenadas: capa primeiro, depois ordem (para carousel no site)
+          fotos: fotos.map((f) => ({ id: f.id, url: f.url, capa: f.capa })),
         };
       }),
     );
@@ -71,7 +72,7 @@ export class PublicController {
     if (i.status !== 'disponivel') {
       throw new NotFoundException('Imóvel não disponível');
     }
-    let fotos: { id: string; url: string }[] = [];
+    let fotos: { id: string; url: string; capa?: boolean }[] = [];
     try {
       fotos = await this.fotosService.getPresignedUrlsForImovel(i.id);
     } catch {
@@ -107,7 +108,8 @@ export class PublicController {
       eletrodomesticos: i.eletrodomesticos,
       andarUnidade: i.andarUnidade,
       caracteristicas: i.caracteristicas,
-      fotos: fotos.map((f) => ({ id: f.id, url: f.url })),
+      // fotos ordenadas: capa primeiro (para carousel)
+    fotos: fotos.map((f) => ({ id: f.id, url: f.url, capa: f.capa })),
     };
   }
 
