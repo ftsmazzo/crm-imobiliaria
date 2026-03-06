@@ -29,6 +29,28 @@
   border-bottom: 1px solid var(--border-subtle);
 }
 
+.lead-detail-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.lead-detail-goto-docs {
+  padding: var(--space-1) var(--space-3);
+  font-size: 0.8125rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.lead-detail-goto-docs:hover {
+  background: var(--accent-muted);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
 .lead-detail-header h2 {
   margin: 0;
   font-family: var(--font-display);
@@ -45,7 +67,7 @@
   justify-content: center;
   background: none;
   border: none;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-size: 1.5rem;
   cursor: pointer;
   border-radius: var(--radius-sm);
@@ -88,8 +110,8 @@
 
 .lead-detail-form .form-group label {
   font-size: 0.8125rem;
-  font-weight: 500;
-  color: var(--text-secondary);
+  font-weight: 600;
+  color: var(--text-primary);
   margin-bottom: var(--space-1);
 }
 
@@ -125,7 +147,7 @@
 .lead-detail-docs-hint {
   margin: 0 0 var(--space-3);
   font-size: 0.8125rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 
 .lead-detail-docs-upload {
@@ -181,6 +203,7 @@
   flex: 1;
   min-width: 0;
   color: var(--text-primary);
+  font-weight: 500;
 }
 
 .lead-detail-doc-tipo-badge {
@@ -188,7 +211,7 @@
   font-size: 0.75rem;
   background: var(--bg-elevated);
   border-radius: var(--radius-sm);
-  color: var(--text-secondary);
+  color: var(--text-primary);
 }
 
 .lead-detail-doc-ver,
@@ -213,7 +236,7 @@
 
 .lead-detail-doc-excluir {
   background: transparent;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   border-color: var(--border-default);
 }
 
@@ -225,7 +248,7 @@
 .lead-detail-docs-vazio {
   margin: 0;
   font-size: 0.8125rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 
 .lead-detail-actions {

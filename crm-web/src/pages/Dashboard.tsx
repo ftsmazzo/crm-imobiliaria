@@ -99,20 +99,37 @@ export default function Dashboard() {
 
         {stats && (
           <div className="dashboard-grid">
-            {stats.leadsNoPeriodo !== undefined && stats.imoveisNoPeriodo !== undefined && (
-              <>
-                <section className="dashboard-card">
-                  <h2>Leads no período</h2>
-                  <p className="dashboard-number">{stats.leadsNoPeriodo}</p>
-                  <p className="dashboard-hint">Contatos criados entre {periodo.dataInicio} e {periodo.dataFim}</p>
-                </section>
-                <section className="dashboard-card">
-                  <h2>Imóveis no período</h2>
-                  <p className="dashboard-number">{stats.imoveisNoPeriodo}</p>
-                  <p className="dashboard-hint">Imóveis cadastrados entre {periodo.dataInicio} e {periodo.dataFim}</p>
-                </section>
-              </>
+            {/* Linha 1: totais e período */}
+            <section className="dashboard-card">
+              <h2>Total de leads</h2>
+              <p className="dashboard-number">
+                {ESTAGIOS.reduce((acc, { key }) => acc + (stats.contatosPorEstagio[key] ?? 0), 0)}
+              </p>
+              <p className="dashboard-hint">Contatos no CRM (todos os estágios)</p>
+            </section>
+            {stats.leadsNoPeriodo !== undefined && (
+              <section className="dashboard-card">
+                <h2>Leads no período</h2>
+                <p className="dashboard-number">{stats.leadsNoPeriodo}</p>
+                <p className="dashboard-hint">Contatos criados entre {periodo.dataInicio} e {periodo.dataFim}</p>
+              </section>
             )}
+            {stats.imoveisNoPeriodo !== undefined && (
+              <section className="dashboard-card">
+                <h2>Imóveis no período</h2>
+                <p className="dashboard-number">{stats.imoveisNoPeriodo}</p>
+                <p className="dashboard-hint">Imóveis cadastrados entre {periodo.dataInicio} e {periodo.dataFim}</p>
+              </section>
+            )}
+
+            {/* Linha 2: tarefas, funil e imóveis */}
+            <section className="dashboard-card">
+              <h2>Tarefas atrasadas</h2>
+              <p className="dashboard-number">
+                <Link to="/tarefas">{stats.tarefasAtrasadas}</Link>
+              </p>
+              <p className="dashboard-hint">Clique para abrir a lista de tarefas</p>
+            </section>
             <section className="dashboard-card dashboard-card-funil">
               <h2>Leads por estágio</h2>
               <ul className="dashboard-funil-list">
@@ -124,15 +141,6 @@ export default function Dashboard() {
                 ))}
               </ul>
             </section>
-
-            <section className="dashboard-card">
-              <h2>Tarefas atrasadas</h2>
-              <p className="dashboard-number">
-                <Link to="/tarefas">{stats.tarefasAtrasadas}</Link>
-              </p>
-              <p className="dashboard-hint">Clique para abrir a lista de tarefas</p>
-            </section>
-
             <section className="dashboard-card dashboard-card-imoveis">
               <h2>Imóveis por status</h2>
               <ul className="dashboard-status-list">

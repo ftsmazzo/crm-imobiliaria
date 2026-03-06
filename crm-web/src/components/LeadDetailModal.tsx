@@ -128,9 +128,18 @@ export default function LeadDetailModal({ contato, onClose, onSaved }: Props) {
       <div className="lead-detail-modal" onClick={(e) => e.stopPropagation()}>
         <div className="lead-detail-header">
           <h2>Lead: {contato.nome}</h2>
-          <button type="button" className="lead-detail-close" onClick={onClose} aria-label="Fechar">
-            ×
-          </button>
+          <div className="lead-detail-header-actions">
+            <button
+              type="button"
+              className="lead-detail-goto-docs"
+              onClick={() => document.getElementById('lead-documentos')?.scrollIntoView({ behavior: 'smooth' })}
+            >
+              📎 Documentos
+            </button>
+            <button type="button" className="lead-detail-close" onClick={onClose} aria-label="Fechar">
+              ×
+            </button>
+          </div>
         </div>
         <form onSubmit={handleSubmit} className="lead-detail-form">
           {erro && <p className="lead-detail-erro">{erro}</p>}
@@ -212,9 +221,9 @@ export default function LeadDetailModal({ contato, onClose, onSaved }: Props) {
             />
           </div>
 
-          <div className="lead-detail-docs">
+          <div className="lead-detail-docs" id="lead-documentos">
             <h3>Documentos do processo</h3>
-            <p className="lead-detail-docs-hint">Proposta, contrato, laudo e outros PDFs do lead.</p>
+            <p className="lead-detail-docs-hint">Envie PDFs (proposta, contrato, laudo): escolha o tipo, clique em &quot;Enviar PDF&quot; e selecione o arquivo. Use &quot;Ver&quot; para abrir em nova aba e &quot;Excluir&quot; para remover.</p>
             <div className="lead-detail-docs-upload">
               <select id="lead-doc-tipo" className="lead-detail-doc-tipo">
                 <option value="">Tipo (opcional)</option>

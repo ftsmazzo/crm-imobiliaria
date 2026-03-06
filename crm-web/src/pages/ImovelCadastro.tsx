@@ -404,15 +404,15 @@ export default function ImovelCadastro() {
               </div>
               <div className="field-row">
                 <div className="field">
-                  <label htmlFor="codigo">Código (controlado pelo CRM)</label>
+                  <label htmlFor="codigo">Código Imóvel</label>
                   <input id="codigo" value={form.codigo} readOnly disabled className="imovel-cadastro-codigo-locked" placeholder="Gerado automaticamente por tipo: AP, CA, TR, CAC, TRC, COM" />
                 </div>
                 <div className="field">
-                  <label htmlFor="quadra">Quadra (interno)</label>
+                  <label htmlFor="quadra">Quadra</label>
                   <input id="quadra" value={form.quadra} onChange={(e) => setForm((f) => ({ ...f, quadra: e.target.value }))} placeholder="Quadra" />
                 </div>
                 <div className="field">
-                  <label htmlFor="lote">Lote (interno)</label>
+                  <label htmlFor="lote">Lote</label>
                   <input id="lote" value={form.lote} onChange={(e) => setForm((f) => ({ ...f, lote: e.target.value }))} placeholder="Lote" />
                 </div>
               </div>

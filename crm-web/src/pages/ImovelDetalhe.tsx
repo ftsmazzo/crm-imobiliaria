@@ -155,9 +155,9 @@ export default function ImovelDetalhe() {
 
         <div className="imovel-detalhe-grid">
           <Block title="Identificação">
-            <Item label="Código" value={imovel.codigo} />
-            <Item label="Quadra (interno)" value={imovel.quadra} />
-            <Item label="Lote (interno)" value={imovel.lote} />
+            <Item label="Código Imóvel" value={imovel.codigo} />
+            <Item label="Quadra" value={imovel.quadra} />
+            <Item label="Lote" value={imovel.lote} />
             <Item label="Empreendimento" value={imovel.empreendimento?.nome} />
             <Item label="Nº Matrícula" value={imovel.numeroMatricula} />
             <Item label="Nº IPTU" value={imovel.numeroIptu} />
