@@ -35,7 +35,7 @@ export class PublicController {
     );
     const result = await Promise.all(
       lista.map(async (i) => {
-        let fotos: { id: string; url: string }[] = [];
+        let fotos: { id: string; url: string; capa?: boolean }[] = [];
         try {
           fotos = await this.fotosService.getPresignedUrlsForImovel(i.id);
         } catch {
