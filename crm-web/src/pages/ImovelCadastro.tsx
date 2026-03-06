@@ -404,8 +404,8 @@ export default function ImovelCadastro() {
               </div>
               <div className="field-row">
                 <div className="field">
-                  <label htmlFor="codigo">Código (opcional)</label>
-                  <input id="codigo" value={form.codigo} onChange={(e) => setForm((f) => ({ ...f, codigo: e.target.value }))} placeholder="Ex: APT-101" />
+                  <label htmlFor="codigo">Código (controlado pelo CRM)</label>
+                  <input id="codigo" value={form.codigo} readOnly disabled className="imovel-cadastro-codigo-locked" placeholder="Gerado automaticamente por tipo: AP, CA, TR, CAC, TRC, COM" />
                 </div>
                 <div className="field">
                   <label htmlFor="quadra">Quadra (interno)</label>

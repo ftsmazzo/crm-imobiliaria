@@ -5,9 +5,42 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateImovelDto } from './dto/create-imovel.dto';
 import { UpdateImovelDto } from './dto/update-imovel.dto';
 
+/** Prefixo do código por tipo: AP, CA, TR, CAC, TRC, COM */
+const TIPO_CODIGO_PREFIX: Record<string, string> = {
+  apartamento: 'AP',
+  casa: 'CA',
+  terreno: 'TR',
+  casa_condominio: 'CAC',
+  terreno_condominio: 'TRC',
+  comercial: 'COM',
+};
+
+const PREFIX_DEFAULT = 'IMV';
+
 @Injectable()
 export class ImoveisService {
   constructor(private prisma: PrismaService) {}
+
+  private async getNextCodigoForTipo(tipo: string): Promise<string> {
+    const prefix = TIPO_CODIGO_PREFIX[tipo] || PREFIX_DEFAULT;
+    const pattern = `${prefix}-%`;
+    const list = await this.prisma.imovel.findMany({
+      where: { codigo: { not: null } },
+      select: { codigo: true },
+    });
+    let maxNum = 0;
+    const prefixMatch = new RegExp(`^${prefix}-(\\d+)$`, 'i');
+    for (const row of list) {
+      const c = row.codigo?.trim();
+      if (!c) continue;
+      const m = c.match(prefixMatch);
+      if (m) {
+        const n = parseInt(m[1], 10);
+        if (!Number.isNaN(n) && n > maxNum) maxNum = n;
+      }
+    }
+    return `${prefix}-${String(maxNum + 1).padStart(5, '0')}`;
+  }
 
   async create(dto: CreateImovelDto, user?: Usuario) {
     const usuarioResponsavelId =
@@ -15,8 +48,7 @@ export class ImoveisService {
       (user?.role === 'corretor' ? user.id : undefined);
     let codigo = dto.codigo?.trim() || undefined;
     if (!codigo) {
-      const count = await this.prisma.imovel.count();
-      codigo = `IMV-${String(count + 1).padStart(5, '0')}`;
+      codigo = await this.getNextCodigoForTipo(dto.tipo);
     }
     return this.prisma.imovel.create({
       data: {
