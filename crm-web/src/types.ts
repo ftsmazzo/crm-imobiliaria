@@ -107,6 +107,8 @@ export type Imovel = {
   atualizadoEm: string;
   empreendimento?: { id: string; nome: string } | null;
   proprietario?: { id: string; nome: string; email: string | null; telefone: string | null } | null;
+  /** Contatos que demonstraram interesse neste imóvel (preenchido no GET do imóvel) */
+  interesses?: { id: string; contato: { id: string; nome: string; email: string } }[];
 };
 
 export type PrioridadeTarefa = 'baixa' | 'media' | 'alta';

@@ -232,6 +232,25 @@ export default function ImovelDetalhe() {
               )}
             </>
           )}
+
+          {imovel.interesses && imovel.interesses.length > 0 && (
+            <Block title="Contatos interessados">
+              <ul className="imovel-detalhe-interesses">
+                {imovel.interesses.map((int) => (
+                  <li key={int.id}>
+                    <button
+                      type="button"
+                      className="imovel-detalhe-interesse-link"
+                      onClick={() => navigate(`/contatos`)}
+                    >
+                      {int.contato.nome}
+                      {int.contato.email ? ` – ${int.contato.email}` : ''}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </Block>
+          )}
         </div>
 
         {fotos.length > 0 && (
