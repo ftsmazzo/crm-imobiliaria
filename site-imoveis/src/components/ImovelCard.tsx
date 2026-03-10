@@ -4,18 +4,28 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import type { ImovelPublic } from '@/lib/api';
 
-const CAROUSEL_INTERVAL_MS = 4000;
+const CAROUSEL_INTERVAL_MS = 4500;
+
+const TIPO_LABEL: Record<string, string> = {
+  apartamento: 'Apto',
+  casa: 'Casa',
+  casa_condominio: 'Casa cond.',
+  terreno: 'Terreno',
+  terreno_condominio: 'Terreno cond.',
+  comercial: 'Comercial',
+};
 
 function formatValor(v: string | null | undefined): string {
   if (!v) return '';
   const n = parseFloat(v);
   if (Number.isNaN(n)) return '';
-  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(n);
+  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(n);
 }
 
 export default function ImovelCard({ imovel }: { imovel: ImovelPublic }) {
-  const valor = imovel.valorVenda ? formatValor(imovel.valorVenda) : imovel.valorAluguel ? formatValor(imovel.valorAluguel) : '';
-  const subtipo = imovel.valorVenda && imovel.valorAluguel ? 'Venda e locação' : imovel.valorVenda ? 'Venda' : 'Locação';
+  const temVenda = !!imovel.valorVenda;
+  const temAluguel = !!imovel.valorAluguel;
+  const valor = temVenda ? formatValor(imovel.valorVenda) : temAluguel ? formatValor(imovel.valorAluguel) : 'Consultar';
   const exibirEndereco = imovel.exibirEnderecoSite !== false;
   const endereco = exibirEndereco
     ? ([imovel.bairro, imovel.cidade].filter(Boolean).join(', ') || '–')
@@ -42,6 +52,13 @@ export default function ImovelCard({ imovel }: { imovel: ImovelPublic }) {
             <span className="imovel-card-capa-icon">🏠</span>
           </div>
         )}
+        <div className="imovel-card-badges">
+          {temVenda && <span className="imovel-card-badge imovel-card-badge--venda">Venda</span>}
+          {temAluguel && <span className="imovel-card-badge imovel-card-badge--aluguel">Locação</span>}
+          <span className="imovel-card-badge imovel-card-badge--tipo">
+            {TIPO_LABEL[imovel.tipo] || imovel.tipo}
+          </span>
+        </div>
         {fotos.length > 1 && (
           <div className="imovel-card-carousel-dots" aria-hidden>
             {fotos.map((_, i) => (
@@ -52,11 +69,9 @@ export default function ImovelCard({ imovel }: { imovel: ImovelPublic }) {
             ))}
           </div>
         )}
-        <span className="imovel-card-tipo">{imovel.tipo}</span>
       </div>
       <div className="imovel-card-body">
         <p className="imovel-card-valor">{valor}</p>
-        <p className="imovel-card-subtipo">{subtipo}</p>
         <p className="imovel-card-endereco">{endereco}</p>
         <div className="imovel-card-meta">
           {imovel.qtdQuartos != null && <span>{imovel.qtdQuartos} quartos</span>}

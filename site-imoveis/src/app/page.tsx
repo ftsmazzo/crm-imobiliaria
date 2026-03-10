@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getImoveis } from '@/lib/api';
 import ImovelCard from '@/components/ImovelCard';
+import HeroSearch from '@/components/HeroSearch';
 
 export default async function Home() {
   const destaque = await getImoveis(
@@ -10,15 +11,13 @@ export default async function Home() {
 
   return (
     <>
-      <section className="hero">
+      <section className="hero-portal">
         <div className="container">
           <h1>Encontre o imóvel ideal</h1>
-          <p className="hero-lead">
-            Imóveis para venda e locação com atendimento personalizado. Confira nossos destaques.
+          <p className="hero-portal-lead">
+            Busque por cidade, tipo e finalidade. Imóveis para venda e locação com atendimento personalizado.
           </p>
-          <Link href="/imoveis" className="btn btn-primary">
-            Ver imóveis
-          </Link>
+          <HeroSearch />
         </div>
       </section>
 

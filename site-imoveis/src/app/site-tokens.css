@@ -1,29 +1,38 @@
-/* Tokens – Site imobiliário (claro, premium, referência aos melhores do setor) */
+/* Design system – portal imobiliário moderno (referência ZAP, Viva Real, QuintoAndar) */
 
 :root {
-  /* Backgrounds – claros e arejados */
-  --site-bg:       #FFFFFF;
-  --site-bg-soft:  #F8FAFC;
-  --site-bg-hero:  #F1F5F9;
-  --site-surface:  #FFFFFF;
-  --site-overlay:  rgba(255, 255, 255, 0.95);
+  /* Cores primárias – confiança e clareza */
+  --site-primary:      #0f172a;
+  --site-primary-soft: #1e293b;
+  --site-accent:       #ea580c;
+  --site-accent-hover: #c2410c;
+  --site-accent-soft:  rgba(234, 88, 12, 0.08);
+
+  /* Backgrounds */
+  --site-bg:       #ffffff;
+  --site-bg-soft:  #f8fafc;
+  --site-bg-hero:  #0f172a;
+  --site-surface:  #ffffff;
+  --site-overlay:  rgba(15, 23, 42, 0.98);
 
   /* Texto */
-  --site-text:     #0D1B2A;
-  --site-text-soft:#1E3A5F;
-  --site-muted:    #64748B;
-  --site-muted-2:  #94A3B8;
+  --site-text:      #0f172a;
+  --site-text-soft: #334155;
+  --site-muted:     #64748b;
+  --site-muted-2:   #94a3b8;
+  --site-on-dark:   #f8fafc;
 
-  /* Marca / Destaque */
-  --site-accent:      #0EA5E9;
-  --site-accent-hover:#0284C7;
-  --site-gold:        #B45309;
-  --site-gold-soft:   rgba(180, 83, 9, 0.08);
-  --site-success:     #059669;
-  --site-border:     #E2E8F0;
-  --site-border-soft: #F1F5F9;
+  /* Semânticas */
+  --site-success: #059669;
+  --site-border:     #e2e8f0;
+  --site-border-soft: #f1f5f9;
 
-  /* Espaçamento (grid 8px) */
+  /* Badges */
+  --site-badge-venda:   #0d9488;
+  --site-badge-aluguel: #0369a1;
+
+  /* Espaçamento (8px base) */
+  --site-space-1:  4px;
   --site-space-2:  8px;
   --site-space-3:  12px;
   --site-space-4:  16px;
@@ -33,22 +42,23 @@
   --site-space-10: 40px;
   --site-space-12: 48px;
   --site-space-16: 64px;
+  --site-space-20: 80px;
 
   /* Raios */
   --site-radius:    8px;
   --site-radius-lg: 12px;
-  --site-radius-xl: 16px;
+  --site-radius-xl: 20px;
   --site-radius-2xl: 24px;
   --site-radius-full: 9999px;
 
-  /* Sombras – suaves */
-  --site-shadow-sm:  0 1px 2px rgba(13, 27, 42, 0.05);
-  --site-shadow:     0 4px 12px rgba(13, 27, 42, 0.06);
-  --site-shadow-md:  0 8px 24px rgba(13, 27, 42, 0.08);
-  --site-shadow-lg:  0 16px 48px rgba(13, 27, 42, 0.1);
-  --site-shadow-card: 0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+  /* Sombras */
+  --site-shadow-sm:  0 1px 3px rgba(15, 23, 42, 0.06);
+  --site-shadow:     0 4px 16px rgba(15, 23, 42, 0.08);
+  --site-shadow-md:  0 8px 30px rgba(15, 23, 42, 0.1);
+  --site-shadow-lg:  0 20px 50px rgba(15, 23, 42, 0.12);
+  --site-shadow-card: 0 2px 12px rgba(0, 0, 0, 0.06);
 
-  /* Tipografia */
-  --site-font-heading: 'Playfair Display', Georgia, serif;
-  --site-font-body:    'DM Sans', system-ui, sans-serif;
+  /* Tipografia (Plus Jakarta Sans via layout) */
+  --site-font-heading: var(--font-heading), system-ui, sans-serif;
+  --site-font-body:    var(--font-heading), system-ui, sans-serif;
 }
