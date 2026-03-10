@@ -10,9 +10,12 @@ import {
   setImovelFotoCapa,
   getEmpreendimentos,
   getProprietarios,
+  getUsuarios,
   type ImovelFoto,
+  type UsuarioListItem,
 } from '../api';
 import type { Imovel } from '../types';
+import { getUser } from '../auth';
 import { buscarPorCep } from '../viacep';
 import AppLayout from '../components/AppLayout';
 import './ImovelCadastro.css';
@@ -97,6 +100,7 @@ const emptyForm = (): FormState => ({
   caracteristicas: '[]',
   empreendimentoId: '',
   proprietarioId: '',
+  usuarioResponsavelId: '',
 });
 
 export default function ImovelCadastro() {
@@ -114,9 +118,12 @@ export default function ImovelCadastro() {
   const [cepMsg, setCepMsg] = useState<'ok' | 'not_found' | null>(null);
   const [empreendimentos, setEmpreendimentos] = useState<{ id: string; nome: string }[]>([]);
   const [proprietarios, setProprietarios] = useState<{ id: string; nome: string; email: string | null; telefone: string | null }[]>([]);
+  const [usuarios, setUsuarios] = useState<UsuarioListItem[]>([]);
   const [fotos, setFotos] = useState<ImovelFoto[]>([]);
   const [fotosLoading, setFotosLoading] = useState(false);
   const [uploadingFoto, setUploadingFoto] = useState(false);
+  const user = getUser();
+  const isGestor = user?.role === 'gestor';
 
   const totalSteps = isNew ? 6 : 7;
   const currentLabel = STEP_LABELS[step - 1];
@@ -143,7 +150,8 @@ export default function ImovelCadastro() {
   useEffect(() => {
     getEmpreendimentos().then((list) => setEmpreendimentos(list)).catch(() => setEmpreendimentos([]));
     getProprietarios().then((list) => setProprietarios(list)).catch(() => setProprietarios([]));
-  }, []);
+    if (isGestor) getUsuarios().then((list) => setUsuarios(list)).catch(() => setUsuarios([]));
+  }, [isGestor]);
 
   useEffect(() => {
     if (!isNew && id) {
@@ -194,6 +202,7 @@ export default function ImovelCadastro() {
             caracteristicas: i.caracteristicas ?? '[]',
             empreendimentoId: i.empreendimentoId ?? '',
             proprietarioId: i.proprietarioId ?? '',
+            usuarioResponsavelId: i.usuarioResponsavelId ?? '',
           });
           return getImovelFotos(i.id);
         })
@@ -278,6 +287,7 @@ export default function ImovelCadastro() {
       caracteristicas: form.caracteristicas && form.caracteristicas !== '[]' ? String(form.caracteristicas) : undefined,
       empreendimentoId: form.empreendimentoId?.toString().trim() || null,
       proprietarioId: form.proprietarioId?.toString().trim() || null,
+      usuarioResponsavelId: form.usuarioResponsavelId?.toString().trim() || null,
     };
   }
 
@@ -338,6 +348,7 @@ export default function ImovelCadastro() {
           caracteristicas: updated.caracteristicas ?? '[]',
           empreendimentoId: updated.empreendimentoId ?? '',
           proprietarioId: updated.proprietarioId ?? '',
+          usuarioResponsavelId: updated.usuarioResponsavelId ?? '',
         });
         if (step === 7) navigate('/imoveis');
       }
@@ -478,6 +489,22 @@ export default function ImovelCadastro() {
                   </div>
                 </div>
               </div>
+              {isGestor && (
+                <div className="field">
+                  <label htmlFor="responsavel">Responsável</label>
+                  <select
+                    id="responsavel"
+                    value={form.usuarioResponsavelId ?? ''}
+                    onChange={(e) => setForm((f) => ({ ...f, usuarioResponsavelId: e.target.value }))}
+                  >
+                    <option value="">Sem responsável</option>
+                    {usuarios.map((u) => (
+                      <option key={u.id} value={u.id}>{u.nome}</option>
+                    ))}
+                  </select>
+                  <p className="hint">Corretor responsável por este imóvel (somente gestor).</p>
+                </div>
+              )}
             </section>
           )}
 
