@@ -224,4 +224,6 @@ model SiteConfig {
   endereco       String?
   creci          String?
   atualizadoEm   DateTime @updatedAt @map("atualizado_em")
+
+  @@map("site_config")
 }
