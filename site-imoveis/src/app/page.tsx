@@ -14,9 +14,6 @@ export default async function Home() {
     <>
       <HeroSection>
         <h1>Encontre o imóvel ideal</h1>
-        <p className="hero-portal-lead">
-          Busque por cidade, tipo e finalidade. Imóveis para venda e locação com atendimento personalizado.
-        </p>
         <HeroSearch />
       </HeroSection>
 

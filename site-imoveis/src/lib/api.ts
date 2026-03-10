@@ -53,6 +53,7 @@ export type ImovelPublic = {
   eletrodomesticos?: string | null;
   andarUnidade?: number | null;
   caracteristicas?: string | null;
+  empreendimento?: { id: string; nome: string } | null;
   fotos?: ImovelFotoPublic[];
 };
 

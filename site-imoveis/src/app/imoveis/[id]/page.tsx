@@ -86,7 +86,12 @@ export default async function ImovelPage({ params }: { params: Promise<{ id: str
         <div className="imovel-detalhe-wrap">
           <div>
             <header className="imovel-detalhe-header">
-              <h1 className="imovel-detalhe-tipo">{formatTipo(imovel.tipo)}</h1>
+              <h1 className="imovel-detalhe-tipo">
+                {formatTipo(imovel.tipo)}
+                {imovel.empreendimento?.nome && (
+                  <span className="imovel-detalhe-empreendimento"> – {imovel.empreendimento.nome}</span>
+                )}
+              </h1>
               {imovel.codigo && <span className="imovel-detalhe-codigo">Cód. {imovel.codigo}</span>}
               {(imovel.bairro || imovel.cidade) && (
                 <p className="imovel-detalhe-local">
@@ -107,7 +112,7 @@ export default async function ImovelPage({ params }: { params: Promise<{ id: str
                   )}
                   {valorAluguel && (
                     <div className="imovel-detalhe-valor-item">
-                      <span className="imovel-detalhe-valor-label">Aluguel</span>
+                      <span className="imovel-detalhe-valor-label">Locação</span>
                       <span className="imovel-detalhe-valor-numero">{valorAluguel}</span>
                     </div>
                   )}

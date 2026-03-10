@@ -110,8 +110,8 @@ export class PublicController {
       eletrodomesticos: i.eletrodomesticos,
       andarUnidade: i.andarUnidade,
       caracteristicas: i.caracteristicas,
-      // fotos ordenadas: capa primeiro (para carousel)
-    fotos: fotos.map((f) => ({ id: f.id, url: f.url, capa: f.capa })),
+      empreendimento: i.empreendimento ? { id: i.empreendimento.id, nome: i.empreendimento.nome } : null,
+      fotos: fotos.map((f) => ({ id: f.id, url: f.url, capa: f.capa })),
     };
   }
 
