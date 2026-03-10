@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { Usuario } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { StorageService } from '../storage/storage.service';
@@ -29,18 +29,43 @@ export class SiteConfigService {
     private storage: StorageService,
   ) {}
 
-  private async getRow() {
-    let row = await this.prisma.siteConfig.findFirst({ orderBy: { atualizadoEm: 'desc' } });
-    if (!row) {
-      row = await this.prisma.siteConfig.create({
-        data: {},
-      });
+  private async getRow(): Promise<{
+    id: string;
+    logoKey: string | null;
+    heroImageKey: string | null;
+    nome: string | null;
+    whatsapp: string | null;
+    endereco: string | null;
+    creci: string | null;
+    atualizadoEm: Date;
+  } | null> {
+    try {
+      let row = await this.prisma.siteConfig.findFirst({ orderBy: { atualizadoEm: 'desc' } });
+      if (!row) {
+        row = await this.prisma.siteConfig.create({
+          data: {},
+        });
+      }
+      return row;
+    } catch {
+      return null;
     }
-    return row;
+  }
+
+  private emptyPublic(): SiteConfigPublic {
+    return {
+      logoUrl: null,
+      heroImageUrl: null,
+      nome: null,
+      whatsapp: null,
+      endereco: null,
+      creci: null,
+    };
   }
 
   async getPublic(): Promise<SiteConfigPublic> {
     const row = await this.getRow();
+    if (!row) return this.emptyPublic();
     const [logoUrl, heroImageUrl] = await Promise.all([
       row.logoKey ? this.storage.getPresignedUrl(row.logoKey, PRESIGNED_EXPIRY).catch(() => null) : null,
       row.heroImageKey ? this.storage.getPresignedUrl(row.heroImageKey, PRESIGNED_EXPIRY).catch(() => null) : null,
@@ -60,6 +85,20 @@ export class SiteConfigService {
       throw new ForbiddenException('Apenas gestor pode acessar a configuração do site');
     }
     const row = await this.getRow();
+    if (!row) {
+      return {
+        id: '',
+        logoUrl: null,
+        heroImageUrl: null,
+        logoKey: null,
+        heroImageKey: null,
+        nome: null,
+        whatsapp: null,
+        endereco: null,
+        creci: null,
+        atualizadoEm: new Date(),
+      };
+    }
     const [logoUrl, heroImageUrl] = await Promise.all([
       row.logoKey ? this.storage.getPresignedUrl(row.logoKey, PRESIGNED_EXPIRY).catch(() => null) : null,
       row.heroImageKey ? this.storage.getPresignedUrl(row.heroImageKey, PRESIGNED_EXPIRY).catch(() => null) : null,
@@ -86,6 +125,7 @@ export class SiteConfigService {
       throw new ForbiddenException('Apenas gestor pode alterar a configuração do site');
     }
     const row = await this.getRow();
+    if (!row) throw new InternalServerErrorException('Configuração do site indisponível.');
     await this.prisma.siteConfig.update({
       where: { id: row.id },
       data: {
@@ -114,6 +154,7 @@ export class SiteConfigService {
       throw new ForbiddenException('Apenas gestor pode alterar a configuração do site');
     }
     const row = await this.getRow();
+    if (!row) throw new InternalServerErrorException('Configuração do site indisponível.');
     const ext = this.ext(file.originalname ?? '', file.mimetype);
     const key = `${SITE_PREFIX}logo_${Date.now()}.${ext}`;
     await this.storage.upload(key, file.buffer, file.mimetype || 'image/png');
@@ -135,6 +176,7 @@ export class SiteConfigService {
       throw new ForbiddenException('Apenas gestor pode alterar a configuração do site');
     }
     const row = await this.getRow();
+    if (!row) throw new InternalServerErrorException('Configuração do site indisponível.');
     const ext = this.ext(file.originalname ?? '', file.mimetype);
     const key = `${SITE_PREFIX}hero_${Date.now()}.${ext}`;
     await this.storage.upload(key, file.buffer, file.mimetype || 'image/jpeg');
