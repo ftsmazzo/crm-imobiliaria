@@ -55,6 +55,11 @@ export default function AppLayout({ children }: AppLayoutProps) {
             <Link to="/tarefas" onClick={closeSidebar} className={location.pathname === '/tarefas' ? 'active' : ''}>
               Tarefas
             </Link>
+            {user?.role === 'gestor' && (
+              <Link to="/usuarios" onClick={closeSidebar} className={location.pathname === '/usuarios' ? 'active' : ''}>
+                Usuários
+              </Link>
+            )}
           </nav>
         </aside>
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>

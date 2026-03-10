@@ -12,6 +12,7 @@ import Pipeline from './pages/Pipeline';
 import ProprietarioCadastro from './pages/ProprietarioCadastro';
 import Proprietarios from './pages/Proprietarios';
 import Tarefas from './pages/Tarefas';
+import Usuarios from './pages/Usuarios';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   return isLoggedIn() ? <>{children}</> : <Navigate to="/login" replace />;
@@ -36,6 +37,7 @@ export default function App() {
         <Route path="/empreendimentos/novo" element={<PrivateRoute><EmpreendimentoCadastro /></PrivateRoute>} />
         <Route path="/empreendimentos/:id/editar" element={<PrivateRoute><EmpreendimentoCadastro /></PrivateRoute>} />
         <Route path="/tarefas" element={<PrivateRoute><Tarefas /></PrivateRoute>} />
+        <Route path="/usuarios" element={<PrivateRoute><Usuarios /></PrivateRoute>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
