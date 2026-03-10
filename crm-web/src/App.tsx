@@ -1,5 +1,6 @@
 import { Navigate, Route, BrowserRouter, Routes } from 'react-router-dom';
 import { isLoggedIn } from './auth';
+import Administracao from './pages/Administracao';
 import Contatos from './pages/Contatos';
 import Dashboard from './pages/Dashboard';
 import EmpreendimentoCadastro from './pages/EmpreendimentoCadastro';
@@ -40,6 +41,7 @@ export default function App() {
         <Route path="/tarefas" element={<PrivateRoute><Tarefas /></PrivateRoute>} />
         <Route path="/usuarios" element={<PrivateRoute><Usuarios /></PrivateRoute>} />
         <Route path="/personalizacao-site" element={<PrivateRoute><PersonalizacaoSite /></PrivateRoute>} />
+        <Route path="/administracao" element={<PrivateRoute><Administracao /></PrivateRoute>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

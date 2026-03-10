@@ -16,9 +16,10 @@ import { TipoDocumentoModule } from './tipo-documento/tipo-documento.module';
 import { InteressesModule } from './interesses/interesses.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { SiteConfigModule } from './site-config/site-config.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
-  imports: [PrismaModule, StorageModule, AuthModule, HealthModule, ContatosModule, EmpreendimentosModule, ImoveisModule, ProprietariosModule, ProcessoDocumentoModule, TarefasModule, TipoDocumentoModule, InteressesModule, SiteConfigModule, PublicModule, DashboardModule],
+  imports: [PrismaModule, StorageModule, AuthModule, HealthModule, ContatosModule, EmpreendimentosModule, ImoveisModule, ProprietariosModule, ProcessoDocumentoModule, TarefasModule, TipoDocumentoModule, InteressesModule, SiteConfigModule, AdminModule, PublicModule, DashboardModule],
   providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }],
 })
 export class AppModule {}

@@ -63,6 +63,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
                 <Link to="/personalizacao-site" onClick={closeSidebar} className={location.pathname === '/personalizacao-site' ? 'active' : ''}>
                   Personalização do site
                 </Link>
+                <Link to="/administracao" onClick={closeSidebar} className={location.pathname === '/administracao' ? 'active' : ''}>
+                  Administração
+                </Link>
               </>
             )}
           </nav>

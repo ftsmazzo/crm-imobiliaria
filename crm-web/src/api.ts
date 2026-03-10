@@ -123,6 +123,16 @@ export async function removeSiteConfigHero(): Promise<SiteConfigAdmin> {
   return handleRes(res);
 }
 
+export type LimparParaProducaoResult = { message: string; removidos: Record<string, number> };
+
+export async function limparParaProducao(): Promise<LimparParaProducaoResult> {
+  const res = await fetch(`${API_URL}/admin/limpar-para-producao`, {
+    method: 'POST',
+    headers: authHeaders(),
+  });
+  return handleRes(res);
+}
+
 // Contatos
 export async function getContatos(estagio?: string, usuarioResponsavelId?: string): Promise<Contato[]> {
   const q = new URLSearchParams();
