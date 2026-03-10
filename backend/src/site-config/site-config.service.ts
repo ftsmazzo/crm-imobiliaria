@@ -189,4 +189,36 @@ export class SiteConfigService {
     });
     return this.getForAdmin(user);
   }
+
+  async removeLogo(user: Usuario): Promise<SiteConfigAdmin> {
+    if (user.role !== 'gestor') {
+      throw new ForbiddenException('Apenas gestor pode alterar a configuração do site');
+    }
+    const row = await this.getRow();
+    if (!row) throw new InternalServerErrorException('Configuração do site indisponível.');
+    if (row.logoKey) {
+      await this.storage.remove(row.logoKey).catch(() => {});
+    }
+    await this.prisma.siteConfig.update({
+      where: { id: row.id },
+      data: { logoKey: null },
+    });
+    return this.getForAdmin(user);
+  }
+
+  async removeHero(user: Usuario): Promise<SiteConfigAdmin> {
+    if (user.role !== 'gestor') {
+      throw new ForbiddenException('Apenas gestor pode alterar a configuração do site');
+    }
+    const row = await this.getRow();
+    if (!row) throw new InternalServerErrorException('Configuração do site indisponível.');
+    if (row.heroImageKey) {
+      await this.storage.remove(row.heroImageKey).catch(() => {});
+    }
+    await this.prisma.siteConfig.update({
+      where: { id: row.id },
+      data: { heroImageKey: null },
+    });
+    return this.getForAdmin(user);
+  }
 }

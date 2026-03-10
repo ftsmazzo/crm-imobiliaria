@@ -107,6 +107,22 @@ export async function uploadSiteConfigHero(file: File): Promise<SiteConfigAdmin>
   return handleRes(res);
 }
 
+export async function removeSiteConfigLogo(): Promise<SiteConfigAdmin> {
+  const res = await fetch(`${API_URL}/site-config/logo`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  });
+  return handleRes(res);
+}
+
+export async function removeSiteConfigHero(): Promise<SiteConfigAdmin> {
+  const res = await fetch(`${API_URL}/site-config/hero`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  });
+  return handleRes(res);
+}
+
 // Contatos
 export async function getContatos(estagio?: string, usuarioResponsavelId?: string): Promise<Contato[]> {
   const q = new URLSearchParams();

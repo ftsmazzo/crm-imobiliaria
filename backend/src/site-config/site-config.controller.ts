@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Usuario } from '@prisma/client';
 import { CurrentUser } from '../auth/current-user.decorator';
@@ -37,5 +37,15 @@ export class SiteConfigController {
   ) {
     if (!file?.buffer) throw new Error('Arquivo não enviado');
     return this.siteConfig.uploadHero(user, file);
+  }
+
+  @Delete('logo')
+  removeLogo(@CurrentUser() user: Usuario) {
+    return this.siteConfig.removeLogo(user);
+  }
+
+  @Delete('hero')
+  removeHero(@CurrentUser() user: Usuario) {
+    return this.siteConfig.removeHero(user);
   }
 }

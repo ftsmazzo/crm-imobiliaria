@@ -5,6 +5,8 @@ import {
   updateSiteConfig,
   uploadSiteConfigLogo,
   uploadSiteConfigHero,
+  removeSiteConfigLogo,
+  removeSiteConfigHero,
   type SiteConfigAdmin,
 } from '../api';
 import { getUser } from '../auth';
@@ -97,6 +99,32 @@ export default function PersonalizacaoSite() {
     }
   }
 
+  async function handleRemoveLogo() {
+    setErro('');
+    setSaving(true);
+    try {
+      const updated = await removeSiteConfigLogo();
+      setConfig(updated);
+    } catch (e) {
+      setErro(e instanceof Error ? e.message : 'Erro ao remover logo');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleRemoveHero() {
+    setErro('');
+    setSaving(true);
+    try {
+      const updated = await removeSiteConfigHero();
+      setConfig(updated);
+    } catch (e) {
+      setErro(e instanceof Error ? e.message : 'Erro ao remover imagem de fundo');
+    } finally {
+      setSaving(false);
+    }
+  }
+
   if (!isGestor) {
     return <Navigate to="/" replace />;
   }
@@ -138,14 +166,26 @@ export default function PersonalizacaoSite() {
                 className="personalizacao-site-file-input"
                 aria-label="Enviar logo"
               />
-              <button
-                type="button"
-                className="personalizacao-site-btn-upload"
-                onClick={() => logoInputRef.current?.click()}
-                disabled={saving}
-              >
-                {config?.logoUrl ? 'Trocar logo' : 'Enviar logo'}
-              </button>
+              <div className="personalizacao-site-buttons">
+                <button
+                  type="button"
+                  className="personalizacao-site-btn-upload"
+                  onClick={() => logoInputRef.current?.click()}
+                  disabled={saving}
+                >
+                  {config?.logoUrl ? 'Trocar logo' : 'Enviar logo'}
+                </button>
+                {config?.logoUrl && (
+                  <button
+                    type="button"
+                    className="personalizacao-site-btn-remove"
+                    onClick={handleRemoveLogo}
+                    disabled={saving}
+                  >
+                    Remover logo
+                  </button>
+                )}
+              </div>
             </div>
             <div className="personalizacao-site-image-block">
               <label>Imagem de fundo (atrás da busca na home)</label>
@@ -164,14 +204,26 @@ export default function PersonalizacaoSite() {
                 className="personalizacao-site-file-input"
                 aria-label="Enviar imagem de fundo"
               />
-              <button
-                type="button"
-                className="personalizacao-site-btn-upload"
-                onClick={() => heroInputRef.current?.click()}
-                disabled={saving}
-              >
-                {config?.heroImageUrl ? 'Trocar imagem' : 'Enviar imagem de fundo'}
-              </button>
+              <div className="personalizacao-site-buttons">
+                <button
+                  type="button"
+                  className="personalizacao-site-btn-upload"
+                  onClick={() => heroInputRef.current?.click()}
+                  disabled={saving}
+                >
+                  {config?.heroImageUrl ? 'Trocar imagem' : 'Enviar imagem de fundo'}
+                </button>
+                {config?.heroImageUrl && (
+                  <button
+                    type="button"
+                    className="personalizacao-site-btn-remove"
+                    onClick={handleRemoveHero}
+                    disabled={saving}
+                  >
+                    Remover imagem
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </section>
