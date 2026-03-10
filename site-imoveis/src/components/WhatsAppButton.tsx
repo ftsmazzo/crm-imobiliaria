@@ -1,7 +1,10 @@
-import { SITE_CONFIG } from '@/lib/config';
+'use client';
+
+import { useSiteConfig } from '@/components/SiteConfigProvider';
 
 export default function WhatsAppButton() {
-  const url = `https://wa.me/${SITE_CONFIG.whatsapp.replace(/\D/g, '')}`;
+  const config = useSiteConfig();
+  const url = `https://wa.me/${config.whatsapp.replace(/\D/g, '')}`;
   return (
     <a
       href={url}

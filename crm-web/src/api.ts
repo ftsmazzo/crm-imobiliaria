@@ -55,6 +55,58 @@ export async function updateUsuario(id: string, dto: { nome?: string; email?: st
   return handleRes(res);
 }
 
+// Site config (personalização do site público) – apenas gestor
+export type SiteConfigAdmin = {
+  id: string;
+  logoUrl: string | null;
+  heroImageUrl: string | null;
+  logoKey: string | null;
+  heroImageKey: string | null;
+  nome: string | null;
+  whatsapp: string | null;
+  endereco: string | null;
+  creci: string | null;
+  atualizadoEm: string;
+};
+
+export async function getSiteConfig(): Promise<SiteConfigAdmin> {
+  const res = await fetch(`${API_URL}/site-config`, { headers: authHeaders() });
+  return handleRes(res);
+}
+
+export async function updateSiteConfig(dto: { nome?: string; whatsapp?: string; endereco?: string; creci?: string }): Promise<SiteConfigAdmin> {
+  const res = await fetch(`${API_URL}/site-config`, {
+    method: 'PATCH',
+    headers: authHeaders(),
+    body: JSON.stringify(dto),
+  });
+  return handleRes(res);
+}
+
+export async function uploadSiteConfigLogo(file: File): Promise<SiteConfigAdmin> {
+  const token = getToken();
+  const form = new FormData();
+  form.append('file', file);
+  const res = await fetch(`${API_URL}/site-config/logo`, {
+    method: 'POST',
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    body: form,
+  });
+  return handleRes(res);
+}
+
+export async function uploadSiteConfigHero(file: File): Promise<SiteConfigAdmin> {
+  const token = getToken();
+  const form = new FormData();
+  form.append('file', file);
+  const res = await fetch(`${API_URL}/site-config/hero`, {
+    method: 'POST',
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    body: form,
+  });
+  return handleRes(res);
+}
+
 // Contatos
 export async function getContatos(estagio?: string, usuarioResponsavelId?: string): Promise<Contato[]> {
   const q = new URLSearchParams();

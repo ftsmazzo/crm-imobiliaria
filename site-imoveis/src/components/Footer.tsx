@@ -1,15 +1,18 @@
+'use client';
+
 import Link from 'next/link';
-import { SITE_CONFIG } from '@/lib/config';
+import { useSiteConfig } from '@/components/SiteConfigProvider';
 
 export default function Footer() {
-  const whatsappLink = `https://wa.me/${SITE_CONFIG.whatsapp.replace(/\D/g, '')}`;
+  const config = useSiteConfig();
+  const whatsappLink = `https://wa.me/${config.whatsapp.replace(/\D/g, '')}`;
   return (
     <footer className="site-footer">
       <div className="container site-footer-inner">
         <div className="site-footer-col">
-          <strong>{SITE_CONFIG.nome}</strong>
-          <p>{SITE_CONFIG.endereco}</p>
-          {SITE_CONFIG.creci && <p>CRECI: {SITE_CONFIG.creci}</p>}
+          <strong>{config.nome}</strong>
+          <p>{config.endereco}</p>
+          {config.creci && <p>CRECI: {config.creci}</p>}
         </div>
         <div className="site-footer-col">
           <strong>Links</strong>
@@ -27,7 +30,7 @@ export default function Footer() {
       </div>
       <div className="site-footer-bottom">
         <div className="container">
-          © {new Date().getFullYear()} {SITE_CONFIG.nome}. Todos os direitos reservados.
+          © {new Date().getFullYear()} {config.nome}. Todos os direitos reservados.
         </div>
       </div>
     </footer>

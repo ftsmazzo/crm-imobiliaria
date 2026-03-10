@@ -97,6 +97,12 @@ a:hover { text-decoration: underline; }
   color: #fff;
   text-decoration: none;
 }
+.site-logo-img {
+  display: block;
+  max-height: 40px;
+  width: auto;
+  object-fit: contain;
+}
 .site-nav {
   display: none;
   align-items: center;

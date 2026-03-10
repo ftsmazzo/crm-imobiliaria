@@ -8,6 +8,7 @@ import Imoveis from './pages/Imoveis';
 import ImovelCadastro from './pages/ImovelCadastro';
 import ImovelDetalhe from './pages/ImovelDetalhe';
 import Login from './pages/Login';
+import PersonalizacaoSite from './pages/PersonalizacaoSite';
 import Pipeline from './pages/Pipeline';
 import ProprietarioCadastro from './pages/ProprietarioCadastro';
 import Proprietarios from './pages/Proprietarios';
@@ -38,6 +39,7 @@ export default function App() {
         <Route path="/empreendimentos/:id/editar" element={<PrivateRoute><EmpreendimentoCadastro /></PrivateRoute>} />
         <Route path="/tarefas" element={<PrivateRoute><Tarefas /></PrivateRoute>} />
         <Route path="/usuarios" element={<PrivateRoute><Usuarios /></PrivateRoute>} />
+        <Route path="/personalizacao-site" element={<PrivateRoute><PersonalizacaoSite /></PrivateRoute>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

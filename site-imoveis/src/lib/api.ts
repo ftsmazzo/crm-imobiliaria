@@ -1,5 +1,26 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
+export type SiteConfigPublic = {
+  logoUrl: string | null;
+  heroImageUrl: string | null;
+  nome: string | null;
+  whatsapp: string | null;
+  endereco: string | null;
+  creci: string | null;
+};
+
+export async function getSiteConfig(options?: { cache?: RequestCache }): Promise<SiteConfigPublic | null> {
+  try {
+    const res = await fetch(`${API_URL}/api/public/site-config`, {
+      ...(options?.cache && { cache: options.cache }),
+    });
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
 export type ImovelFotoPublic = { id: string; url: string; capa?: boolean };
 
 export type ImovelPublic = {

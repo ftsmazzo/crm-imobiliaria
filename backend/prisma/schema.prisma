@@ -213,3 +213,15 @@ model Interesse {
   contato   Contato  @relation(fields: [contatoId], references: [id], onDelete: Cascade)
   imovel    Imovel   @relation(fields: [imovelId], references: [id], onDelete: Cascade)
 }
+
+// Configuração do site público (logo, hero, textos) – uma única linha
+model SiteConfig {
+  id             String   @id @default(uuid())
+  logoKey        String?  @map("logo_key")
+  heroImageKey   String?  @map("hero_image_key")
+  nome           String?
+  whatsapp       String?
+  endereco       String?
+  creci          String?
+  atualizadoEm   DateTime @updatedAt @map("atualizado_em")
+}

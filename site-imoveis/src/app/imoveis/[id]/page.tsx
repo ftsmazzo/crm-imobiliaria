@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getImovel } from '@/lib/api';
+import { getImovel, getSiteConfig } from '@/lib/api';
 import FormInteresse from './FormInteresse';
 import ImovelDetalheCapaCarousel from './ImovelDetalheCapaCarousel';
 import { SITE_CONFIG } from '@/lib/config';
@@ -66,7 +66,9 @@ export default async function ImovelPage({ params }: { params: Promise<{ id: str
   const fotos = imovel.fotos ?? [];
   const caracteristicas = parseCaracteristicas(imovel.caracteristicas);
   const tipoVagaLabel = imovel.tipoVaga === 'coberta' ? 'Coberta' : imovel.tipoVaga === 'descoberta' ? 'Descoberta' : imovel.tipoVaga === 'ambos' ? 'Coberta e descoberta' : null;
-  const whatsappLink = `https://wa.me/${SITE_CONFIG.whatsapp.replace(/\D/g, '')}`;
+  const siteConfig = await getSiteConfig({ cache: 'no-store' });
+  const whatsapp = siteConfig?.whatsapp?.trim() || SITE_CONFIG.whatsapp;
+  const whatsappLink = `https://wa.me/${whatsapp.replace(/\D/g, '')}`;
 
   return (
     <>

@@ -56,9 +56,14 @@ export default function AppLayout({ children }: AppLayoutProps) {
               Tarefas
             </Link>
             {user?.role === 'gestor' && (
-              <Link to="/usuarios" onClick={closeSidebar} className={location.pathname === '/usuarios' ? 'active' : ''}>
-                Usuários
-              </Link>
+              <>
+                <Link to="/usuarios" onClick={closeSidebar} className={location.pathname === '/usuarios' ? 'active' : ''}>
+                  Usuários
+                </Link>
+                <Link to="/personalizacao-site" onClick={closeSidebar} className={location.pathname === '/personalizacao-site' ? 'active' : ''}>
+                  Personalização do site
+                </Link>
+              </>
             )}
           </nav>
         </aside>

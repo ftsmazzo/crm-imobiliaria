@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getImoveis } from '@/lib/api';
 import ImovelCard from '@/components/ImovelCard';
 import HeroSearch from '@/components/HeroSearch';
+import HeroSection from '@/components/HeroSection';
 
 export default async function Home() {
   const destaque = await getImoveis(
@@ -11,15 +12,13 @@ export default async function Home() {
 
   return (
     <>
-      <section className="hero-portal">
-        <div className="container">
-          <h1>Encontre o imóvel ideal</h1>
-          <p className="hero-portal-lead">
-            Busque por cidade, tipo e finalidade. Imóveis para venda e locação com atendimento personalizado.
-          </p>
-          <HeroSearch />
-        </div>
-      </section>
+      <HeroSection>
+        <h1>Encontre o imóvel ideal</h1>
+        <p className="hero-portal-lead">
+          Busque por cidade, tipo e finalidade. Imóveis para venda e locação com atendimento personalizado.
+        </p>
+        <HeroSearch />
+      </HeroSection>
 
       <section className="container" style={{ marginTop: 'var(--site-space-12)' }}>
         <h2 className="section-title">Imóveis em destaque</h2>

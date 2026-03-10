@@ -2,16 +2,22 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { SITE_CONFIG } from '@/lib/config';
+import { useSiteConfig } from '@/components/SiteConfigProvider';
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const config = useSiteConfig();
 
   return (
     <header className="site-header">
       <div className="container site-header-inner">
         <Link href="/" className="site-logo" onClick={() => setMenuOpen(false)}>
-          {SITE_CONFIG.nome}
+          {config.logoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={config.logoUrl} alt={config.nome} className="site-logo-img" />
+          ) : (
+            config.nome
+          )}
         </Link>
         <nav className="site-nav">
           <Link href="/">Início</Link>

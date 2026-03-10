@@ -3,6 +3,7 @@ import { ContatosService } from '../contatos/contatos.service';
 import { ImoveisFotosService } from '../imoveis/imoveis-fotos.service';
 import { ImoveisService } from '../imoveis/imoveis.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { SiteConfigService } from '../site-config/site-config.service';
 import { Public } from '../auth/public.decorator';
 import { LeadPublicDto } from './dto/lead-public.dto';
 import { LeadRateLimitGuard } from './lead-rate-limit.guard';
@@ -15,6 +16,7 @@ export class PublicController {
     private contatos: ContatosService,
     private fotosService: ImoveisFotosService,
     private prisma: PrismaService,
+    private siteConfig: SiteConfigService,
   ) {}
 
   @Get('imoveis')
@@ -111,6 +113,11 @@ export class PublicController {
       // fotos ordenadas: capa primeiro (para carousel)
     fotos: fotos.map((f) => ({ id: f.id, url: f.url, capa: f.capa })),
     };
+  }
+
+  @Get('site-config')
+  getSiteConfig() {
+    return this.siteConfig.getPublic();
   }
 
   @Post('lead')
