@@ -683,7 +683,45 @@ label {
   background: var(--site-primary);
   color: var(--site-on-dark);
   margin-top: var(--site-space-20);
-  padding: var(--site-space-12) 0 0;
+  padding: 0;
+}
+/* Faixa CTA – destaque para WhatsApp */
+.site-footer-cta {
+  background: var(--site-primary-soft);
+  padding: var(--site-space-6) 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.site-footer-cta-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--site-space-4);
+  text-align: center;
+}
+.site-footer-cta-text {
+  margin: 0;
+  font-size: 1rem;
+  color: rgba(248, 250, 252, 0.9);
+}
+.site-footer-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--site-space-2);
+  padding: var(--site-space-3) var(--site-space-5);
+  background: #25D366;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  border-radius: var(--site-radius);
+  box-shadow: 0 2px 12px rgba(37, 211, 102, 0.35);
+  transition: transform 0.1s, box-shadow 0.2s;
+}
+.site-footer-cta-btn:hover {
+  color: #fff;
+  text-decoration: none;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.45);
 }
 .site-footer a { color: rgba(248, 250, 252, 0.85); }
 .site-footer a:hover { color: #fff; text-decoration: none; }
@@ -691,7 +729,7 @@ label {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--site-space-10);
-  padding-bottom: var(--site-space-10);
+  padding: var(--site-space-12) 0 var(--site-space-10);
 }
 @media (min-width: 640px) {
   .site-footer-inner { grid-template-columns: repeat(3, 1fr); }
@@ -705,6 +743,52 @@ label {
   color: rgba(248, 250, 252, 0.6);
 }
 .site-footer-col p, .site-footer-col a { font-size: 0.9375rem; line-height: 1.5; }
+/* Brand: logo ou nome */
+.site-footer-brand .site-footer-logo {
+  max-height: 44px;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  opacity: 0.95;
+}
+.site-footer-name {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #fff;
+  text-transform: none;
+  letter-spacing: -0.02em;
+}
+.site-footer-address {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--site-space-2);
+  margin: 0;
+  color: rgba(248, 250, 252, 0.8);
+}
+.site-footer-address svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--site-accent);
+  opacity: 0.9;
+}
+.site-footer-creci {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: rgba(248, 250, 252, 0.55);
+}
+.site-footer-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--site-space-2);
+  color: #25D366 !important;
+  font-weight: 600;
+}
+.site-footer-whatsapp:hover { color: #4ade80 !important; }
+.site-footer-hint {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: rgba(248, 250, 252, 0.5);
+}
 .site-footer-bottom {
   padding: var(--site-space-6) 0;
   text-align: center;
