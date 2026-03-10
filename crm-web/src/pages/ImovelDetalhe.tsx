@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getImovel, getImovelFotos, getImovelDocumentos, uploadImovelDocumento, getImovelDocumentoUrl, deleteImovelDocumento, setImovelFotoCapa, type ImovelFoto, type ImovelDocumento } from '../api';
-import type { Imovel } from '../types';
+import { getImovel, getImovelFotos, getImovelDocumentos, uploadImovelDocumento, getImovelDocumentoUrl, deleteImovelDocumento, setImovelFotoCapa, getContatos, createInteresse, type ImovelFoto, type ImovelDocumento } from '../api';
+import type { Imovel, Contato } from '../types';
 import AppLayout from '../components/AppLayout';
 import './ImovelDetalhe.css';
 
@@ -69,6 +69,9 @@ export default function ImovelDetalhe() {
   const [uploadingDoc, setUploadingDoc] = useState(false);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState('');
+  const [showVincularContato, setShowVincularContato] = useState(false);
+  const [contatosList, setContatosList] = useState<Contato[]>([]);
+  const [vincularContatoLoading, setVincularContatoLoading] = useState(false);
 
   useEffect(() => {
     if (!id || id === 'novo') return;
@@ -81,6 +84,30 @@ export default function ImovelDetalhe() {
     getImovelFotos(id).then(setFotos).catch(() => setFotos([]));
     getImovelDocumentos(id).then(setDocumentos).catch(() => setDocumentos([]));
   }, [id]);
+
+  useEffect(() => {
+    if (showVincularContato) {
+      getContatos().then(setContatosList).catch(() => setContatosList([]));
+    }
+  }, [showVincularContato]);
+
+  async function handleVincularContato(contatoId: string) {
+    if (!id) return;
+    setVincularContatoLoading(true);
+    setErro('');
+    try {
+      await createInteresse(contatoId, id);
+      const atualizado = await getImovel(id);
+      setImovel(atualizado);
+      setShowVincularContato(false);
+    } catch (e) {
+      setErro(e instanceof Error ? e.message : 'Erro ao vincular contato');
+    } finally {
+      setVincularContatoLoading(false);
+    }
+  }
+
+  const idsJaInteressados = new Set((imovel?.interesses ?? []).map((i) => i.contato.id));
 
   async function handleUploadDocumento(e: React.ChangeEvent<HTMLInputElement>, tipo: string) {
     const file = e.target.files?.[0];
@@ -233,8 +260,8 @@ export default function ImovelDetalhe() {
             </>
           )}
 
-          {imovel.interesses && imovel.interesses.length > 0 && (
-            <Block title="Contatos interessados">
+          <Block title="Contatos interessados">
+            {imovel.interesses && imovel.interesses.length > 0 ? (
               <ul className="imovel-detalhe-interesses">
                 {imovel.interesses.map((int) => (
                   <li key={int.id}>
@@ -249,8 +276,43 @@ export default function ImovelDetalhe() {
                   </li>
                 ))}
               </ul>
-            </Block>
-          )}
+            ) : (
+              <p className="imovel-detalhe-interesses-vazio">Nenhum contato interessado.</p>
+            )}
+            <button
+              type="button"
+              className="imovel-detalhe-btn-vincular-contato"
+              onClick={() => setShowVincularContato(true)}
+            >
+              Vincular contato
+            </button>
+            {showVincularContato && (
+              <div className="imovel-detalhe-vincular-overlay" onClick={() => !vincularContatoLoading && setShowVincularContato(false)}>
+                <div className="imovel-detalhe-vincular-modal" onClick={(e) => e.stopPropagation()}>
+                  <h3>Vincular contato ao imóvel</h3>
+                  <ul className="imovel-detalhe-vincular-list">
+                    {contatosList.filter((c) => !idsJaInteressados.has(c.id)).map((c) => (
+                      <li key={c.id}>
+                        <button
+                          type="button"
+                          className="imovel-detalhe-vincular-item"
+                          onClick={() => handleVincularContato(c.id)}
+                          disabled={vincularContatoLoading}
+                        >
+                          {c.nome}
+                          {c.email ? ` – ${c.email}` : ''}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                  {contatosList.length === 0 && <p className="imovel-detalhe-vincular-vazio">Nenhum contato encontrado.</p>}
+                  <button type="button" className="imovel-detalhe-vincular-fechar" onClick={() => !vincularContatoLoading && setShowVincularContato(false)}>
+                    Fechar
+                  </button>
+                </div>
+              </div>
+            )}
+          </Block>
         </div>
 
         {fotos.length > 0 && (

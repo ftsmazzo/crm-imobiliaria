@@ -308,3 +308,70 @@
   opacity: 0.7;
   cursor: not-allowed;
 }
+
+.lead-detail-interesses {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-subtle);
+}
+.lead-detail-interesses h3 { margin: 0 0 var(--space-2); font-size: 0.9375rem; }
+.lead-detail-interesses-list { list-style: none; padding: 0; margin: 0 0 var(--space-2); }
+.lead-detail-interesses-list li { padding: 0.25rem 0; font-size: 0.875rem; }
+.lead-detail-interesse-local { color: var(--text-secondary); }
+.lead-detail-interesses-vazio { margin: 0 0 var(--space-2); font-size: 0.875rem; color: var(--text-secondary); }
+.lead-detail-btn-vincular {
+  padding: var(--space-1) var(--space-3);
+  font-size: 0.8125rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.lead-detail-btn-vincular:hover { background: var(--accent-muted); color: var(--accent); }
+
+.lead-detail-vincular-overlay { z-index: 210; }
+.lead-detail-vincular-modal {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  max-width: 400px;
+  width: 100%;
+  max-height: 80vh;
+  overflow: auto;
+  box-shadow: var(--shadow-lg);
+}
+.lead-detail-vincular-modal h3 { margin: 0 0 var(--space-3); font-size: 1rem; }
+.lead-detail-vincular-busca {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-3);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+}
+.lead-detail-vincular-loading,
+.lead-detail-vincular-vazio { margin: 0 0 var(--space-2); font-size: 0.875rem; color: var(--text-secondary); }
+.lead-detail-vincular-list { list-style: none; padding: 0; margin: 0 0 var(--space-3); max-height: 240px; overflow: auto; }
+.lead-detail-vincular-item {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  text-align: left;
+  font-size: 0.875rem;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-subtle);
+  cursor: pointer;
+}
+.lead-detail-vincular-item:hover:not(:disabled) { background: var(--accent-muted); color: var(--accent); }
+.lead-detail-vincular-item:disabled { opacity: 0.7; cursor: wait; }
+.lead-detail-vincular-fechar {
+  padding: var(--space-1) var(--space-3);
+  font-size: 0.8125rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+.lead-detail-vincular-fechar:hover { background: var(--bg-elevated); }

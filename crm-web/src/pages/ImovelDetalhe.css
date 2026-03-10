@@ -99,3 +99,63 @@
   color: var(--accent); cursor: pointer; text-align: left; text-decoration: underline;
 }
 .imovel-detalhe-interesse-link:hover { color: var(--accent-hover); }
+.imovel-detalhe-interesses-vazio { margin: 0 0 0.5rem; font-size: var(--text-sm); color: #475569; }
+.imovel-detalhe-btn-vincular-contato {
+  margin-top: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  font-size: var(--text-sm);
+  background: var(--surface);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  color: var(--accent);
+  cursor: pointer;
+}
+.imovel-detalhe-btn-vincular-contato:hover { background: var(--accent-light); color: var(--accent-hover); }
+
+.imovel-detalhe-vincular-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 1rem;
+}
+.imovel-detalhe-vincular-modal {
+  background: #fff;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  max-width: 400px;
+  width: 100%;
+  max-height: 80vh;
+  overflow: auto;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  border: 1px solid var(--border);
+}
+.imovel-detalhe-vincular-modal h3 { margin: 0 0 1rem; font-size: 1rem; }
+.imovel-detalhe-vincular-list { list-style: none; padding: 0; margin: 0 0 1rem; max-height: 280px; overflow: auto; }
+.imovel-detalhe-vincular-item {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  font-size: var(--text-sm);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+.imovel-detalhe-vincular-item:hover:not(:disabled) { background: var(--accent-light); color: var(--accent-hover); }
+.imovel-detalhe-vincular-item:disabled { opacity: 0.7; cursor: wait; }
+.imovel-detalhe-vincular-vazio { margin: 0 0 0.5rem; font-size: var(--text-sm); color: #475569; }
+.imovel-detalhe-vincular-fechar {
+  padding: 0.35rem 0.75rem;
+  font-size: var(--text-sm);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.imovel-detalhe-vincular-fechar:hover { background: var(--bg-subtle); }

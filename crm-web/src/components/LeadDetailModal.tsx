@@ -2,14 +2,17 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   updateContato,
+  getContato,
   getUsuarios,
+  getImoveis,
+  createInteresse,
   getTiposDocumento,
   getContatoDocumentos,
   uploadContatoDocumento,
   getContatoDocumentoUrl,
   deleteContatoDocumento,
 } from '../api';
-import type { Contato } from '../types';
+import type { Contato, Imovel } from '../types';
 import type { UsuarioListItem, TipoDocumento, ProcessoDocumento } from '../api';
 import { ESTAGIOS, ESTAGIO_LABEL } from '../types';
 import { getUser } from '../auth';
@@ -44,6 +47,11 @@ export default function LeadDetailModal({ contato, onClose, onSaved }: Props) {
   const [tiposDoc, setTiposDoc] = useState<TipoDocumento[]>([]);
   const [documentosProcesso, setDocumentosProcesso] = useState<ProcessoDocumento[]>([]);
   const [uploadingDoc, setUploadingDoc] = useState(false);
+  const [showVincularInteresse, setShowVincularInteresse] = useState(false);
+  const [buscaImovel, setBuscaImovel] = useState('');
+  const [imoveisList, setImoveisList] = useState<Imovel[]>([]);
+  const [loadingImoveis, setLoadingImoveis] = useState(false);
+  const [vincularLoading, setVincularLoading] = useState(false);
 
   useEffect(() => {
     if (canReassign) {
@@ -55,6 +63,33 @@ export default function LeadDetailModal({ contato, onClose, onSaved }: Props) {
     getTiposDocumento('processo').then(setTiposDoc).catch(() => setTiposDoc([]));
     getContatoDocumentos(contato.id).then(setDocumentosProcesso).catch(() => setDocumentosProcesso([]));
   }, [contato.id]);
+
+  useEffect(() => {
+    if (!showVincularInteresse) return;
+    setLoadingImoveis(true);
+    getImoveis({ busca: buscaImovel.trim() || undefined })
+      .then((list) => setImoveisList(list))
+      .catch(() => setImoveisList([]))
+      .finally(() => setLoadingImoveis(false));
+  }, [showVincularInteresse, buscaImovel]);
+
+  async function handleVincularInteresse(imovelId: string) {
+    setVincularLoading(true);
+    setErro('');
+    try {
+      await createInteresse(contato.id, imovelId);
+      const updated = await getContato(contato.id);
+      onSaved?.(updated as Contato);
+      setShowVincularInteresse(false);
+      setBuscaImovel('');
+    } catch (e) {
+      setErro(e instanceof Error ? e.message : 'Erro ao vincular interesse');
+    } finally {
+      setVincularLoading(false);
+    }
+  }
+
+  const idsJaInteresse = new Set((contato.interesses ?? []).map((i) => i.imovelId));
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -220,6 +255,70 @@ export default function LeadDetailModal({ contato, onClose, onSaved }: Props) {
               rows={3}
             />
           </div>
+
+          <div className="lead-detail-interesses">
+            <h3>Imóveis de interesse</h3>
+            {contato.interesses && contato.interesses.length > 0 ? (
+              <ul className="lead-detail-interesses-list">
+                {contato.interesses.map((int) => (
+                  <li key={int.id}>
+                    <span>{int.imovel.codigo || int.imovel.tipo}</span>
+                    {[int.imovel.bairro, int.imovel.cidade].filter(Boolean).length > 0 && (
+                      <span className="lead-detail-interesse-local"> – {[int.imovel.bairro, int.imovel.cidade].filter(Boolean).join(', ')}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="lead-detail-interesses-vazio">Nenhum imóvel vinculado.</p>
+            )}
+            <button
+              type="button"
+              className="lead-detail-btn-vincular"
+              onClick={() => setShowVincularInteresse(true)}
+            >
+              Vincular interesse
+            </button>
+          </div>
+
+          {showVincularInteresse && (
+            <div className="lead-detail-overlay lead-detail-vincular-overlay" onClick={() => !vincularLoading && setShowVincularInteresse(false)}>
+              <div className="lead-detail-vincular-modal" onClick={(e) => e.stopPropagation()}>
+                <h3>Vincular imóvel ao lead</h3>
+                <input
+                  type="text"
+                  className="lead-detail-vincular-busca"
+                  placeholder="Buscar por código, bairro, cidade..."
+                  value={buscaImovel}
+                  onChange={(e) => setBuscaImovel(e.target.value)}
+                  autoFocus
+                />
+                {loadingImoveis ? (
+                  <p className="lead-detail-vincular-loading">Carregando...</p>
+                ) : (
+                  <ul className="lead-detail-vincular-list">
+                    {imoveisList.filter((i) => !idsJaInteresse.has(i.id)).map((i) => (
+                      <li key={i.id}>
+                        <button
+                          type="button"
+                          className="lead-detail-vincular-item"
+                          onClick={() => handleVincularInteresse(i.id)}
+                          disabled={vincularLoading}
+                        >
+                          {i.codigo || i.tipo}
+                          {[i.bairro, i.cidade].filter(Boolean).length > 0 && ` – ${[i.bairro, i.cidade].filter(Boolean).join(', ')}`}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {!loadingImoveis && imoveisList.length === 0 && <p className="lead-detail-vincular-vazio">Nenhum imóvel encontrado.</p>}
+                <button type="button" className="lead-detail-vincular-fechar" onClick={() => !vincularLoading && setShowVincularInteresse(false)}>
+                  Fechar
+                </button>
+              </div>
+            </div>
+          )}
 
           <div className="lead-detail-docs" id="lead-documentos">
             <h3>Documentos do processo</h3>

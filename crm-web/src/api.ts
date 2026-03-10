@@ -78,6 +78,24 @@ export async function deleteContato(id: string): Promise<void> {
   if (!res.ok) await handleRes(res);
 }
 
+// Interesses (vínculo contato ↔ imóvel)
+export async function createInteresse(contatoId: string, imovelId: string) {
+  const res = await fetch(`${API_URL}/interesses`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ contatoId, imovelId }),
+  });
+  return handleRes(res);
+}
+
+export async function deleteInteresse(id: string): Promise<void> {
+  const res = await fetch(`${API_URL}/interesses/${id}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  });
+  if (!res.ok) await handleRes(res);
+}
+
 // Empreendimentos
 export async function getEmpreendimentos(nome?: string): Promise<Empreendimento[]> {
   const q = nome?.trim() ? `?nome=${encodeURIComponent(nome.trim())}` : '';
