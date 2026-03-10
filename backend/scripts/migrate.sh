@@ -18,4 +18,7 @@ fi
 
 # Garante tabela imovel_foto (CREATE IF NOT EXISTS) mesmo se migrate não tiver criado
 npx prisma db execute --file scripts/ensure-imovel-foto.sql 2>/dev/null || true
+
+# Garante tabela site_config para personalização do site
+npx prisma db execute --file scripts/ensure-site-config.sql 2>/dev/null || true
 exit 0
