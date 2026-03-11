@@ -5,7 +5,7 @@ import { CurrentUser } from '../auth/current-user.decorator';
 import { Public } from '../auth/public.decorator';
 import { ImoveisDocumentosService } from './imoveis-documentos.service';
 import { ImoveisFotosService } from './imoveis-fotos.service';
-import { ImoveisService } from './imoveis.service';
+import { ImoveisService, type StatusSemaforo } from './imoveis.service';
 import { CreateImovelDto } from './dto/create-imovel.dto';
 import { UpdateImovelDto } from './dto/update-imovel.dto';
 
@@ -115,9 +115,10 @@ export class ImoveisController {
     @Query('areaMin') areaMin?: string,
     @Query('busca') busca?: string,
   ) {
+    const semaforoValido = statusSemaforo && ['verde', 'amarelo', 'vermelho'].includes(statusSemaforo) ? statusSemaforo as StatusSemaforo : undefined;
     const opts = {
       ...(usuarioResponsavelId && { usuarioResponsavelId }),
-      ...(statusSemaforo && ['verde', 'amarelo', 'vermelho'].includes(statusSemaforo) && { statusSemaforo }),
+      ...(semaforoValido && { statusSemaforo: semaforoValido }),
       ...(valorVendaMin !== undefined && valorVendaMin !== '' && { valorVendaMin: Number(valorVendaMin) }),
       ...(valorVendaMax !== undefined && valorVendaMax !== '' && { valorVendaMax: Number(valorVendaMax) }),
       ...(valorAluguelMin !== undefined && valorAluguelMin !== '' && { valorAluguelMin: Number(valorAluguelMin) }),
