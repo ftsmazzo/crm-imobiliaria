@@ -171,6 +171,14 @@
 }
 
 /* Notificação amarelo */
+.administracao-card code {
+  font-size: 0.8125rem;
+  padding: 0.15rem 0.35rem;
+  background: var(--bg-base, #0f1117);
+  border-radius: 4px;
+  word-break: break-all;
+}
+
 .administracao-modelo-msg {
   margin: 1rem 0;
   font-size: 0.875rem;

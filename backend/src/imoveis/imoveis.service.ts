@@ -1,6 +1,7 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { Usuario } from '@prisma/client';
+import { EvolutionService } from '../evolution/evolution.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateImovelDto } from './dto/create-imovel.dto';
 import { UpdateImovelDto } from './dto/update-imovel.dto';
@@ -37,7 +38,10 @@ export function getStatusSemaforo(
 
 @Injectable()
 export class ImoveisService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private evolutionService: EvolutionService,
+  ) {}
 
   private async getNextCodigoForTipo(tipo: string): Promise<string> {
     const prefix = TIPO_CODIGO_PREFIX[tipo] || PREFIX_DEFAULT;
@@ -243,9 +247,13 @@ export class ImoveisService {
   /**
    * Processa mensagem (ex.: resposta WhatsApp) para confirmar disponibilidade pelo código do imóvel.
    * Frases aceitas: "confirmar AP-00001", "imóvel ainda disponível AP-00001", "CONFIRMAR AP-00001", etc.
+   * Se telefoneRemetente for informado (Evolution envia ao chamar o webhook), envia confirmação: "Status atualizado. Obrigado!"
    * Retorna o imóvel atualizado se encontrado e confirmado.
    */
-  async confirmarDisponibilidadePorMensagem(texto: string): Promise<{
+  async confirmarDisponibilidadePorMensagem(
+    texto: string,
+    telefoneRemetente?: string,
+  ): Promise<{
     ok: boolean;
     imovel?: Awaited<ReturnType<ImoveisService['findOne']>>;
     erro?: string;
@@ -262,6 +270,12 @@ export class ImoveisService {
     }
     await this.confirmarDisponibilidade(imovel.id, undefined, 'Confirmado via mensagem.');
     const atualizado = await this.findOne(imovel.id);
+    if (telefoneRemetente?.trim() && this.evolutionService.isConfigured()) {
+      await this.evolutionService.sendText(
+        telefoneRemetente.trim(),
+        'Status atualizado. Obrigado!',
+      );
+    }
     return { ok: true, imovel: atualizado };
   }
 
@@ -277,6 +291,46 @@ export class ImoveisService {
   }
 
   /**
+   * Processa o payload do webhook Evolution API (evento MESSAGES_UPSERT).
+   * Estrutura esperada: { event?, data?: { key?: { remoteJid?, fromMe? }, message?: { conversation?, extendedTextMessage?: { text? } } } }
+   * ou data como array de mensagens. Ignora mensagens enviadas por nós (fromMe === true).
+   */
+  async processarWebhookEvolutionMessagesUpsert(body: Record<string, unknown>): Promise<{
+    ok: boolean;
+    ignorado?: string;
+    erro?: string;
+    imovel?: Awaited<ReturnType<ImoveisService['findOne']>>;
+  }> {
+    const event = String(body?.event ?? '').toLowerCase();
+    if (event !== 'messages.upsert' && event !== 'messages_upsert') {
+      return { ok: true, ignorado: 'Evento não é messages.upsert' };
+    }
+
+    const data = body?.data;
+    const items = Array.isArray(data) ? data : data != null ? [data] : [];
+    const first = items[0] as Record<string, unknown> | undefined;
+    if (!first) {
+      return { ok: true, ignorado: 'Payload sem data' };
+    }
+
+    const key = (first.key ?? first) as Record<string, unknown> | undefined;
+    const fromMe = key?.fromMe === true;
+    if (fromMe) {
+      return { ok: true, ignorado: 'Mensagem enviada por nós' };
+    }
+
+    const message = (first.message ?? first) as Record<string, unknown> | undefined;
+    const texto =
+      typeof message?.conversation === 'string'
+        ? message.conversation
+        : typeof (message?.extendedTextMessage as Record<string, unknown>)?.text === 'string'
+          ? (message?.extendedTextMessage as Record<string, unknown>).text as string
+          : '';
+    const remoteJid = typeof key?.remoteJid === 'string' ? key.remoteJid : '';
+    const telefone = remoteJid.replace(/@s\.whatsapp\.net$/i, '').replace(/@.+$/, '').trim() || undefined;
+
+    return this.confirmarDisponibilidadePorMensagem(texto, telefone);
+  }
    * Lista imóveis que viraram amarelo (15+ dias) e ainda não tiveram notificação enviada.
    * Ao disparar, marcar notificacaoAmareloEnviadaEm para não reenviar (até o corretor confirmar e zerar).
    */

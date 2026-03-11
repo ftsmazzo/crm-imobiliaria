@@ -385,7 +385,7 @@ export default function Imoveis() {
                       <div className="imoveis-table-action-btns">
                         {(i.statusSemaforo === 'amarelo' || i.statusSemaforo === 'vermelho') && (
                           <button type="button" className="btn-success imoveis-table-btn" onClick={() => handleConfirmarDisponibilidade(i)} disabled={confirmandoId === i.id}>
-                            {confirmandoId === i.id ? '...' : 'Confirmar'}
+                            {confirmandoId === i.id ? '...' : 'Disponível'}
                           </button>
                         )}
                         {isGestor && (
@@ -469,7 +469,7 @@ export default function Imoveis() {
                       disabled={confirmandoId === i.id}
                       title="Confirmar que o imóvel ainda está disponível (reinicia a contagem)"
                     >
-                      {confirmandoId === i.id ? '...' : 'Confirmar disponível'}
+                      {confirmandoId === i.id ? '...' : 'Disponível'}
                     </button>
                   )}
                   <button type="button" className="btn-secondary" onClick={() => navigate(`/imoveis/${i.id}`)}>Ver</button>

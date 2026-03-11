@@ -125,6 +125,15 @@ export default function Administracao() {
             ao corretor responsável pelo WhatsApp (Evolution API). Aqui você pode ver quem está pendente e qual
             mensagem será enviada, e disparar manualmente para testar.
           </p>
+          <p className="administracao-mantido">
+            <strong>Quando o corretor responde</strong> no WhatsApp (ex.: “confirmar AP-00001”), o status do imóvel
+            passa para verde. Configure na Evolution API o webhook <strong>MESSAGES_UPSERT</strong> apontando para:
+          </p>
+          <p className="administracao-mantido">
+            <code>POST [seu-backend]/imoveis/webhook/evolution-messages-upsert</code>
+            <br />
+            (A Evolution envia o payload padrão; o backend extrai o texto e o telefone e envia “Status atualizado. Obrigado!”.)
+          </p>
           <div className="administracao-modelo-msg">
             <strong>Modelo da mensagem:</strong>
             <pre>{MODELO_MENSAGEM}</pre>

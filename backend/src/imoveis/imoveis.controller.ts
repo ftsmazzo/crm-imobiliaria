@@ -22,11 +22,26 @@ export class ImoveisController {
     return this.service.create(dto, user);
   }
 
-  /** Webhook: confirma disponibilidade a partir de mensagem (ex.: WhatsApp). Body: { texto }. Público para Evolution API. */
+  /** Webhook: confirma disponibilidade a partir de mensagem (ex.: WhatsApp). Body: { texto, telefoneRemetente? }. Público para Evolution API. */
   @Public()
   @Post('confirmar-disponibilidade-via-mensagem')
-  confirmarDisponibilidadeViaMensagem(@Body('texto') texto: string) {
-    return this.service.confirmarDisponibilidadePorMensagem(texto ?? '');
+  confirmarDisponibilidadeViaMensagem(
+    @Body('texto') texto: string,
+    @Body('telefoneRemetente') telefoneRemetente?: string,
+  ) {
+    return this.service.confirmarDisponibilidadePorMensagem(texto ?? '', telefoneRemetente?.trim() || undefined);
+  }
+
+  /**
+   * Webhook Evolution API: evento MESSAGES_UPSERT.
+   * Configure na Evolution: URL deste endpoint (webhook_by_events: true → .../messages-upsert).
+   * Payload: { event, data: { key: { remoteJid, fromMe }, message: { conversation? | extendedTextMessage?: { text } } } }.
+   * Só processa mensagens recebidas (fromMe === false); extrai texto e telefone e confirma disponibilidade.
+   */
+  @Public()
+  @Post('webhook/evolution-messages-upsert')
+  async webhookEvolutionMessagesUpsert(@Body() body: Record<string, unknown>) {
+    return this.service.processarWebhookEvolutionMessagesUpsert(body);
   }
 
   @Post(':id/fotos')

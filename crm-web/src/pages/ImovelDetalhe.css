@@ -37,8 +37,10 @@
 .imovel-detalhe-semaforo.amarelo { background: rgba(234, 179, 8, 0.25); color: #ca8a04; }
 .imovel-detalhe-semaforo.vermelho { background: rgba(239, 68, 68, 0.2); color: #dc2626; }
 .imovel-detalhe-btn-confirmar {
-  padding: 0.35rem 0.75rem;
-  font-size: var(--text-sm);
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
   border-radius: var(--radius);
   border: none;
   background: var(--accent);

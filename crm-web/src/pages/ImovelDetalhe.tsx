@@ -207,7 +207,7 @@ export default function ImovelDetalhe() {
                 }}
                 disabled={confirmandoDisponivel}
               >
-                {confirmandoDisponivel ? '...' : 'Imóvel ainda disponível'}
+                {confirmandoDisponivel ? '...' : 'Disponível'}
               </button>
             )}
           </div>

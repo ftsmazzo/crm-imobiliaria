@@ -346,10 +346,13 @@
   background: var(--accent);
   color: var(--text-inverse);
   border: none;
-  padding: 0.35rem 0.6rem;
+  padding: 0.4rem 0.75rem;
   border-radius: var(--radius-md);
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
   cursor: pointer;
+  flex-shrink: 0;
 }
 .imovel-card-btn-confirmar:hover:not(:disabled) {
   filter: brightness(1.1);
