@@ -281,7 +281,7 @@ export class ImoveisService {
    * Ao disparar, marcar notificacaoAmareloEnviadaEm para não reenviar (até o corretor confirmar e zerar).
    */
   async listarParaDisparoAmarelo(): Promise<
-    Array<{ id: string; codigo: string | null; usuarioResponsavel: { id: string; nome: string } | null; diasDesdeVerificacao: number }>
+    Array<{ id: string; codigo: string | null; usuarioResponsavel: { id: string; nome: string; telefone: string | null } | null; diasDesdeVerificacao: number }>
   > {
     const list = await this.prisma.imovel.findMany({
       where: {
@@ -293,7 +293,7 @@ export class ImoveisService {
         codigo: true,
         criadoEm: true,
         ultimaVerificacaoDisponibilidade: true,
-        usuarioResponsavel: { select: { id: true, nome: true } },
+        usuarioResponsavel: { select: { id: true, nome: true, telefone: true } },
       },
     });
     const agora = new Date();

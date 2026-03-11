@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Post } from '@nestjs/common';
+import { Body, Controller, ForbiddenException, Get, Param, ParseUUIDPipe, Post } from '@nestjs/common';
 import { Usuario } from '@prisma/client';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { ImoveisService } from '../imoveis/imoveis.service';
@@ -29,5 +29,14 @@ export class AdminController {
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     return this.admin.marcarNotificacaoAmareloEnviada(user, id);
+  }
+
+  /** Dispara agora as notificações amarelas (imóveis 15+ dias). Apenas gestor. Útil para testar sem esperar o cron. */
+  @Post('disparo-amarelo/executar')
+  executarDisparoAmarelo(@CurrentUser() user: Usuario) {
+    if (user.role !== 'gestor') {
+      throw new ForbiddenException('Apenas gestor pode executar o disparo');
+    }
+    return this.admin.executarDisparoAmarelo();
   }
 }

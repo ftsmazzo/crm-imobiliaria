@@ -6,9 +6,9 @@ import { getUser } from '../auth';
 import AppLayout from '../components/AppLayout';
 import './Usuarios.css';
 
-type FormState = { nome: string; email: string; senha: string; role: string; ativo: boolean };
+type FormState = { nome: string; email: string; senha: string; role: string; ativo: boolean; telefone: string };
 
-const emptyForm: FormState = { nome: '', email: '', senha: '', role: 'corretor', ativo: true };
+const emptyForm: FormState = { nome: '', email: '', senha: '', role: 'corretor', ativo: true, telefone: '' };
 
 export default function Usuarios() {
   const user = getUser();
@@ -50,6 +50,7 @@ export default function Usuarios() {
       senha: '',
       role: u.role ?? 'corretor',
       ativo: u.ativo !== false,
+      telefone: u.telefone ?? '',
     });
     setModal(u);
   }
@@ -71,13 +72,15 @@ export default function Usuarios() {
           email: form.email.trim(),
           senha: form.senha,
           role: form.role,
+          telefone: form.telefone.trim() || undefined,
         });
       } else {
-        const payload: { nome?: string; email?: string; senha?: string; role?: string; ativo?: boolean } = {
+        const payload: { nome?: string; email?: string; senha?: string; role?: string; ativo?: boolean; telefone?: string } = {
           nome: form.nome.trim(),
           email: form.email.trim(),
           role: form.role,
           ativo: form.ativo,
+          telefone: form.telefone.trim() || undefined,
         };
         if (form.senha.trim()) payload.senha = form.senha;
         await updateUsuario(modal.id, payload);
@@ -160,6 +163,10 @@ export default function Usuarios() {
                   {modal !== 'novo' && modal.id === user?.id && <p className="usuarios-hint">Seu próprio e-mail não pode ser alterado aqui.</p>}
                 </div>
                 <div className="usuarios-form-group">
+                  <label htmlFor="usuarios-telefone">WhatsApp (para notificação de imóvel amarelo)</label>
+                  <input id="usuarios-telefone" type="tel" value={form.telefone} onChange={(e) => setForm((f) => ({ ...f, telefone: e.target.value }))} placeholder="11999999999" />
+                </div>
+                <div className="usuarios-form-group">
                   <label htmlFor="usuarios-senha">{modal === 'novo' ? 'Senha *' : 'Nova senha (deixe em branco para não alterar)'}</label>
                   <input id="usuarios-senha" type="password" value={form.senha} onChange={(e) => setForm((f) => ({ ...f, senha: e.target.value }))} placeholder={modal !== 'novo' ? '••••••••' : ''} minLength={modal === 'novo' ? 6 : 0} />
                 </div>
@@ -181,8 +188,8 @@ export default function Usuarios() {
                   </div>
                 )}
                 <div className="usuarios-modal-actions">
-                  <button type="button" className="usuarios-btn-cancel" onClick={() => !saving && setModal(null)}>Cancelar</button>
-                  <button type="submit" className="usuarios-btn-save" disabled={saving}>{saving ? 'Salvando...' : 'Salvar'}</button>
+                  <button type="button" className="usuarios-btn-cancel btn-secondary" onClick={() => !saving && setModal(null)}>Cancelar</button>
+                  <button type="submit" className="usuarios-btn-save btn-success" disabled={saving}>{saving ? 'Salvando...' : 'Salvar'}</button>
                 </div>
               </form>
             </div>

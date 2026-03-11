@@ -22,4 +22,8 @@ export class UpdateUsuarioDto {
   @IsOptional()
   @IsBoolean()
   ativo?: boolean;
+
+  @IsOptional()
+  @IsString()
+  telefone?: string;
 }

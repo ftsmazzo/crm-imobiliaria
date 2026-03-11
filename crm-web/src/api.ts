@@ -30,14 +30,14 @@ export async function login(email: string, senha: string) {
   return handleRes(res);
 }
 
-export type UsuarioListItem = { id: string; nome: string; email?: string; role?: string; ativo?: boolean };
+export type UsuarioListItem = { id: string; nome: string; email?: string; role?: string; ativo?: boolean; telefone?: string | null };
 
 export async function getUsuarios(): Promise<UsuarioListItem[]> {
   const res = await fetch(`${API_URL}/auth/usuarios`, { headers: authHeaders() });
   return handleRes(res);
 }
 
-export async function createUsuario(dto: { nome: string; email: string; senha: string; role?: string }) {
+export async function createUsuario(dto: { nome: string; email: string; senha: string; role?: string; telefone?: string }) {
   const res = await fetch(`${API_URL}/auth/usuarios`, {
     method: 'POST',
     headers: authHeaders(),
@@ -46,7 +46,7 @@ export async function createUsuario(dto: { nome: string; email: string; senha: s
   return handleRes(res);
 }
 
-export async function updateUsuario(id: string, dto: { nome?: string; email?: string; senha?: string; role?: string; ativo?: boolean }) {
+export async function updateUsuario(id: string, dto: { nome?: string; email?: string; senha?: string; role?: string; ativo?: boolean; telefone?: string }) {
   const res = await fetch(`${API_URL}/auth/usuarios/${id}`, {
     method: 'PATCH',
     headers: authHeaders(),

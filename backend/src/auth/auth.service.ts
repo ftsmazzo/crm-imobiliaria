@@ -14,10 +14,10 @@ export class AuthService {
     private jwt: JwtService,
   ) {}
 
-  async getUsuarios(currentUser: Usuario): Promise<{ id: string; nome: string; email?: string; role?: string; ativo?: boolean }[]> {
+  async getUsuarios(currentUser: Usuario): Promise<{ id: string; nome: string; email?: string; role?: string; ativo?: boolean; telefone?: string | null }[]> {
     if (currentUser.role === 'gestor') {
       return this.prisma.usuario.findMany({
-        select: { id: true, nome: true, email: true, role: true, ativo: true },
+        select: { id: true, nome: true, email: true, role: true, ativo: true, telefone: true },
         orderBy: { nome: 'asc' },
       });
     }
@@ -43,9 +43,10 @@ export class AuthService {
         nome: dto.nome.trim(),
         email,
         senhaHash,
+        telefone: dto.telefone?.trim() || null,
         role: dto.role ?? 'corretor',
       },
-      select: { id: true, nome: true, email: true, role: true, ativo: true, criadoEm: true },
+      select: { id: true, nome: true, email: true, role: true, ativo: true, telefone: true, criadoEm: true },
     });
   }
 
@@ -65,7 +66,7 @@ export class AuthService {
         throw new ForbiddenException('Você não pode alterar seu próprio perfil (gestor/corretor)');
       }
     }
-    const data: { nome?: string; email?: string; senhaHash?: string; role?: string; ativo?: boolean } = {};
+    const data: { nome?: string; email?: string; senhaHash?: string; role?: string; ativo?: boolean; telefone?: string | null } = {};
     if (dto.nome !== undefined) data.nome = dto.nome.trim();
     if (dto.email !== undefined) {
       const email = dto.email.toLowerCase().trim();
@@ -80,10 +81,11 @@ export class AuthService {
     }
     if (dto.role !== undefined) data.role = dto.role;
     if (dto.ativo !== undefined) data.ativo = dto.ativo;
+    if (dto.telefone !== undefined) data.telefone = dto.telefone?.trim() || null;
     return this.prisma.usuario.update({
       where: { id },
       data,
-      select: { id: true, nome: true, email: true, role: true, ativo: true, atualizadoEm: true },
+      select: { id: true, nome: true, email: true, role: true, ativo: true, telefone: true, atualizadoEm: true },
     });
   }
 

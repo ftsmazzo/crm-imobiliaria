@@ -12,6 +12,7 @@ model Usuario {
   email        String    @unique
   senhaHash    String    @map("senha_hash")
   nome         String
+  telefone     String?   @db.VarChar(20)
   role         String    @default("corretor")
   ativo        Boolean   @default(true)
   criadoEm     DateTime  @default(now()) @map("criado_em")

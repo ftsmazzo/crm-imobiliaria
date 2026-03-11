@@ -1,5 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { Usuario } from '@prisma/client';
+import { EvolutionService } from '../evolution/evolution.service';
 import { ImoveisService } from '../imoveis/imoveis.service';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -8,6 +9,7 @@ export class AdminService {
   constructor(
     private prisma: PrismaService,
     private imoveisService: ImoveisService,
+    private evolutionService: EvolutionService,
   ) {}
 
   /**
@@ -62,5 +64,42 @@ export class AdminService {
     }
     await this.imoveisService.marcarNotificacaoAmareloEnviada(imovelId);
     return { ok: true };
+  }
+
+  /**
+   * Executa o disparo de notificação amarela: lista imóveis pendentes, envia WhatsApp
+   * ao corretor responsável (se tiver telefone e Evolution configurada) e marca como enviada.
+   * Chamado pelo cron diário ou manualmente.
+   */
+  async executarDisparoAmarelo(): Promise<{ enviados: number; semTelefone: number; erros: number }> {
+    const pendentes = await this.imoveisService.listarParaDisparoAmarelo();
+    let enviados = 0;
+    let semTelefone = 0;
+    let erros = 0;
+
+    if (!this.evolutionService.isConfigured()) {
+      return { enviados: 0, semTelefone: pendentes.length, erros: 0 };
+    }
+
+    for (const item of pendentes) {
+      const telefone = item.usuarioResponsavel?.telefone?.trim();
+      if (!telefone) {
+        semTelefone++;
+        continue;
+      }
+      const codigo = item.codigo || item.id.slice(0, 8);
+      const texto =
+        `*Imóvel ${codigo}* está há ${item.diasDesdeVerificacao} dias sem verificação de disponibilidade.\n\n` +
+        `Confirme se ainda está disponível. Para confirmar pelo WhatsApp, responda:\n*confirmar ${codigo}*`;
+      const ok = await this.evolutionService.sendText(telefone, texto);
+      if (ok) {
+        await this.imoveisService.marcarNotificacaoAmareloEnviada(item.id);
+        enviados++;
+      } else {
+        erros++;
+      }
+    }
+
+    return { enviados, semTelefone, erros };
   }
 }

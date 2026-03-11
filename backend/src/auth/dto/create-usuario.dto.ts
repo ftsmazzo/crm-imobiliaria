@@ -13,6 +13,10 @@ export class CreateUsuarioDto {
   senha: string;
 
   @IsOptional()
+  @IsString()
+  telefone?: string;
+
+  @IsOptional()
   @IsIn(['corretor', 'gestor'])
   role?: string;
 }
