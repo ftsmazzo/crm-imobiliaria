@@ -149,6 +149,8 @@ model Imovel {
   empreendimentoId      String?   @map("empreendimento_id")
   proprietarioId        String?   @map("proprietario_id")
   usuarioResponsavelId  String?   @map("usuario_responsavel_id")
+  ultimaVerificacaoDisponibilidade DateTime? @map("ultima_verificacao_disponibilidade")
+  notificacaoAmareloEnviadaEm     DateTime? @map("notificacao_amarelo_enviada_em")
   criadoEm              DateTime  @default(now()) @map("criado_em")
   atualizadoEm          DateTime  @updatedAt @map("atualizado_em")
   usuarioResponsavel    Usuario?  @relation(fields: [usuarioResponsavelId], references: [id])

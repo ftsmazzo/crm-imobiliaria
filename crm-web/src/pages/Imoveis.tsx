@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getImoveis, createImovel, deleteImovel, updateImovel, getUsuarios } from '../api';
+import { getImoveis, createImovel, deleteImovel, updateImovel, getUsuarios, confirmarDisponibilidadeImovel } from '../api';
 import type { Imovel } from '../types';
 import type { UsuarioListItem } from '../api';
 import { getUser } from '../auth';
@@ -42,12 +42,14 @@ export default function Imoveis() {
   const [usuarios, setUsuarios] = useState<UsuarioListItem[]>([]);
   const [filtros, setFiltros] = useState<{
     busca?: string;
+    statusSemaforo?: 'verde' | 'amarelo' | 'vermelho';
     usuarioResponsavelId?: string;
     valorVendaMin?: number;
     valorVendaMax?: number;
     qtdQuartosMin?: number;
     areaMin?: number;
   }>({});
+  const [confirmandoId, setConfirmandoId] = useState<string | null>(null);
 
   const user = getUser();
   const isGestor = user?.role === 'gestor';
@@ -58,6 +60,7 @@ export default function Imoveis() {
     try {
       const data = await getImoveis({
         ...(filtros.busca && { busca: filtros.busca }),
+        ...(filtros.statusSemaforo && { statusSemaforo: filtros.statusSemaforo }),
         ...(filtros.usuarioResponsavelId && { usuarioResponsavelId: filtros.usuarioResponsavelId }),
         ...(filtros.valorVendaMin != null && { valorVendaMin: filtros.valorVendaMin }),
         ...(filtros.valorVendaMax != null && { valorVendaMax: filtros.valorVendaMax }),
@@ -92,7 +95,20 @@ export default function Imoveis() {
 
   useEffect(() => {
     load();
-  }, [filtros.busca, filtros.usuarioResponsavelId, filtros.valorVendaMin, filtros.valorVendaMax, filtros.qtdQuartosMin, filtros.areaMin]);
+  }, [filtros.busca, filtros.statusSemaforo, filtros.usuarioResponsavelId, filtros.valorVendaMin, filtros.valorVendaMax, filtros.qtdQuartosMin, filtros.areaMin]);
+
+  async function handleConfirmarDisponibilidade(i: Imovel) {
+    setConfirmandoId(i.id);
+    setErro('');
+    try {
+      const atualizado = await confirmarDisponibilidadeImovel(i.id);
+      setLista((prev) => prev.map((x) => (x.id === i.id ? atualizado : x)));
+    } catch (e) {
+      setErro(e instanceof Error ? e.message : 'Erro ao confirmar disponibilidade');
+    } finally {
+      setConfirmandoId(null);
+    }
+  }
 
   async function handleDelete(i: Imovel) {
     if (!confirm(`Excluir imóvel ${i.codigo || i.id}?`)) return;
@@ -189,6 +205,16 @@ export default function Imoveis() {
             value={filtros.busca ?? ''}
             onChange={(e) => setFiltros((f) => ({ ...f, busca: e.target.value || undefined }))}
           />
+          <select
+            className="imoveis-filtro-select"
+            value={filtros.statusSemaforo ?? ''}
+            onChange={(e) => setFiltros((f) => ({ ...f, statusSemaforo: (e.target.value as 'verde' | 'amarelo' | 'vermelho') || undefined }))}
+          >
+            <option value="">Semáforo: todos</option>
+            <option value="verde">Verde (&lt; 15 dias)</option>
+            <option value="amarelo">Amarelo (15–30 dias)</option>
+            <option value="vermelho">Vermelho (&gt; 30 dias)</option>
+          </select>
           {isGestor && (
             <select
               className="imoveis-filtro-select"
@@ -254,6 +280,13 @@ export default function Imoveis() {
               <div key={i.id} className="imovel-card">
                 <div className="imovel-card-header">
                   <span className="imovel-card-tipo">{i.tipo}</span>
+                  {i.statusSemaforo && (
+                    <span className={`imovel-card-semaforo ${i.statusSemaforo}`} title={i.diasDesdeVerificacao != null ? `${i.diasDesdeVerificacao} dias desde última verificação` : ''}>
+                      {i.statusSemaforo === 'verde' && '● Verde'}
+                      {i.statusSemaforo === 'amarelo' && '● Amarelo'}
+                      {i.statusSemaforo === 'vermelho' && '● Vermelho'}
+                    </span>
+                  )}
                   <span className={`imovel-card-status ${i.status}`}>{STATUS_LABEL[i.status] ?? i.status}</span>
                   <button
                     type="button"
@@ -275,6 +308,17 @@ export default function Imoveis() {
                   {i.valorVenda == null && i.valorAluguel == null && '–'}
                 </div>
                 <div className="imovel-card-actions">
+                  {(i.statusSemaforo === 'amarelo' || i.statusSemaforo === 'vermelho') && (
+                    <button
+                      type="button"
+                      className="imovel-card-btn-confirmar"
+                      onClick={() => handleConfirmarDisponibilidade(i)}
+                      disabled={confirmandoId === i.id}
+                      title="Confirmar que o imóvel ainda está disponível (reinicia a contagem)"
+                    >
+                      {confirmandoId === i.id ? '...' : 'Confirmar disponível'}
+                    </button>
+                  )}
                   <button type="button" onClick={() => navigate(`/imoveis/${i.id}`)}>Ver</button>
                   <button type="button" onClick={() => navigate(`/imoveis/${i.id}/editar`)}>Editar</button>
                   <button type="button" onClick={() => handleDelete(i)}>Excluir</button>

@@ -25,6 +25,28 @@
   text-transform: capitalize;
 }
 .imovel-detalhe-status.disponivel { background: var(--accent-light); color: var(--accent-hover); }
+.imovel-detalhe-header-badges { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem; }
+.imovel-detalhe-semaforo {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  font-size: var(--text-xs);
+  border-radius: 999px;
+  font-weight: 500;
+}
+.imovel-detalhe-semaforo.verde { background: rgba(34, 197, 94, 0.2); color: #16a34a; }
+.imovel-detalhe-semaforo.amarelo { background: rgba(234, 179, 8, 0.25); color: #ca8a04; }
+.imovel-detalhe-semaforo.vermelho { background: rgba(239, 68, 68, 0.2); color: #dc2626; }
+.imovel-detalhe-btn-confirmar {
+  padding: 0.35rem 0.75rem;
+  font-size: var(--text-sm);
+  border-radius: var(--radius);
+  border: none;
+  background: var(--accent);
+  color: var(--text-inverse);
+  cursor: pointer;
+}
+.imovel-detalhe-btn-confirmar:hover:not(:disabled) { filter: brightness(1.1); }
+.imovel-detalhe-btn-confirmar:disabled { opacity: 0.7; cursor: not-allowed; }
 .imovel-detalhe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; margin-bottom: 1.5rem; }
 .imovel-detalhe-block {
   background: #ffffff;

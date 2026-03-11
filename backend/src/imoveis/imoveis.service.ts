@@ -17,6 +17,24 @@ const TIPO_CODIGO_PREFIX: Record<string, string> = {
 
 const PREFIX_DEFAULT = 'IMV';
 
+/** Semáforo de disponibilidade: verde < 15d, amarelo 15–30d, vermelho > 30d desde última verificação (ou criadoEm). */
+const DIAS_AMARELO = 15;
+const DIAS_VERMELHO = 30;
+
+export type StatusSemaforo = 'verde' | 'amarelo' | 'vermelho';
+
+export function getStatusSemaforo(
+  ultimaVerificacao: Date | null,
+  criadoEm: Date,
+): { status: StatusSemaforo; diasDesdeVerificacao: number } {
+  const ref = ultimaVerificacao ?? criadoEm;
+  const agora = new Date();
+  const dias = Math.floor((agora.getTime() - ref.getTime()) / (24 * 60 * 60 * 1000));
+  const status: StatusSemaforo =
+    dias >= DIAS_VERMELHO ? 'vermelho' : dias >= DIAS_AMARELO ? 'amarelo' : 'verde';
+  return { status, diasDesdeVerificacao: dias };
+}
+
 @Injectable()
 export class ImoveisService {
   constructor(private prisma: PrismaService) {}
@@ -116,6 +134,7 @@ export class ImoveisService {
       qtdQuartosMin?: number;
       areaMin?: number;
       busca?: string;
+      statusSemaforo?: StatusSemaforo;
     },
   ) {
     const where: Prisma.ImovelWhereInput = {};
@@ -151,7 +170,7 @@ export class ImoveisService {
         { empreendimento: { nome: { contains: term, mode: 'insensitive' } } },
       ];
     }
-    return this.prisma.imovel.findMany({
+    const list = await this.prisma.imovel.findMany({
       where,
       orderBy: { criadoEm: 'desc' },
       include: {
@@ -160,6 +179,20 @@ export class ImoveisService {
         proprietario: { select: { id: true, nome: true, email: true, telefone: true } },
       },
     });
+    const statusSemaforoFilter = opts?.statusSemaforo as StatusSemaforo | undefined;
+    return list
+      .map((imovel) => {
+        const { status, diasDesdeVerificacao } = getStatusSemaforo(
+          imovel.ultimaVerificacaoDisponibilidade,
+          imovel.criadoEm,
+        );
+        return {
+          ...imovel,
+          statusSemaforo: status,
+          diasDesdeVerificacao,
+        };
+      })
+      .filter((imovel) => !statusSemaforoFilter || imovel.statusSemaforo === statusSemaforoFilter);
   }
 
   async findOne(id: string, user?: Usuario) {
@@ -179,7 +212,109 @@ export class ImoveisService {
     if (user?.role === 'corretor' && i.usuarioResponsavelId !== user.id) {
       throw new ForbiddenException('Sem permissão para acessar este imóvel');
     }
-    return i;
+    const { status, diasDesdeVerificacao } = getStatusSemaforo(
+      i.ultimaVerificacaoDisponibilidade,
+      i.criadoEm,
+    );
+    return { ...i, statusSemaforo: status, diasDesdeVerificacao };
+  }
+
+  /** Confirma que o imóvel ainda está disponível; reinicia a contagem do semáforo (volta para verde). */
+  async confirmarDisponibilidade(
+    id: string,
+    user?: Usuario,
+    observacao?: string,
+  ) {
+    const imovel = await this.findOne(id, user);
+    const now = new Date();
+    const linhaDescricao = `\n\n[${now.toLocaleDateString('pt-BR')}] Imóvel ainda disponível.${observacao ? ` ${observacao}` : ''}`;
+    const novaDescricao = (imovel.descricao ?? '').trim() + linhaDescricao;
+    await this.prisma.imovel.update({
+      where: { id },
+      data: {
+        ultimaVerificacaoDisponibilidade: now,
+        notificacaoAmareloEnviadaEm: null,
+        descricao: novaDescricao,
+      },
+    });
+    return this.findOne(id, user);
+  }
+
+  /**
+   * Processa mensagem (ex.: resposta WhatsApp) para confirmar disponibilidade pelo código do imóvel.
+   * Frases aceitas: "confirmar AP-00001", "imóvel ainda disponível AP-00001", "CONFIRMAR AP-00001", etc.
+   * Retorna o imóvel atualizado se encontrado e confirmado.
+   */
+  async confirmarDisponibilidadePorMensagem(texto: string): Promise<{
+    ok: boolean;
+    imovel?: Awaited<ReturnType<ImoveisService['findOne']>>;
+    erro?: string;
+  }> {
+    const codigo = this.extrairCodigoImovelDaMensagem(texto);
+    if (!codigo) {
+      return { ok: false, erro: 'Código do imóvel não identificado na mensagem.' };
+    }
+    const imovel = await this.prisma.imovel.findFirst({
+      where: { codigo: { equals: codigo, mode: 'insensitive' } },
+    });
+    if (!imovel) {
+      return { ok: false, erro: `Imóvel com código "${codigo}" não encontrado.` };
+    }
+    await this.confirmarDisponibilidade(imovel.id, undefined, 'Confirmado via mensagem.');
+    const atualizado = await this.findOne(imovel.id);
+    return { ok: true, imovel: atualizado };
+  }
+
+  private extrairCodigoImovelDaMensagem(texto: string): string | null {
+    if (!texto?.trim()) return null;
+    const t = texto.trim();
+    const padraoCodigo = /\b(AP|CA|TR|CAC|TRC|COM|IMV)-?(\d{1,10})\b/i;
+    const match = t.match(padraoCodigo);
+    if (!match) return null;
+    const prefix = match[1].toUpperCase();
+    const num = match[2];
+    return `${prefix}-${num}`;
+  }
+
+  /**
+   * Lista imóveis que viraram amarelo (15+ dias) e ainda não tiveram notificação enviada.
+   * Ao disparar, marcar notificacaoAmareloEnviadaEm para não reenviar (até o corretor confirmar e zerar).
+   */
+  async listarParaDisparoAmarelo(): Promise<
+    Array<{ id: string; codigo: string | null; usuarioResponsavel: { id: string; nome: string } | null; diasDesdeVerificacao: number }>
+  > {
+    const list = await this.prisma.imovel.findMany({
+      where: {
+        status: 'disponivel',
+        notificacaoAmareloEnviadaEm: null,
+      },
+      select: {
+        id: true,
+        codigo: true,
+        criadoEm: true,
+        ultimaVerificacaoDisponibilidade: true,
+        usuarioResponsavel: { select: { id: true, nome: true } },
+      },
+    });
+    const agora = new Date();
+    return list
+      .map((imovel) => {
+        const ref = imovel.ultimaVerificacaoDisponibilidade ?? imovel.criadoEm;
+        const dias = Math.floor((agora.getTime() - ref.getTime()) / (24 * 60 * 60 * 1000));
+        return { ...imovel, diasDesdeVerificacao: dias };
+      })
+      .filter((imovel) => imovel.diasDesdeVerificacao >= DIAS_AMARELO);
+  }
+
+  /**
+   * Marca que a notificação amarelo foi enviada para o imóvel (para não reenviar).
+   * Chamado após o disparo (Evolution API ou outro canal).
+   */
+  async marcarNotificacaoAmareloEnviada(id: string): Promise<void> {
+    await this.prisma.imovel.update({
+      where: { id },
+      data: { notificacaoAmareloEnviadaEm: new Date() },
+    });
   }
 
   async update(id: string, dto: UpdateImovelDto, user?: Usuario) {

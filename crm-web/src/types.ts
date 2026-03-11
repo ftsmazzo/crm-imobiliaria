@@ -109,6 +109,10 @@ export type Imovel = {
   proprietario?: { id: string; nome: string; email: string | null; telefone: string | null } | null;
   /** Contatos que demonstraram interesse neste imóvel (preenchido no GET do imóvel) */
   interesses?: { id: string; contato: { id: string; nome: string; email: string } }[];
+  /** Semáforo de disponibilidade: verde < 15d, amarelo 15–30d, vermelho > 30d (preenchido pela API) */
+  statusSemaforo?: 'verde' | 'amarelo' | 'vermelho';
+  /** Dias desde última verificação ou cadastro */
+  diasDesdeVerificacao?: number;
 };
 
 export type PrioridadeTarefa = 'baixa' | 'media' | 'alta';

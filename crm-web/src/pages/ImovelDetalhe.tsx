@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getImovel, getImovelFotos, getImovelDocumentos, uploadImovelDocumento, getImovelDocumentoUrl, deleteImovelDocumento, setImovelFotoCapa, getContatos, createInteresse, type ImovelFoto, type ImovelDocumento } from '../api';
+import { getImovel, getImovelFotos, getImovelDocumentos, uploadImovelDocumento, getImovelDocumentoUrl, deleteImovelDocumento, setImovelFotoCapa, getContatos, createInteresse, confirmarDisponibilidadeImovel, type ImovelFoto, type ImovelDocumento } from '../api';
 import type { Imovel, Contato } from '../types';
 import AppLayout from '../components/AppLayout';
 import './ImovelDetalhe.css';
@@ -72,6 +72,7 @@ export default function ImovelDetalhe() {
   const [showVincularContato, setShowVincularContato] = useState(false);
   const [contatosList, setContatosList] = useState<Contato[]>([]);
   const [vincularContatoLoading, setVincularContatoLoading] = useState(false);
+  const [confirmandoDisponivel, setConfirmandoDisponivel] = useState(false);
 
   useEffect(() => {
     if (!id || id === 'novo') return;
@@ -177,7 +178,39 @@ export default function ImovelDetalhe() {
             {imovel.codigo ? `Imóvel ${imovel.codigo}` : 'Detalhes do imóvel'}
             <span className="imovel-detalhe-tipo">{TIPO_LABELS[imovel.tipo] || imovel.tipo}</span>
           </h1>
-          <span className={`imovel-detalhe-status ${imovel.status}`}>{STATUS_LABELS[imovel.status] || imovel.status}</span>
+          <div className="imovel-detalhe-header-badges">
+            <span className={`imovel-detalhe-status ${imovel.status}`}>{STATUS_LABELS[imovel.status] || imovel.status}</span>
+            {imovel.statusSemaforo && (
+              <span className={`imovel-detalhe-semaforo ${imovel.statusSemaforo}`} title={imovel.diasDesdeVerificacao != null ? `${imovel.diasDesdeVerificacao} dias desde última verificação` : ''}>
+                {imovel.statusSemaforo === 'verde' && '● Verde'}
+                {imovel.statusSemaforo === 'amarelo' && '● Amarelo'}
+                {imovel.statusSemaforo === 'vermelho' && '● Vermelho'}
+                {imovel.diasDesdeVerificacao != null && ` (${imovel.diasDesdeVerificacao} dias)`}
+              </span>
+            )}
+            {(imovel.statusSemaforo === 'amarelo' || imovel.statusSemaforo === 'vermelho') && (
+              <button
+                type="button"
+                className="imovel-detalhe-btn-confirmar"
+                onClick={async () => {
+                  if (!id) return;
+                  setConfirmandoDisponivel(true);
+                  setErro('');
+                  try {
+                    const atualizado = await confirmarDisponibilidadeImovel(id);
+                    setImovel(atualizado);
+                  } catch (e) {
+                    setErro(e instanceof Error ? e.message : 'Erro ao confirmar disponibilidade');
+                  } finally {
+                    setConfirmandoDisponivel(false);
+                  }
+                }}
+                disabled={confirmandoDisponivel}
+              >
+                {confirmandoDisponivel ? '...' : 'Imóvel ainda disponível'}
+              </button>
+            )}
+          </div>
         </header>
 
         <div className="imovel-detalhe-grid">

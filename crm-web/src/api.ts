@@ -270,6 +270,7 @@ export async function getImoveis(params?: {
   bairro?: string;
   tipo?: string;
   status?: string;
+  statusSemaforo?: 'verde' | 'amarelo' | 'vermelho';
   usuarioResponsavelId?: string;
   valorVendaMin?: number;
   valorVendaMax?: number;
@@ -284,6 +285,7 @@ export async function getImoveis(params?: {
   if (params?.bairro) q.set('bairro', params.bairro);
   if (params?.tipo) q.set('tipo', params.tipo);
   if (params?.status) q.set('status', params.status);
+  if (params?.statusSemaforo) q.set('statusSemaforo', params.statusSemaforo);
   if (params?.usuarioResponsavelId) q.set('usuarioResponsavelId', params.usuarioResponsavelId);
   if (params?.valorVendaMin != null) q.set('valorVendaMin', String(params.valorVendaMin));
   if (params?.valorVendaMax != null) q.set('valorVendaMax', String(params.valorVendaMax));
@@ -294,6 +296,15 @@ export async function getImoveis(params?: {
   if (params?.busca) q.set('busca', params.busca);
   const query = q.toString() ? `?${q}` : '';
   const res = await fetch(`${API_URL}/imoveis${query}`, { headers: authHeaders() });
+  return handleRes(res);
+}
+
+export async function confirmarDisponibilidadeImovel(id: string, observacao?: string): Promise<Imovel> {
+  const res = await fetch(`${API_URL}/imoveis/${id}/confirmar-disponibilidade`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify(observacao ? { observacao } : {}),
+  });
   return handleRes(res);
 }
 

@@ -1,10 +1,14 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { Usuario } from '@prisma/client';
+import { ImoveisService } from '../imoveis/imoveis.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class AdminService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private imoveisService: ImoveisService,
+  ) {}
 
   /**
    * Limpa dados de desenvolvimento: imóveis, leads (contatos), interesses, tarefas,
@@ -41,5 +45,22 @@ export class AdminService {
       message: 'Dados de desenvolvimento removidos. Usuários, configuração do site, tipos de documento e empreendimentos foram mantidos.',
       removidos,
     };
+  }
+
+  /** Lista imóveis amarelos (15+ dias) sem notificação enviada. Apenas gestor. */
+  async disparoAmareloPendentes(user: Usuario) {
+    if (user.role !== 'gestor') {
+      throw new ForbiddenException('Apenas gestor pode listar pendentes de disparo');
+    }
+    return this.imoveisService.listarParaDisparoAmarelo();
+  }
+
+  /** Marca notificação amarelo como enviada para o imóvel. Apenas gestor. */
+  async marcarNotificacaoAmareloEnviada(user: Usuario, imovelId: string) {
+    if (user.role !== 'gestor') {
+      throw new ForbiddenException('Apenas gestor pode marcar notificação enviada');
+    }
+    await this.imoveisService.marcarNotificacaoAmareloEnviada(imovelId);
+    return { ok: true };
   }
 }

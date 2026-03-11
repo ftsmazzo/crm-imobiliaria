@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Put, 
 import { Usuario } from '@prisma/client';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CurrentUser } from '../auth/current-user.decorator';
+import { Public } from '../auth/public.decorator';
 import { ImoveisDocumentosService } from './imoveis-documentos.service';
 import { ImoveisFotosService } from './imoveis-fotos.service';
 import { ImoveisService } from './imoveis.service';
@@ -19,6 +20,13 @@ export class ImoveisController {
   @Post()
   create(@CurrentUser() user: Usuario, @Body() dto: CreateImovelDto) {
     return this.service.create(dto, user);
+  }
+
+  /** Webhook: confirma disponibilidade a partir de mensagem (ex.: WhatsApp). Body: { texto }. Público para Evolution API. */
+  @Public()
+  @Post('confirmar-disponibilidade-via-mensagem')
+  confirmarDisponibilidadeViaMensagem(@Body('texto') texto: string) {
+    return this.service.confirmarDisponibilidadePorMensagem(texto ?? '');
   }
 
   @Post(':id/fotos')
@@ -97,6 +105,7 @@ export class ImoveisController {
     @Query('bairro') bairro?: string,
     @Query('tipo') tipo?: string,
     @Query('status') status?: string,
+    @Query('statusSemaforo') statusSemaforo?: string,
     @Query('usuarioResponsavelId') usuarioResponsavelId?: string,
     @Query('valorVendaMin') valorVendaMin?: string,
     @Query('valorVendaMax') valorVendaMax?: string,
@@ -108,6 +117,7 @@ export class ImoveisController {
   ) {
     const opts = {
       ...(usuarioResponsavelId && { usuarioResponsavelId }),
+      ...(statusSemaforo && ['verde', 'amarelo', 'vermelho'].includes(statusSemaforo) && { statusSemaforo }),
       ...(valorVendaMin !== undefined && valorVendaMin !== '' && { valorVendaMin: Number(valorVendaMin) }),
       ...(valorVendaMax !== undefined && valorVendaMax !== '' && { valorVendaMax: Number(valorVendaMax) }),
       ...(valorAluguelMin !== undefined && valorAluguelMin !== '' && { valorAluguelMin: Number(valorAluguelMin) }),
@@ -122,6 +132,15 @@ export class ImoveisController {
   @Get(':id')
   findOne(@CurrentUser() user: Usuario, @Param('id', ParseUUIDPipe) id: string) {
     return this.service.findOne(id, user);
+  }
+
+  @Post(':id/confirmar-disponibilidade')
+  confirmarDisponibilidade(
+    @CurrentUser() user: Usuario,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body('observacao') observacao?: string,
+  ) {
+    return this.service.confirmarDisponibilidade(id, user, observacao);
   }
 
   @Put(':id')
