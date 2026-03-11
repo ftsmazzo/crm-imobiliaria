@@ -331,6 +331,8 @@ export class ImoveisService {
 
     return this.confirmarDisponibilidadePorMensagem(texto, telefone);
   }
+
+  /**
    * Lista imóveis que viraram amarelo (15+ dias) e ainda não tiveram notificação enviada.
    * Ao disparar, marcar notificacaoAmareloEnviadaEm para não reenviar (até o corretor confirmar e zerar).
    */
