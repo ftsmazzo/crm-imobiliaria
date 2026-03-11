@@ -51,9 +51,21 @@ export default function Imoveis() {
   }>({});
   const [confirmandoId, setConfirmandoId] = useState<string | null>(null);
   const [simulandoId, setSimulandoId] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'cards' | 'list'>(() => {
+    try {
+      const v = localStorage.getItem('imoveis-view');
+      return (v === 'list' || v === 'cards') ? v : 'cards';
+    } catch {
+      return 'cards';
+    }
+  });
 
   const user = getUser();
   const isGestor = user?.role === 'gestor';
+
+  useEffect(() => {
+    if (viewMode) localStorage.setItem('imoveis-view', viewMode);
+  }, [viewMode]);
 
   async function load() {
     setLoading(true);
@@ -97,6 +109,15 @@ export default function Imoveis() {
   useEffect(() => {
     load();
   }, [filtros.busca, filtros.statusSemaforo, filtros.usuarioResponsavelId, filtros.valorVendaMin, filtros.valorVendaMax, filtros.qtdQuartosMin, filtros.areaMin]);
+
+  // Atualizar lista ao voltar para a aba (ex.: depois de confirmar no Zap e checar pendentes na Admin)
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') load();
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
+  }, []);
 
   async function handleConfirmarDisponibilidade(i: Imovel) {
     setConfirmandoId(i.id);
@@ -274,9 +295,42 @@ export default function Imoveis() {
           />
         </div>
         <div className="imoveis-toolbar">
-          <button type="button" className="imoveis-btn-import" onClick={openImportModal}>
-            Importar CSV
-          </button>
+          <div className="imoveis-toolbar-left">
+            <button type="button" className="imoveis-btn-import" onClick={openImportModal}>
+              Importar CSV
+            </button>
+            <button type="button" className="imoveis-btn-refresh" onClick={() => load()} title="Atualizar lista (útil após confirmar pelo Zap)">
+              Atualizar
+            </button>
+            {isGestor && (
+              <button
+                type="button"
+                className="imoveis-btn-testar-notif"
+                onClick={() => navigate('/administracao')}
+                title="Ver pendentes, preview da mensagem e disparar notificação amarelo"
+              >
+                Testar notificação amarelo
+              </button>
+            )}
+            <div className="imoveis-view-toggle" role="group" aria-label="Tipo de visualização">
+              <button
+                type="button"
+                className={`imoveis-view-btn ${viewMode === 'cards' ? 'active' : ''}`}
+                onClick={() => setViewMode('cards')}
+                title="Visualização em cards"
+              >
+                Cards
+              </button>
+              <button
+                type="button"
+                className={`imoveis-view-btn ${viewMode === 'list' ? 'active' : ''}`}
+                onClick={() => setViewMode('list')}
+                title="Visualização em lista"
+              >
+                Lista
+              </button>
+            </div>
+          </div>
           <button type="button" className="imoveis-btn-new" onClick={() => navigate('/imoveis/novo')}>
             + Novo imóvel
           </button>
@@ -288,6 +342,67 @@ export default function Imoveis() {
             <button type="button" className="imoveis-btn-new" onClick={() => navigate('/imoveis/novo')}>
               + Cadastrar primeiro imóvel
             </button>
+          </div>
+        ) : viewMode === 'list' ? (
+          <div className="imoveis-list-wrap">
+            <table className="imoveis-table">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Tipo</th>
+                  <th>Endereço</th>
+                  <th>Semáforo</th>
+                  <th>Status</th>
+                  <th>Valores</th>
+                  {isGestor && <th>Responsável</th>}
+                  <th className="imoveis-table-actions">Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                {lista.map((i) => (
+                  <tr key={i.id} className="imoveis-table-row">
+                    <td><span className="imoveis-table-codigo">{i.codigo || '–'}</span></td>
+                    <td>{i.tipo || '–'}</td>
+                    <td>{[i.rua, i.numero, i.bairro, i.cidade].filter(Boolean).join(', ') || '–'}</td>
+                    <td>
+                      {i.statusSemaforo ? (
+                        <span className={`imovel-card-semaforo ${i.statusSemaforo}`} title={i.diasDesdeVerificacao != null ? `${i.diasDesdeVerificacao} dias` : ''}>
+                          {i.statusSemaforo === 'verde' && '● Verde'}
+                          {i.statusSemaforo === 'amarelo' && '● Amarelo'}
+                          {i.statusSemaforo === 'vermelho' && '● Vermelho'}
+                        </span>
+                      ) : '–'}
+                    </td>
+                    <td><span className={`imovel-card-status ${i.status}`}>{STATUS_LABEL[i.status] ?? i.status}</span></td>
+                    <td>
+                      {i.valorVenda != null && formatValor(i.valorVenda)}
+                      {i.valorVenda != null && i.valorAluguel != null && ' / '}
+                      {i.valorAluguel != null && formatValor(i.valorAluguel)}
+                      {i.valorVenda == null && i.valorAluguel == null && '–'}
+                    </td>
+                    {isGestor && <td>{i.usuarioResponsavel?.nome ?? '–'}</td>}
+                    <td className="imoveis-table-actions">
+                      <div className="imoveis-table-action-btns">
+                        {(i.statusSemaforo === 'amarelo' || i.statusSemaforo === 'vermelho') && (
+                          <button type="button" className="btn-success imoveis-table-btn" onClick={() => handleConfirmarDisponibilidade(i)} disabled={confirmandoId === i.id}>
+                            {confirmandoId === i.id ? '...' : 'Confirmar'}
+                          </button>
+                        )}
+                        {isGestor && (
+                          <>
+                            <button type="button" className="imoveis-table-btn imoveis-table-btn-sim" onClick={() => handleSimularDias(i, 20)} disabled={simulandoId === i.id} title="Simular 20d (amarelo)">{simulandoId === i.id ? '...' : '20d'}</button>
+                            <button type="button" className="imoveis-table-btn imoveis-table-btn-sim" onClick={() => handleSimularDias(i, 35)} disabled={simulandoId === i.id} title="Simular 35d (vermelho)">35d</button>
+                          </>
+                        )}
+                        <button type="button" className="btn-secondary imoveis-table-btn" onClick={() => navigate(`/imoveis/${i.id}`)}>Ver</button>
+                        <button type="button" className="btn-secondary imoveis-table-btn" onClick={() => navigate(`/imoveis/${i.id}/editar`)}>Editar</button>
+                        <button type="button" className="btn-danger imoveis-table-btn" onClick={() => handleDelete(i)}>Excluir</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         ) : (
           <div className="imoveis-grid">
@@ -322,6 +437,29 @@ export default function Imoveis() {
                   {i.valorAluguel != null && <span>Aluguel {formatValor(i.valorAluguel)}</span>}
                   {i.valorVenda == null && i.valorAluguel == null && '–'}
                 </div>
+                {isGestor && (
+                  <div className="imovel-card-teste-semaforo">
+                    <span className="imovel-card-teste-label">Teste semáforo:</span>
+                    <button
+                      type="button"
+                      className="imovel-card-btn-simular"
+                      onClick={(e) => { e.stopPropagation(); handleSimularDias(i, 20); }}
+                      disabled={simulandoId === i.id}
+                      title="Simular 20 dias sem verificação (amarelo)"
+                    >
+                      {simulandoId === i.id ? '...' : '20d'}
+                    </button>
+                    <button
+                      type="button"
+                      className="imovel-card-btn-simular"
+                      onClick={(e) => { e.stopPropagation(); handleSimularDias(i, 35); }}
+                      disabled={simulandoId === i.id}
+                      title="Simular 35 dias sem verificação (vermelho)"
+                    >
+                      35d
+                    </button>
+                  </div>
+                )}
                 <div className="imovel-card-actions">
                   {(i.statusSemaforo === 'amarelo' || i.statusSemaforo === 'vermelho') && (
                     <button
@@ -333,28 +471,6 @@ export default function Imoveis() {
                     >
                       {confirmandoId === i.id ? '...' : 'Confirmar disponível'}
                     </button>
-                  )}
-                  {isGestor && (
-                    <>
-                      <button
-                        type="button"
-                        className="imovel-card-btn-simular btn-secondary"
-                        onClick={(e) => { e.stopPropagation(); handleSimularDias(i, 20); }}
-                        disabled={simulandoId === i.id}
-                        title="Simular 20 dias sem verificação (amarelo)"
-                      >
-                        {simulandoId === i.id ? '...' : 'Sim. 20d'}
-                      </button>
-                      <button
-                        type="button"
-                        className="imovel-card-btn-simular btn-secondary"
-                        onClick={(e) => { e.stopPropagation(); handleSimularDias(i, 35); }}
-                        disabled={simulandoId === i.id}
-                        title="Simular 35 dias sem verificação (vermelho)"
-                      >
-                        Sim. 35d
-                      </button>
-                    </>
                   )}
                   <button type="button" className="btn-secondary" onClick={() => navigate(`/imoveis/${i.id}`)}>Ver</button>
                   <button type="button" className="btn-secondary" onClick={() => navigate(`/imoveis/${i.id}/editar`)}>Editar</button>
