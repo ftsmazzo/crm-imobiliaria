@@ -59,10 +59,20 @@
   font-size: var(--text-sm);
   border-radius: var(--radius);
   cursor: pointer;
-  border: 1px solid var(--border);
-  background: var(--surface);
 }
-.empreendimento-card-actions button:first-of-type { border-color: var(--accent); color: var(--accent); }
+.empreendimento-card-actions .btn-secondary {
+  border: 1px solid var(--border-default);
+  background: #e2e8f0;
+  color: #0f172a;
+}
+.empreendimento-card-actions .btn-danger {
+  border: none !important;
+  background: #ef4444 !important;
+  color: #fff !important;
+}
+.empreendimento-card-actions .btn-danger:hover {
+  background: #dc2626 !important;
+}
 .empreendimentos-modal-overlay {
   position: fixed; inset: 0;
   background: rgba(15, 23, 42, 0.5);
