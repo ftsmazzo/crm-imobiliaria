@@ -78,8 +78,8 @@ export default function Proprietarios() {
                   )}
                 </div>
                 <div className="proprietario-card-actions">
-                  <button type="button" onClick={() => navigate(`/proprietarios/${p.id}/editar`)}>Editar</button>
-                  <button type="button" onClick={() => handleDelete(p)}>Excluir</button>
+                  <button type="button" className="btn-secondary" onClick={() => navigate(`/proprietarios/${p.id}/editar`)}>Editar</button>
+                  <button type="button" className="btn-danger" onClick={() => handleDelete(p)}>Excluir</button>
                 </div>
               </div>
             ))}

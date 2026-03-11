@@ -1,9 +1,21 @@
 import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { limparParaProducao, type LimparParaProducaoResult } from '../api';
+import {
+  limparParaProducao,
+  getDisparoAmareloPendentes,
+  executarDisparoAmarelo,
+  type LimparParaProducaoResult,
+  type DisparoAmareloPendente,
+  type DisparoAmareloResult,
+} from '../api';
 import { getUser } from '../auth';
 import AppLayout from '../components/AppLayout';
 import './Administracao.css';
+
+const MODELO_MENSAGEM = `*Imóvel [CÓDIGO]* está há [X] dias sem verificação de disponibilidade.
+
+Confirme se ainda está disponível. Para confirmar pelo WhatsApp, responda:
+*confirmar [CÓDIGO]*`;
 
 export default function Administracao() {
   const user = getUser();
@@ -12,6 +24,10 @@ export default function Administracao() {
   const [executando, setExecutando] = useState(false);
   const [resultado, setResultado] = useState<LimparParaProducaoResult | null>(null);
   const [erro, setErro] = useState('');
+  const [pendentes, setPendentes] = useState<DisparoAmareloPendente[] | null>(null);
+  const [disparoResult, setDisparoResult] = useState<DisparoAmareloResult | null>(null);
+  const [loadingPendentes, setLoadingPendentes] = useState(false);
+  const [loadingDisparo, setLoadingDisparo] = useState(false);
 
   const isGestor = user?.role === 'gestor';
   const podeExecutar = digitado.toUpperCase() === 'LIMPAR';
@@ -44,6 +60,33 @@ export default function Administracao() {
     }
   }
 
+  async function carregarPendentes() {
+    setLoadingPendentes(true);
+    setDisparoResult(null);
+    try {
+      const list = await getDisparoAmareloPendentes();
+      setPendentes(list);
+    } catch (e) {
+      setPendentes([]);
+      setErro(e instanceof Error ? e.message : 'Erro ao carregar pendentes');
+    } finally {
+      setLoadingPendentes(false);
+    }
+  }
+
+  async function dispararAgora() {
+    setLoadingDisparo(true);
+    setErro('');
+    try {
+      const res = await executarDisparoAmarelo();
+      setDisparoResult(res);
+    } catch (e) {
+      setErro(e instanceof Error ? e.message : 'Erro ao disparar');
+    } finally {
+      setLoadingDisparo(false);
+    }
+  }
+
   if (!isGestor) {
     return <Navigate to="/" replace />;
   }
@@ -68,11 +111,69 @@ export default function Administracao() {
           </p>
           <button
             type="button"
-            className="administracao-btn-limpar"
+            className="administracao-btn-limpar btn-danger"
             onClick={abrirConfirmacao}
           >
             Limpar dados de desenvolvimento
           </button>
+        </section>
+
+        <section className="administracao-card">
+          <h2>Notificação imóvel amarelo</h2>
+          <p>
+            Imóveis com 15 a 30 dias sem verificação entram no “amarelo”. Um cron diário às 9h envia mensagem
+            ao corretor responsável pelo WhatsApp (Evolution API). Aqui você pode ver quem está pendente e qual
+            mensagem será enviada, e disparar manualmente para testar.
+          </p>
+          <div className="administracao-modelo-msg">
+            <strong>Modelo da mensagem:</strong>
+            <pre>{MODELO_MENSAGEM}</pre>
+          </div>
+          <div className="administracao-disparo-actions">
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={carregarPendentes}
+              disabled={loadingPendentes}
+            >
+              {loadingPendentes ? 'Carregando...' : 'Ver pendentes'}
+            </button>
+            <button
+              type="button"
+              className="btn-primary"
+              onClick={dispararAgora}
+              disabled={loadingDisparo}
+            >
+              {loadingDisparo ? 'Disparando...' : 'Disparar agora'}
+            </button>
+          </div>
+          {pendentes !== null && (
+            <div className="administracao-pendentes">
+              <h3>Pendentes ({pendentes.length})</h3>
+              {pendentes.length === 0 ? (
+                <p>Nenhum imóvel pendente de notificação amarela.</p>
+              ) : (
+                <ul className="administracao-pendentes-lista">
+                  {pendentes.map((p) => (
+                    <li key={p.id} className="administracao-pendente-item">
+                      <span className="administracao-pendente-cod">{p.codigo || p.id.slice(0, 8)}</span>
+                      <span>
+                        {p.usuarioResponsavel?.nome ?? 'Sem responsável'} · {p.diasDesdeVerificacao} dias
+                      </span>
+                      <pre className="administracao-pendente-msg">{p.mensagem}</pre>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+          {disparoResult && (
+            <div className="administracao-disparo-result">
+              <p>Enviados: <strong>{disparoResult.enviados}</strong></p>
+              <p>Sem telefone: <strong>{disparoResult.semTelefone}</strong></p>
+              <p>Erros: <strong>{disparoResult.erros}</strong></p>
+            </div>
+          )}
         </section>
 
         {resultado && (
@@ -111,7 +212,7 @@ export default function Administracao() {
               <div className="administracao-modal-actions">
                 <button
                   type="button"
-                  className="administracao-btn-cancel"
+                  className="administracao-btn-cancel btn-secondary"
                   onClick={fecharConfirmacao}
                   disabled={executando}
                 >
@@ -119,7 +220,7 @@ export default function Administracao() {
                 </button>
                 <button
                   type="button"
-                  className="administracao-btn-executar"
+                  className="administracao-btn-executar btn-success"
                   onClick={executar}
                   disabled={!podeExecutar || executando}
                 >

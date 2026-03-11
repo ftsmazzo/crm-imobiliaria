@@ -252,27 +252,13 @@
 
 .imovel-card-actions button {
   flex: 1;
+  min-width: 0;
+}
+.imovel-card-actions .btn-secondary,
+.imovel-card-actions .btn-danger,
+.imovel-card-actions .btn-success {
   padding: 0.6rem 1rem;
   font-size: 0.85rem;
-  font-weight: 600;
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: border-color 0.2s, color 0.2s, background 0.2s;
-}
-
-.imovel-card-actions button:first-child:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accent-light);
-}
-
-.imovel-card-actions button:last-child:hover {
-  border-color: var(--error);
-  color: var(--error);
-  background: var(--error-light);
 }
 
 .imoveis-empty {

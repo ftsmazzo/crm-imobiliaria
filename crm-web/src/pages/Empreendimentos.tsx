@@ -83,8 +83,8 @@ export default function Empreendimentos() {
                   )}
                 </div>
                 <div className="empreendimento-card-actions">
-                  <button type="button" onClick={() => navigate(`/empreendimentos/${emp.id}/editar`)}>Editar</button>
-                  <button type="button" onClick={() => handleDelete(emp)}>Excluir</button>
+                  <button type="button" className="btn-secondary" onClick={() => navigate(`/empreendimentos/${emp.id}/editar`)}>Editar</button>
+                  <button type="button" className="btn-danger" onClick={() => handleDelete(emp)}>Excluir</button>
                 </div>
               </div>
             ))}

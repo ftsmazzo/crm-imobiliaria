@@ -238,7 +238,7 @@ export default function Tarefas() {
                 {t.descricao && <div className="tarefa-desc">{t.descricao}</div>}
               </div>
               <div className="tarefa-actions">
-                <button type="button" onClick={() => handleDelete(t)}>Excluir</button>
+                <button type="button" className="btn-danger" onClick={() => handleDelete(t)}>Excluir</button>
               </div>
             </div>
           ))}
@@ -315,8 +315,8 @@ export default function Tarefas() {
                 onChange={(e) => setForm((f) => ({ ...f, descricao: e.target.value }))}
               />
               <div className="tarefas-form-actions">
-                <button type="button" className="secondary" onClick={() => setModal(false)}>Cancelar</button>
-                <button type="submit" className="primary" disabled={saving}>
+                <button type="button" className="btn-secondary" onClick={() => setModal(false)}>Cancelar</button>
+                <button type="submit" className="btn-success" disabled={saving}>
                   {saving ? 'Salvando...' : 'Criar'}
                 </button>
               </div>

@@ -271,7 +271,7 @@ export default function PersonalizacaoSite() {
                 placeholder="Opcional"
               />
             </div>
-            <button type="submit" className="personalizacao-site-btn-save" disabled={saving}>
+            <button type="submit" className="personalizacao-site-btn-save btn-success" disabled={saving}>
               {saving ? 'Salvando...' : 'Salvar textos'}
             </button>
           </form>

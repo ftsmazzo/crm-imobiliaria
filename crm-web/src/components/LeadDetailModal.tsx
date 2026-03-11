@@ -348,7 +348,7 @@ export default function LeadDetailModal({ contato, onClose, onSaved }: Props) {
                     <span className="lead-detail-doc-nome">{d.nomeOriginal || d.tipoDocumento?.nome || 'Documento'}</span>
                     {d.tipoDocumento && <span className="lead-detail-doc-tipo-badge">{d.tipoDocumento.nome}</span>}
                     <button type="button" className="lead-detail-doc-ver" onClick={() => handleVerDoc(d.id)}>Ver</button>
-                    <button type="button" className="lead-detail-doc-excluir" onClick={() => handleExcluirDoc(d.id)}>Excluir</button>
+                    <button type="button" className="lead-detail-doc-excluir btn-danger" onClick={() => handleExcluirDoc(d.id)}>Excluir</button>
                   </li>
                 ))}
               </ul>
@@ -361,10 +361,10 @@ export default function LeadDetailModal({ contato, onClose, onSaved }: Props) {
             <button type="button" className="btn-secondary" onClick={onClose}>
               Cancelar
             </button>
-            <button type="button" className="btn-nova-tarefa" onClick={handleNovaTarefa}>
+            <button type="button" className="btn-nova-tarefa btn-primary" onClick={handleNovaTarefa}>
               Nova tarefa
             </button>
-            <button type="submit" className="btn-primary" disabled={saving}>
+            <button type="submit" className="btn-success" disabled={saving}>
               {saving ? 'Salvando...' : 'Salvar'}
             </button>
           </div>

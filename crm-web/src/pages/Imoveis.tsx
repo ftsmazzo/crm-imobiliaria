@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getImoveis, createImovel, deleteImovel, updateImovel, getUsuarios, confirmarDisponibilidadeImovel } from '../api';
+import { getImoveis, createImovel, deleteImovel, updateImovel, getUsuarios, confirmarDisponibilidadeImovel, simularDiasSemVerificacao } from '../api';
 import type { Imovel } from '../types';
 import type { UsuarioListItem } from '../api';
 import { getUser } from '../auth';
@@ -50,6 +50,7 @@ export default function Imoveis() {
     areaMin?: number;
   }>({});
   const [confirmandoId, setConfirmandoId] = useState<string | null>(null);
+  const [simulandoId, setSimulandoId] = useState<string | null>(null);
 
   const user = getUser();
   const isGestor = user?.role === 'gestor';
@@ -107,6 +108,20 @@ export default function Imoveis() {
       setErro(e instanceof Error ? e.message : 'Erro ao confirmar disponibilidade');
     } finally {
       setConfirmandoId(null);
+    }
+  }
+
+  /** Simula X dias sem verificação (teste de cores do semáforo). Apenas gestor. */
+  async function handleSimularDias(i: Imovel, dias: number) {
+    setSimulandoId(i.id);
+    setErro('');
+    try {
+      await simularDiasSemVerificacao(i.id, dias);
+      await load();
+    } catch (e) {
+      setErro(e instanceof Error ? e.message : 'Erro ao simular dias');
+    } finally {
+      setSimulandoId(null);
     }
   }
 
@@ -311,7 +326,7 @@ export default function Imoveis() {
                   {(i.statusSemaforo === 'amarelo' || i.statusSemaforo === 'vermelho') && (
                     <button
                       type="button"
-                      className="imovel-card-btn-confirmar"
+                      className="imovel-card-btn-confirmar btn-success"
                       onClick={() => handleConfirmarDisponibilidade(i)}
                       disabled={confirmandoId === i.id}
                       title="Confirmar que o imóvel ainda está disponível (reinicia a contagem)"
@@ -319,9 +334,31 @@ export default function Imoveis() {
                       {confirmandoId === i.id ? '...' : 'Confirmar disponível'}
                     </button>
                   )}
-                  <button type="button" onClick={() => navigate(`/imoveis/${i.id}`)}>Ver</button>
-                  <button type="button" onClick={() => navigate(`/imoveis/${i.id}/editar`)}>Editar</button>
-                  <button type="button" onClick={() => handleDelete(i)}>Excluir</button>
+                  {isGestor && (
+                    <>
+                      <button
+                        type="button"
+                        className="imovel-card-btn-simular btn-secondary"
+                        onClick={(e) => { e.stopPropagation(); handleSimularDias(i, 20); }}
+                        disabled={simulandoId === i.id}
+                        title="Simular 20 dias sem verificação (amarelo)"
+                      >
+                        {simulandoId === i.id ? '...' : 'Sim. 20d'}
+                      </button>
+                      <button
+                        type="button"
+                        className="imovel-card-btn-simular btn-secondary"
+                        onClick={(e) => { e.stopPropagation(); handleSimularDias(i, 35); }}
+                        disabled={simulandoId === i.id}
+                        title="Simular 35 dias sem verificação (vermelho)"
+                      >
+                        Sim. 35d
+                      </button>
+                    </>
+                  )}
+                  <button type="button" className="btn-secondary" onClick={() => navigate(`/imoveis/${i.id}`)}>Ver</button>
+                  <button type="button" className="btn-secondary" onClick={() => navigate(`/imoveis/${i.id}/editar`)}>Editar</button>
+                  <button type="button" className="btn-danger" onClick={() => handleDelete(i)}>Excluir</button>
                 </div>
               </div>
             ))}
@@ -398,10 +435,10 @@ export default function Imoveis() {
                   </div>
                   {!importing ? (
                     <div className="imoveis-import-actions-bottom">
-                      <button type="button" className="secondary" onClick={closeImportModal}>
+                      <button type="button" className="btn-secondary" onClick={closeImportModal}>
                         Cancelar
                       </button>
-                      <button type="button" className="primary" onClick={runImport}>
+                      <button type="button" className="btn-success" onClick={runImport}>
                         Importar {importResult.rows.length} imóvel(is)
                       </button>
                     </div>

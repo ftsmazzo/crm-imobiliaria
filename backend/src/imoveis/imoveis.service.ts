@@ -317,6 +317,30 @@ export class ImoveisService {
     });
   }
 
+  /**
+   * Simula X dias sem verificação (para teste em desenvolvimento). Apenas gestor.
+   * Define ultimaVerificacaoDisponibilidade = agora - diasAtras e zera notificação enviada.
+   * Ex.: diasAtras = 20 → imóvel fica amarelo; 35 → vermelho.
+   */
+  async simularDiasSemVerificacao(id: string, diasAtras: number, user?: Usuario): Promise<void> {
+    if (user?.role !== 'gestor') {
+      throw new ForbiddenException('Apenas gestor pode simular dias para teste');
+    }
+    if (diasAtras < 1 || diasAtras > 365) {
+      throw new ForbiddenException('diasAtras deve ser entre 1 e 365');
+    }
+    await this.findOne(id, user);
+    const dataRef = new Date();
+    dataRef.setDate(dataRef.getDate() - diasAtras);
+    await this.prisma.imovel.update({
+      where: { id },
+      data: {
+        ultimaVerificacaoDisponibilidade: dataRef,
+        notificacaoAmareloEnviadaEm: null,
+      },
+    });
+  }
+
   async update(id: string, dto: UpdateImovelDto, user?: Usuario) {
     await this.findOne(id, user);
     const data: Prisma.ImovelUpdateInput = {

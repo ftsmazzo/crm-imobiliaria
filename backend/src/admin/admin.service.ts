@@ -49,12 +49,25 @@ export class AdminService {
     };
   }
 
-  /** Lista imóveis amarelos (15+ dias) sem notificação enviada. Apenas gestor. */
+  /** Monta o texto da mensagem que será enviada ao corretor (WhatsApp). */
+  private mensagemDisparoAmarelo(codigo: string | null, id: string, diasDesdeVerificacao: number): string {
+    const cod = codigo || id.slice(0, 8);
+    return (
+      `*Imóvel ${cod}* está há ${diasDesdeVerificacao} dias sem verificação de disponibilidade.\n\n` +
+      `Confirme se ainda está disponível. Para confirmar pelo WhatsApp, responda:\n*confirmar ${cod}*`
+    );
+  }
+
+  /** Lista imóveis amarelos (15+ dias) sem notificação enviada, com preview da mensagem. Apenas gestor. */
   async disparoAmareloPendentes(user: Usuario) {
     if (user.role !== 'gestor') {
       throw new ForbiddenException('Apenas gestor pode listar pendentes de disparo');
     }
-    return this.imoveisService.listarParaDisparoAmarelo();
+    const list = await this.imoveisService.listarParaDisparoAmarelo();
+    return list.map((item) => ({
+      ...item,
+      mensagem: this.mensagemDisparoAmarelo(item.codigo, item.id, item.diasDesdeVerificacao),
+    }));
   }
 
   /** Marca notificação amarelo como enviada para o imóvel. Apenas gestor. */
@@ -87,10 +100,7 @@ export class AdminService {
         semTelefone++;
         continue;
       }
-      const codigo = item.codigo || item.id.slice(0, 8);
-      const texto =
-        `*Imóvel ${codigo}* está há ${item.diasDesdeVerificacao} dias sem verificação de disponibilidade.\n\n` +
-        `Confirme se ainda está disponível. Para confirmar pelo WhatsApp, responda:\n*confirmar ${codigo}*`;
+      const texto = this.mensagemDisparoAmarelo(item.codigo, item.id, item.diasDesdeVerificacao);
       const ok = await this.evolutionService.sendText(telefone, texto);
       if (ok) {
         await this.imoveisService.marcarNotificacaoAmareloEnviada(item.id);

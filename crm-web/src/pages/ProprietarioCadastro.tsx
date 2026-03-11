@@ -287,10 +287,10 @@ export default function ProprietarioCadastro() {
           </section>
 
           <footer className="proprietario-cadastro-actions">
-            <button type="button" className="secondary" onClick={() => navigate('/proprietarios')}>
+            <button type="button" className="btn-secondary" onClick={() => navigate('/proprietarios')}>
               Cancelar
             </button>
-            <button type="submit" className="primary" disabled={saving}>
+            <button type="submit" className="btn-success" disabled={saving}>
               {saving ? 'Salvando...' : 'Salvar'}
             </button>
           </footer>

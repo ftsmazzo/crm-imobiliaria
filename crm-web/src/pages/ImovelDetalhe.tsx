@@ -160,7 +160,7 @@ export default function ImovelDetalhe() {
       <AppLayout>
         <div className="imovel-detalhe-page">
           <p className="imovel-detalhe-erro">{erro || 'Imóvel não encontrado.'}</p>
-          <button type="button" className="secondary" onClick={() => navigate('/imoveis')}>Voltar</button>
+          <button type="button" className="btn-secondary" onClick={() => navigate('/imoveis')}>Voltar</button>
         </div>
       </AppLayout>
     );
@@ -191,7 +191,7 @@ export default function ImovelDetalhe() {
             {(imovel.statusSemaforo === 'amarelo' || imovel.statusSemaforo === 'vermelho') && (
               <button
                 type="button"
-                className="imovel-detalhe-btn-confirmar"
+                className="imovel-detalhe-btn-confirmar btn-success"
                 onClick={async () => {
                   if (!id) return;
                   setConfirmandoDisponivel(true);
@@ -407,8 +407,8 @@ export default function ImovelDetalhe() {
                 <li key={d.id}>
                   <span className="imovel-detalhe-doc-nome">{d.nome || d.tipo}</span>
                   <span className="imovel-detalhe-doc-tipo-badge">{d.tipo}</span>
-                  <button type="button" className="imovel-detalhe-doc-ver" onClick={() => handleVerDocumento(d.id)}>Ver</button>
-                  <button type="button" className="imovel-detalhe-doc-excluir" onClick={() => handleExcluirDocumento(d.id)}>Excluir</button>
+                  <button type="button" className="imovel-detalhe-doc-ver btn-secondary" onClick={() => handleVerDocumento(d.id)}>Ver</button>
+                  <button type="button" className="imovel-detalhe-doc-excluir btn-danger" onClick={() => handleExcluirDocumento(d.id)}>Excluir</button>
                 </li>
               ))}
             </ul>

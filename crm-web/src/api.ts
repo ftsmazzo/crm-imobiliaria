@@ -133,6 +133,29 @@ export async function limparParaProducao(): Promise<LimparParaProducaoResult> {
   return handleRes(res);
 }
 
+export type DisparoAmareloPendente = {
+  id: string;
+  codigo: string | null;
+  usuarioResponsavel: { id: string; nome: string; telefone: string | null } | null;
+  diasDesdeVerificacao: number;
+  mensagem: string;
+};
+
+export async function getDisparoAmareloPendentes(): Promise<DisparoAmareloPendente[]> {
+  const res = await fetch(`${API_URL}/admin/disparo-amarelo-pendentes`, { headers: authHeaders() });
+  return handleRes(res);
+}
+
+export type DisparoAmareloResult = { enviados: number; semTelefone: number; erros: number };
+
+export async function executarDisparoAmarelo(): Promise<DisparoAmareloResult> {
+  const res = await fetch(`${API_URL}/admin/disparo-amarelo/executar`, {
+    method: 'POST',
+    headers: authHeaders(),
+  });
+  return handleRes(res);
+}
+
 // Contatos
 export async function getContatos(estagio?: string, usuarioResponsavelId?: string): Promise<Contato[]> {
   const q = new URLSearchParams();
@@ -306,6 +329,16 @@ export async function confirmarDisponibilidadeImovel(id: string, observacao?: st
     body: JSON.stringify(observacao ? { observacao } : {}),
   });
   return handleRes(res);
+}
+
+/** Simula X dias sem verificação (para teste). Apenas gestor. Ex.: 20 = amarelo, 35 = vermelho. */
+export async function simularDiasSemVerificacao(imovelId: string, diasAtras: number): Promise<void> {
+  const res = await fetch(`${API_URL}/imoveis/${imovelId}/simular-dias-sem-verificacao`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ diasAtras }),
+  });
+  if (!res.ok) await handleRes(res);
 }
 
 export async function getImovel(id: string): Promise<Imovel> {

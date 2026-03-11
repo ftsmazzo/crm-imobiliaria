@@ -144,6 +144,16 @@ export class ImoveisController {
     return this.service.confirmarDisponibilidade(id, user, observacao);
   }
 
+  /** Simula X dias sem verificação (para teste). Apenas gestor. Body: { diasAtras: number }. */
+  @Post(':id/simular-dias-sem-verificacao')
+  simularDiasSemVerificacao(
+    @CurrentUser() user: Usuario,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body('diasAtras') diasAtras: number,
+  ) {
+    return this.service.simularDiasSemVerificacao(id, Number(diasAtras), user);
+  }
+
   @Put(':id')
   update(
     @CurrentUser() user: Usuario,

@@ -826,24 +826,24 @@ export default function ImovelCadastro() {
           )}
 
           <footer className="imovel-cadastro-actions">
-            <button type="button" className="secondary" onClick={() => navigate('/imoveis')}>
+            <button type="button" className="btn-secondary" onClick={() => navigate('/imoveis')}>
               Cancelar
             </button>
             {step > 1 && (
-              <button type="button" className="secondary" onClick={() => goToStep(step - 1)}>
+              <button type="button" className="btn-secondary" onClick={() => goToStep(step - 1)}>
                 Anterior
               </button>
             )}
             {step < (isNew ? 6 : 7) ? (
-              <button type="button" className="primary" onClick={() => goToStep(step + 1)}>
+              <button type="button" className="btn-primary" onClick={() => goToStep(step + 1)}>
                 Próximo
               </button>
             ) : step === 7 && id ? (
-              <button type="button" className="primary" disabled={saving} onClick={(e) => { e.preventDefault(); handleSubmit(e as unknown as React.FormEvent); }}>
+              <button type="button" className="btn-success" disabled={saving} onClick={(e) => { e.preventDefault(); handleSubmit(e as unknown as React.FormEvent); }}>
                 {saving ? 'Salvando...' : 'Salvar e concluir'}
               </button>
             ) : (
-              <button type="button" className="primary" disabled={saving} onClick={(e) => { e.preventDefault(); handleSubmit(e as unknown as React.FormEvent); }}>
+              <button type="button" className="btn-success" disabled={saving} onClick={(e) => { e.preventDefault(); handleSubmit(e as unknown as React.FormEvent); }}>
                 {saving ? 'Salvando...' : 'Salvar imóvel'}
               </button>
             )}

@@ -215,14 +215,14 @@ export default function Contatos() {
                   </td>
                   <td>
                     <div className="contatos-actions">
-                      <button type="button" onClick={() => setDetailContato(c)} title="Ver detalhes do lead">
+                      <button type="button" className="btn-secondary" onClick={() => setDetailContato(c)} title="Ver detalhes do lead">
                         Ver
                       </button>
-                      <button type="button" onClick={() => navigate(`/tarefas?contatoId=${c.id}`)} title="Nova tarefa para este cliente">
+                      <button type="button" className="btn-secondary" onClick={() => navigate(`/tarefas?contatoId=${c.id}`)} title="Nova tarefa para este cliente">
                         Tarefa
                       </button>
-                      <button type="button" onClick={() => openEdit(c)}>Editar</button>
-                      <button type="button" onClick={() => handleDelete(c)}>Excluir</button>
+                      <button type="button" className="btn-secondary" onClick={() => openEdit(c)}>Editar</button>
+                      <button type="button" className="btn-danger" onClick={() => handleDelete(c)}>Excluir</button>
                     </div>
                   </td>
                 </tr>
@@ -289,10 +289,10 @@ export default function Contatos() {
                 onChange={(e) => setForm((f) => ({ ...f, observacoes: e.target.value }))}
               />
               <div className="contatos-form-actions">
-                <button type="button" className="secondary" onClick={() => setModal(null)}>
+                <button type="button" className="btn-secondary" onClick={() => setModal(null)}>
                   Cancelar
                 </button>
-                <button type="submit" className="primary" disabled={saving}>
+                <button type="submit" className="btn-success" disabled={saving}>
                   {saving ? 'Salvando...' : 'Salvar'}
                 </button>
               </div>

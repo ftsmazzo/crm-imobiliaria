@@ -151,10 +151,10 @@ export default function EmpreendimentoCadastro() {
           </section>
 
           <footer className="empreendimento-cadastro-actions">
-            <button type="button" className="secondary" onClick={() => navigate('/empreendimentos')}>
+            <button type="button" className="btn-secondary" onClick={() => navigate('/empreendimentos')}>
               Cancelar
             </button>
-            <button type="submit" className="primary" disabled={saving}>
+            <button type="submit" className="btn-success" disabled={saving}>
               {saving ? 'Salvando...' : 'Salvar'}
             </button>
           </footer>

@@ -62,6 +62,73 @@ a:hover {
   border-bottom: 1px solid var(--border-default);
 }
 
+/* ========== Padrão de botões: vermelho=excluir, verde=confirmar, azul=primário, branco=secundário ========== */
+.btn-danger {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #fff !important;
+  background: var(--danger) !important;
+  border: none !important;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background 0.2s, filter 0.2s;
+}
+.btn-danger:hover {
+  background: var(--danger-hover) !important;
+  filter: brightness(1.05);
+}
+
+.btn-success {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #fff !important;
+  background: var(--success) !important;
+  border: none !important;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background 0.2s, filter 0.2s;
+}
+.btn-success:hover:not(:disabled) {
+  background: var(--success-hover) !important;
+  filter: brightness(1.05);
+}
+
+.btn-primary {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #fff !important;
+  background: var(--accent) !important;
+  border: none !important;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-hover) !important;
+  box-shadow: var(--shadow-accent);
+}
+
+.btn-secondary {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #0f172a !important;
+  background: #e2e8f0 !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s, filter 0.2s;
+}
+.btn-secondary:hover {
+  background: #f1f5f9 !important;
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+  filter: brightness(1.02);
+}
+
 /* Botão primário padrão (Novo, Salvar, etc.) */
 [class$="-page"] .btn-primary-style,
 [class$="-page"] button[class*="btn-new"] {
