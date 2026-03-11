@@ -103,6 +103,7 @@ export type Imovel = {
   empreendimentoId: string | null;
   proprietarioId: string | null;
   usuarioResponsavelId: string | null;
+  usuarioResponsavel?: { id: string; nome: string; email?: string } | null;
   criadoEm: string;
   atualizadoEm: string;
   empreendimento?: { id: string; nome: string } | null;
