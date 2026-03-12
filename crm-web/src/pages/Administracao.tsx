@@ -4,9 +4,11 @@ import {
   limparParaProducao,
   getDisparoAmareloPendentes,
   executarDisparoAmarelo,
+  configurarWebhookEvolution,
   type LimparParaProducaoResult,
   type DisparoAmareloPendente,
   type DisparoAmareloResult,
+  type ConfigurarWebhookResult,
 } from '../api';
 import { getUser } from '../auth';
 import AppLayout from '../components/AppLayout';
@@ -28,6 +30,8 @@ export default function Administracao() {
   const [disparoResult, setDisparoResult] = useState<DisparoAmareloResult | null>(null);
   const [loadingPendentes, setLoadingPendentes] = useState(false);
   const [loadingDisparo, setLoadingDisparo] = useState(false);
+  const [webhookResult, setWebhookResult] = useState<ConfigurarWebhookResult | null>(null);
+  const [loadingWebhook, setLoadingWebhook] = useState(false);
 
   const isGestor = user?.role === 'gestor';
   const podeExecutar = digitado.toUpperCase() === 'LIMPAR';
@@ -87,6 +91,20 @@ export default function Administracao() {
     }
   }
 
+  async function configurarWebhook() {
+    setLoadingWebhook(true);
+    setWebhookResult(null);
+    setErro('');
+    try {
+      const res = await configurarWebhookEvolution();
+      setWebhookResult(res);
+    } catch (e) {
+      setWebhookResult({ ok: false, erro: e instanceof Error ? e.message : 'Erro' });
+    } finally {
+      setLoadingWebhook(false);
+    }
+  }
+
   if (!isGestor) {
     return <Navigate to="/" replace />;
   }
@@ -127,14 +145,39 @@ export default function Administracao() {
           </p>
           <p className="administracao-mantido">
             <strong>Quando o corretor responde</strong> no WhatsApp (ex.: “confirmar AP-00001”), o status do imóvel
-            passa para verde. Configure na Evolution API o webhook <strong>MESSAGES_UPSERT</strong> apontando para uma destas URLs:
+            passa para verde e ele recebe “Status atualizado. Obrigado!”. Para isso, a Evolution precisa chamar nosso backend.
           </p>
           <p className="administracao-mantido">
-            <code>POST [seu-backend]/imoveis/webhook/evolution-messages-upsert</code>
-            <br />
-            ou (se usar webhook por evento): <code>POST [seu-backend]/imoveis/webhook/messages-upsert</code>
-            <br />
-            O backend extrai o texto e o telefone do payload e envia “Status atualizado. Obrigado!”.
+            <strong>Configure o webhook na Evolution:</strong> adicione no backend (EasyPanel) a variável{' '}
+            <code>PUBLIC_BACKEND_URL</code> = URL pública do seu backend (ex.:{' '}
+            <code>https://cmr-imobiliaria-backend.90qhxz.easypanel.host</code>). Depois clique no botão abaixo.
+          </p>
+          <div className="administracao-disparo-actions">
+            <button
+              type="button"
+              className="btn-primary"
+              onClick={configurarWebhook}
+              disabled={loadingWebhook}
+            >
+              {loadingWebhook ? 'Configurando...' : 'Configurar webhook na Evolution'}
+            </button>
+          </div>
+          {webhookResult && (
+            <div className={webhookResult.ok ? 'administracao-disparo-result' : 'administracao-erro'}>
+              {webhookResult.ok ? (
+                <p>{webhookResult.message}</p>
+              ) : (
+                <p><strong>Erro:</strong> {webhookResult.erro}</p>
+              )}
+            </div>
+          )}
+          <p className="administracao-mantido">
+            URLs usadas: <code>/imoveis/webhook/evolution-messages-upsert</code> ou <code>/imoveis/webhook/messages-upsert</code>.
+            Compatível com Evolution API 2.3.x (ex.: 2.3.7). Coleção Postman v2.3:{' '}
+            <a href="https://www.postman.com/agenciadgcode/evolution-api/collection/nm0wqgt/evolution-api-v2-3" target="_blank" rel="noopener noreferrer">Evolution API v2.3</a>.
+          </p>
+          <p className="administracao-mantido">
+            Se a resposta no WhatsApp não atualizar o status: confira se o webhook foi configurado (botão acima) e se a Evolution 2.3.x está enviando o evento (em versões 2.3.x há relatos de mensagens não dispararem webhook por cache/Redis).
           </p>
           <div className="administracao-modelo-msg">
             <strong>Modelo da mensagem:</strong>

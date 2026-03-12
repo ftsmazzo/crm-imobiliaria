@@ -112,4 +112,24 @@ export class AdminService {
 
     return { enviados, semTelefone, erros };
   }
+
+  /**
+   * Configura na Evolution API o webhook MESSAGES_UPSERT para a URL do nosso backend.
+   * Assim, quando o corretor responder no WhatsApp, a Evolution chama nosso endpoint e o status atualiza.
+   * Exige PUBLIC_BACKEND_URL no .env do backend (ex.: https://cmr-imobiliaria-backend.90qhxz.easypanel.host).
+   */
+  async configurarWebhookEvolution(user: Usuario): Promise<{ ok: boolean; message?: string; erro?: string }> {
+    if (user.role !== 'gestor') {
+      throw new ForbiddenException('Apenas gestor pode configurar o webhook');
+    }
+    const base = process.env.PUBLIC_BACKEND_URL?.trim();
+    if (!base) {
+      return {
+        ok: false,
+        erro: 'Configure PUBLIC_BACKEND_URL no servidor (ex.: https://seu-backend.easypanel.host) e reinicie o backend.',
+      };
+    }
+    const webhookUrl = base.replace(/\/$/, '') + '/imoveis/webhook/evolution-messages-upsert';
+    return this.evolutionService.setWebhook(webhookUrl);
+  }
 }

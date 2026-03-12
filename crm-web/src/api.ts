@@ -156,6 +156,16 @@ export async function executarDisparoAmarelo(): Promise<DisparoAmareloResult> {
   return handleRes(res);
 }
 
+export type ConfigurarWebhookResult = { ok: boolean; message?: string; erro?: string };
+
+export async function configurarWebhookEvolution(): Promise<ConfigurarWebhookResult> {
+  const res = await fetch(`${API_URL}/admin/configurar-webhook-evolution`, {
+    method: 'POST',
+    headers: authHeaders(),
+  });
+  return handleRes(res);
+}
+
 // Contatos
 export async function getContatos(estagio?: string, usuarioResponsavelId?: string): Promise<Contato[]> {
   const q = new URLSearchParams();

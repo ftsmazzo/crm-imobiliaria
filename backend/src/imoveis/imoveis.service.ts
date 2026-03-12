@@ -292,8 +292,9 @@ export class ImoveisService {
 
   /**
    * Processa o payload do webhook Evolution API (evento MESSAGES_UPSERT).
-   * Aceita: data como objeto ou array; body com key/message no topo; event opcional.
-   * Ignora mensagens enviadas por nós (fromMe === true).
+   * Compatível com Evolution API 2.3.x (ex.: 2.3.7). Aceita: data como objeto ou array;
+   * body com key/message no topo; event opcional. Ignora mensagens enviadas por nós (fromMe === true).
+   * Em 2.3.x pode haver bug onde mensagens recebidas não disparam o webhook (Redis/duplicadas); atualize a Evolution se necessário.
    */
   async processarWebhookEvolutionMessagesUpsert(body: Record<string, unknown>): Promise<{
     ok: boolean;

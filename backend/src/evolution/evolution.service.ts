@@ -69,4 +69,46 @@ export class EvolutionService {
       return false;
     }
   }
+
+  /**
+   * Configura na Evolution API o webhook para a instância atual (MESSAGES_UPSERT).
+   * Usado para que, quando alguém responder no WhatsApp, a Evolution chame nosso backend.
+   * @param webhookUrl URL completa que a Evolution deve chamar (ex.: https://seu-backend/imoveis/webhook/evolution-messages-upsert)
+   */
+  async setWebhook(webhookUrl: string): Promise<{ ok: boolean; message?: string; erro?: string }> {
+    if (!this.baseUrl) {
+      return { ok: false, erro: 'Evolution API não configurada (EVOLUTION_API_URL)' };
+    }
+    const url = `${this.baseUrl}/webhook/set/${encodeURIComponent(this.instance)}`;
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+    if (this.apiKey) {
+      headers['apikey'] = this.apiKey;
+    }
+    const body = {
+      enabled: true,
+      url: webhookUrl.trim().replace(/\/$/, ''),
+      webhookByEvents: false,
+      webhookBase64: false,
+      events: ['MESSAGES_UPSERT'],
+    };
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(body),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok || res.status === 201) {
+        return { ok: true, message: 'Webhook configurado na Evolution. Ao responder no WhatsApp, o status será atualizado.' };
+      }
+      return {
+        ok: false,
+        erro: (data as { message?: string })?.message || data?.error || `Evolution API retornou ${res.status}`,
+      };
+    } catch (e) {
+      return { ok: false, erro: e instanceof Error ? e.message : 'Erro ao chamar Evolution API' };
+    }
+  }
 }

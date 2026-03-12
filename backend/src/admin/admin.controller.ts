@@ -39,4 +39,10 @@ export class AdminController {
     }
     return this.admin.executarDisparoAmarelo();
   }
+
+  /** Configura na Evolution API o webhook MESSAGES_UPSERT para a URL deste backend (usa PUBLIC_BACKEND_URL). */
+  @Post('configurar-webhook-evolution')
+  configurarWebhookEvolution(@CurrentUser() user: Usuario) {
+    return this.admin.configurarWebhookEvolution(user);
+  }
 }
