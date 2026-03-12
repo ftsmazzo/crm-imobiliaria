@@ -43,7 +43,8 @@ export class DisparoAmareloCronService implements OnModuleInit {
       null,
       true,
     );
-    this.schedulerRegistry.addCronJob(JOB_NAME, job);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- cron do pacote e do @nestjs/schedule podem divergir em tipos
+    this.schedulerRegistry.addCronJob(JOB_NAME, job as any);
     return { cronExpression };
   }
 

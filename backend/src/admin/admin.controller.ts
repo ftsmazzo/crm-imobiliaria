@@ -63,7 +63,7 @@ export class AdminController {
     return this.admin.getCronDisparoAmarelo(user);
   }
 
-  /** Atualiza a expressão cron do disparo amarelo e reagenda o job. Apenas gestor. Ex.: "*/1 * * * *" = a cada 1 min (teste). */
+  /** Atualiza a expressão cron do disparo amarelo e reagenda o job. Apenas gestor. Ex. teste: a cada 1 min = cinco campos (min hora dia mês dia-semana). */
   @Put('config/cron-disparo-amarelo')
   async setCronDisparoAmarelo(
     @CurrentUser() user: Usuario,
