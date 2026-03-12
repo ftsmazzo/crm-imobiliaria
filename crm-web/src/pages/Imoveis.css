@@ -346,11 +346,12 @@
   background: var(--accent);
   color: var(--text-inverse);
   border: none;
-  padding: 0.4rem 0.75rem;
+  padding: 0.4rem 0.65rem;
   border-radius: var(--radius-md);
   font-size: 0.8125rem;
   font-weight: 600;
-  white-space: nowrap;
+  min-width: 2.25rem;
+  text-align: center;
   cursor: pointer;
   flex-shrink: 0;
 }

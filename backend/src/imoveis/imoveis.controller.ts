@@ -44,6 +44,13 @@ export class ImoveisController {
     return this.service.processarWebhookEvolutionMessagesUpsert(body);
   }
 
+  /** Mesmo webhook quando Evolution usa webhook_by_events e envia para .../messages-upsert */
+  @Public()
+  @Post('webhook/messages-upsert')
+  async webhookMessagesUpsert(@Body() body: Record<string, unknown>) {
+    return this.service.processarWebhookEvolutionMessagesUpsert(body);
+  }
+
   @Post(':id/fotos')
   @UseInterceptors(FileInterceptor('file', { limits: { fileSize: 10 * 1024 * 1024 } })) // 10MB
   async uploadFoto(

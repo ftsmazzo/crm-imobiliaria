@@ -292,8 +292,8 @@ export class ImoveisService {
 
   /**
    * Processa o payload do webhook Evolution API (evento MESSAGES_UPSERT).
-   * Estrutura esperada: { event?, data?: { key?: { remoteJid?, fromMe? }, message?: { conversation?, extendedTextMessage?: { text? } } } }
-   * ou data como array de mensagens. Ignora mensagens enviadas por nós (fromMe === true).
+   * Aceita: data como objeto ou array; body com key/message no topo; event opcional.
+   * Ignora mensagens enviadas por nós (fromMe === true).
    */
   async processarWebhookEvolutionMessagesUpsert(body: Record<string, unknown>): Promise<{
     ok: boolean;
@@ -301,16 +301,22 @@ export class ImoveisService {
     erro?: string;
     imovel?: Awaited<ReturnType<ImoveisService['findOne']>>;
   }> {
-    const event = String(body?.event ?? '').toLowerCase();
-    if (event !== 'messages.upsert' && event !== 'messages_upsert') {
+    const event = String(body?.event ?? body?.type ?? '').toLowerCase();
+    if (event && event !== 'messages.upsert' && event !== 'messages_upsert') {
       return { ok: true, ignorado: 'Evento não é messages.upsert' };
     }
 
+    let first: Record<string, unknown> | undefined;
     const data = body?.data;
-    const items = Array.isArray(data) ? data : data != null ? [data] : [];
-    const first = items[0] as Record<string, unknown> | undefined;
+    if (data != null && typeof data === 'object') {
+      const items = Array.isArray(data) ? data : [data];
+      first = items[0] as Record<string, unknown> | undefined;
+    }
+    if (!first && body?.key != null && body?.message != null) {
+      first = body as Record<string, unknown>;
+    }
     if (!first) {
-      return { ok: true, ignorado: 'Payload sem data' };
+      return { ok: true, ignorado: 'Payload sem data/key/message' };
     }
 
     const key = (first.key ?? first) as Record<string, unknown> | undefined;
@@ -320,12 +326,17 @@ export class ImoveisService {
     }
 
     const message = (first.message ?? first) as Record<string, unknown> | undefined;
-    const texto =
-      typeof message?.conversation === 'string'
-        ? message.conversation
-        : typeof (message?.extendedTextMessage as Record<string, unknown>)?.text === 'string'
-          ? (message?.extendedTextMessage as Record<string, unknown>).text as string
-          : '';
+    let texto = '';
+    if (typeof message?.conversation === 'string') {
+      texto = message.conversation;
+    } else if (message?.extendedTextMessage != null && typeof (message.extendedTextMessage as Record<string, unknown>)?.text === 'string') {
+      texto = (message.extendedTextMessage as Record<string, unknown>).text as string;
+    } else if (message && typeof message === 'object') {
+      const ext = message.extendedTextMessage as Record<string, unknown> | undefined;
+      if (typeof ext?.text === 'string') texto = ext.text;
+    }
+    texto = (texto || '').trim();
+
     const remoteJid = typeof key?.remoteJid === 'string' ? key.remoteJid : '';
     const telefone = remoteJid.replace(/@s\.whatsapp\.net$/i, '').replace(/@.+$/, '').trim() || undefined;
 

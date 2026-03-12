@@ -182,9 +182,9 @@ export default function ImovelDetalhe() {
             <span className={`imovel-detalhe-status ${imovel.status}`}>{STATUS_LABELS[imovel.status] || imovel.status}</span>
             {imovel.statusSemaforo && (
               <span className={`imovel-detalhe-semaforo ${imovel.statusSemaforo}`} title={imovel.diasDesdeVerificacao != null ? `${imovel.diasDesdeVerificacao} dias desde última verificação` : ''}>
-                {imovel.statusSemaforo === 'verde' && '● Verde'}
-                {imovel.statusSemaforo === 'amarelo' && '● Amarelo'}
-                {imovel.statusSemaforo === 'vermelho' && '● Vermelho'}
+                {imovel.statusSemaforo === 'verde' && '● Atualizado'}
+                {imovel.statusSemaforo === 'amarelo' && '● Atualizar'}
+                {imovel.statusSemaforo === 'vermelho' && '● Atualizar'}
                 {imovel.diasDesdeVerificacao != null && ` (${imovel.diasDesdeVerificacao} dias)`}
               </span>
             )}
@@ -207,7 +207,7 @@ export default function ImovelDetalhe() {
                 }}
                 disabled={confirmandoDisponivel}
               >
-                {confirmandoDisponivel ? '...' : 'Disponível'}
+                {confirmandoDisponivel ? '...' : 'OK'}
               </button>
             )}
           </div>

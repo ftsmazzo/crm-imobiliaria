@@ -247,9 +247,9 @@ export default function Imoveis() {
             onChange={(e) => setFiltros((f) => ({ ...f, statusSemaforo: (e.target.value as 'verde' | 'amarelo' | 'vermelho') || undefined }))}
           >
             <option value="">Semáforo: todos</option>
-            <option value="verde">Verde (&lt; 15 dias)</option>
-            <option value="amarelo">Amarelo (15–30 dias)</option>
-            <option value="vermelho">Vermelho (&gt; 30 dias)</option>
+            <option value="verde">Atualizado (&lt; 15 dias)</option>
+            <option value="amarelo">Atualizar (15–30 dias)</option>
+            <option value="vermelho">Atualizar (&gt; 30 dias)</option>
           </select>
           {isGestor && (
             <select
@@ -367,9 +367,9 @@ export default function Imoveis() {
                     <td>
                       {i.statusSemaforo ? (
                         <span className={`imovel-card-semaforo ${i.statusSemaforo}`} title={i.diasDesdeVerificacao != null ? `${i.diasDesdeVerificacao} dias` : ''}>
-                          {i.statusSemaforo === 'verde' && '● Verde'}
-                          {i.statusSemaforo === 'amarelo' && '● Amarelo'}
-                          {i.statusSemaforo === 'vermelho' && '● Vermelho'}
+                          {i.statusSemaforo === 'verde' && '● Atualizado'}
+                          {i.statusSemaforo === 'amarelo' && '● Atualizar'}
+                          {i.statusSemaforo === 'vermelho' && '● Atualizar'}
                         </span>
                       ) : '–'}
                     </td>
@@ -385,7 +385,7 @@ export default function Imoveis() {
                       <div className="imoveis-table-action-btns">
                         {(i.statusSemaforo === 'amarelo' || i.statusSemaforo === 'vermelho') && (
                           <button type="button" className="btn-success imoveis-table-btn" onClick={() => handleConfirmarDisponibilidade(i)} disabled={confirmandoId === i.id}>
-                            {confirmandoId === i.id ? '...' : 'Disponível'}
+                            {confirmandoId === i.id ? '...' : 'OK'}
                           </button>
                         )}
                         {isGestor && (
@@ -412,9 +412,9 @@ export default function Imoveis() {
                   <span className="imovel-card-tipo">{i.tipo}</span>
                   {i.statusSemaforo && (
                     <span className={`imovel-card-semaforo ${i.statusSemaforo}`} title={i.diasDesdeVerificacao != null ? `${i.diasDesdeVerificacao} dias desde última verificação` : ''}>
-                      {i.statusSemaforo === 'verde' && '● Verde'}
-                      {i.statusSemaforo === 'amarelo' && '● Amarelo'}
-                      {i.statusSemaforo === 'vermelho' && '● Vermelho'}
+                      {i.statusSemaforo === 'verde' && '● Atualizado'}
+                      {i.statusSemaforo === 'amarelo' && '● Atualizar'}
+                      {i.statusSemaforo === 'vermelho' && '● Atualizar'}
                     </span>
                   )}
                   <span className={`imovel-card-status ${i.status}`}>{STATUS_LABEL[i.status] ?? i.status}</span>
@@ -469,7 +469,7 @@ export default function Imoveis() {
                       disabled={confirmandoId === i.id}
                       title="Confirmar que o imóvel ainda está disponível (reinicia a contagem)"
                     >
-                      {confirmandoId === i.id ? '...' : 'Disponível'}
+                      {confirmandoId === i.id ? '...' : 'OK'}
                     </button>
                   )}
                   <button type="button" className="btn-secondary" onClick={() => navigate(`/imoveis/${i.id}`)}>Ver</button>

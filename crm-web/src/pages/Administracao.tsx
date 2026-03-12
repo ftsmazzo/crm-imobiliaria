@@ -127,12 +127,14 @@ export default function Administracao() {
           </p>
           <p className="administracao-mantido">
             <strong>Quando o corretor responde</strong> no WhatsApp (ex.: “confirmar AP-00001”), o status do imóvel
-            passa para verde. Configure na Evolution API o webhook <strong>MESSAGES_UPSERT</strong> apontando para:
+            passa para verde. Configure na Evolution API o webhook <strong>MESSAGES_UPSERT</strong> apontando para uma destas URLs:
           </p>
           <p className="administracao-mantido">
             <code>POST [seu-backend]/imoveis/webhook/evolution-messages-upsert</code>
             <br />
-            (A Evolution envia o payload padrão; o backend extrai o texto e o telefone e envia “Status atualizado. Obrigado!”.)
+            ou (se usar webhook por evento): <code>POST [seu-backend]/imoveis/webhook/messages-upsert</code>
+            <br />
+            O backend extrai o texto e o telefone do payload e envia “Status atualizado. Obrigado!”.
           </p>
           <div className="administracao-modelo-msg">
             <strong>Modelo da mensagem:</strong>
