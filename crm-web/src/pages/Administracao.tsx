@@ -128,18 +128,6 @@ export default function Administracao() {
     }
   }
 
-  async function carregarCron() {
-    setCronLoading(true);
-    try {
-      const res = await getCronDisparoAmarelo();
-      setCronExpression(res.cronExpression);
-    } catch {
-      setCronExpression('0 9 * * *');
-    } finally {
-      setCronLoading(false);
-    }
-  }
-
   async function salvarCron() {
     setCronSaving(true);
     setCronSaved(false);
