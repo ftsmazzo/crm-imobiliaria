@@ -230,3 +230,12 @@ model SiteConfig {
 
   @@map("site_config")
 }
+
+// Configurações gerais da aplicação (chave/valor) – ex.: cron do disparo amarelo
+model AppConfig {
+  id    String @id @default(uuid())
+  chave String @unique
+  valor String @db.Text
+
+  @@map("app_config")
+}

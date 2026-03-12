@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Navigate } from 'react-router-dom';
 import {
   limparParaProducao,
   getDisparoAmareloPendentes,
   executarDisparoAmarelo,
   configurarWebhookEvolution,
+  getCronDisparoAmarelo,
+  setCronDisparoAmarelo,
   type LimparParaProducaoResult,
   type DisparoAmareloPendente,
   type DisparoAmareloResult,
@@ -32,9 +34,30 @@ export default function Administracao() {
   const [loadingDisparo, setLoadingDisparo] = useState(false);
   const [webhookResult, setWebhookResult] = useState<ConfigurarWebhookResult | null>(null);
   const [loadingWebhook, setLoadingWebhook] = useState(false);
+  const [cronExpression, setCronExpression] = useState('');
+  const [cronLoading, setCronLoading] = useState(false);
+  const [cronSaving, setCronSaving] = useState(false);
+  const [cronSaved, setCronSaved] = useState(false);
 
   const isGestor = user?.role === 'gestor';
   const podeExecutar = digitado.toUpperCase() === 'LIMPAR';
+
+  async function carregarCron() {
+    setCronLoading(true);
+    try {
+      const res = await getCronDisparoAmarelo();
+      setCronExpression(res.cronExpression);
+    } catch {
+      setCronExpression('0 9 * * *');
+    } finally {
+      setCronLoading(false);
+    }
+  }
+  const carregarCronStable = useCallback(carregarCron, []);
+
+  useEffect(() => {
+    if (isGestor) carregarCronStable();
+  }, [isGestor, carregarCronStable]);
 
   function abrirConfirmacao() {
     setConfirmando(true);
@@ -105,6 +128,32 @@ export default function Administracao() {
     }
   }
 
+  async function carregarCron() {
+    setCronLoading(true);
+    try {
+      const res = await getCronDisparoAmarelo();
+      setCronExpression(res.cronExpression);
+    } catch {
+      setCronExpression('0 9 * * *');
+    } finally {
+      setCronLoading(false);
+    }
+  }
+
+  async function salvarCron() {
+    setCronSaving(true);
+    setCronSaved(false);
+    setErro('');
+    try {
+      await setCronDisparoAmarelo(cronExpression.trim() || '0 9 * * *');
+      setCronSaved(true);
+    } catch (e) {
+      setErro(e instanceof Error ? e.message : 'Erro ao salvar cron');
+    } finally {
+      setCronSaving(false);
+    }
+  }
+
   if (!isGestor) {
     return <Navigate to="/" replace />;
   }
@@ -139,10 +188,55 @@ export default function Administracao() {
         <section className="administracao-card">
           <h2>Notificação imóvel amarelo</h2>
           <p>
-            Imóveis com 15 a 30 dias sem verificação entram no “amarelo”. Um cron diário às 9h envia mensagem
-            ao corretor responsável pelo WhatsApp (Evolution API). Aqui você pode ver quem está pendente e qual
-            mensagem será enviada, e disparar manualmente para testar.
+            Imóveis com 15 a 30 dias sem verificação entram no “amarelo”. Um cron envia mensagem
+            ao corretor responsável pelo WhatsApp (Evolution API). Você pode alterar o agendamento abaixo para testar (ex.: a cada 1 minuto) ou manter às 9h.
           </p>
+          <div className="administracao-cron">
+            <h3>Agendamento do disparo</h3>
+            <p className="administracao-mantido">
+              Expressão cron atual: <code>{cronLoading ? '…' : cronExpression || '0 9 * * *'}</code>
+              {' '}(<code>0 9 * * *</code> = todo dia às 9h; <code>* * * * *</code> = a cada minuto)
+            </p>
+            <div className="administracao-cron-actions">
+              <input
+                type="text"
+                value={cronExpression}
+                onChange={(e) => setCronExpression(e.target.value)}
+                placeholder="0 9 * * *"
+                className="administracao-cron-input"
+                disabled={cronLoading}
+              />
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={carregarCron}
+                disabled={cronLoading}
+              >
+                {cronLoading ? 'Carregando...' : 'Recarregar'}
+              </button>
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={salvarCron}
+                disabled={cronSaving}
+              >
+                {cronSaving ? 'Salvando...' : 'Salvar agendamento'}
+              </button>
+            </div>
+            <div className="administracao-cron-presets">
+              <span>Atalhos:</span>
+              <button type="button" className="btn-small" onClick={() => setCronExpression('0 9 * * *')}>
+                9h diário (padrão)
+              </button>
+              <button type="button" className="btn-small" onClick={() => setCronExpression('*/5 * * * *')}>
+                A cada 5 min (teste)
+              </button>
+              <button type="button" className="btn-small" onClick={() => setCronExpression('* * * * *')}>
+                A cada 1 min (teste)
+              </button>
+            </div>
+            {cronSaved && <p className="administracao-disparo-result">Agendamento atualizado. O próximo disparo seguirá o novo horário.</p>}
+          </div>
           <p className="administracao-mantido">
             <strong>Quando o corretor responde</strong> no WhatsApp (ex.: “confirmar AP-00001”), o status do imóvel
             passa para verde e ele recebe “Status atualizado. Obrigado!”. Para isso, a Evolution precisa chamar nosso backend.

@@ -261,3 +261,63 @@
 .administracao-disparo-result p:last-child {
   margin-bottom: 0;
 }
+
+/* Agendamento cron */
+.administracao-cron {
+  margin: 1rem 0;
+  padding: 1rem 0;
+  border-top: 1px solid var(--border, #334155);
+}
+
+.administracao-cron h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  color: var(--text-primary, #f0f2f7);
+}
+
+.administracao-cron-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+
+.administracao-cron-input {
+  min-width: 140px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9375rem;
+  border: 1px solid var(--border, #475569);
+  border-radius: 8px;
+  background: var(--bg-base, #0f1117);
+  color: var(--text-primary, #f0f2f7);
+}
+
+.administracao-cron-input:focus {
+  outline: none;
+  border-color: var(--accent, #ea580c);
+}
+
+.administracao-cron-presets {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 0.875rem;
+  color: var(--text-muted, #64748b);
+}
+
+.administracao-cron-presets .btn-small {
+  padding: 0.35rem 0.6rem;
+  font-size: 0.8125rem;
+  background: var(--bg-elevated, #1e2330);
+  color: var(--text-secondary, #8b92a5);
+  border: 1px solid var(--border, #475569);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.administracao-cron-presets .btn-small:hover {
+  background: var(--border, #334155);
+  color: var(--text-primary, #f0f2f7);
+}

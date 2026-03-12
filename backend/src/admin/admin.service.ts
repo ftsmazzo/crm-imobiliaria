@@ -1,5 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { Usuario } from '@prisma/client';
+import { AppConfigService } from './app-config.service';
 import { EvolutionService } from '../evolution/evolution.service';
 import { ImoveisService } from '../imoveis/imoveis.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -10,6 +11,7 @@ export class AdminService {
     private prisma: PrismaService,
     private imoveisService: ImoveisService,
     private evolutionService: EvolutionService,
+    private appConfig: AppConfigService,
   ) {}
 
   /**
@@ -131,5 +133,26 @@ export class AdminService {
     }
     const webhookUrl = base.replace(/\/$/, '') + '/imoveis/webhook/evolution-messages-upsert';
     return this.evolutionService.setWebhook(webhookUrl);
+  }
+
+  /** Retorna a expressão cron atual do disparo amarelo. Apenas gestor. */
+  async getCronDisparoAmarelo(user: Usuario): Promise<{ cronExpression: string }> {
+    if (user.role !== 'gestor') {
+      throw new ForbiddenException('Apenas gestor pode ver a configuração do cron');
+    }
+    const cronExpression = await this.appConfig.getCronDisparoAmarelo();
+    return { cronExpression };
+  }
+
+  /** Persiste a expressão cron do disparo amarelo. Apenas gestor. O controller deve chamar reschedule() no cron após esta chamada. */
+  async setCronDisparoAmarelo(
+    user: Usuario,
+    cronExpression: string,
+  ): Promise<{ cronExpression: string }> {
+    if (user.role !== 'gestor') {
+      throw new ForbiddenException('Apenas gestor pode alterar o cron');
+    }
+    const expr = await this.appConfig.setCronDisparoAmarelo(cronExpression);
+    return { cronExpression: expr };
   }
 }

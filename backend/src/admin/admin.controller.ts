@@ -1,14 +1,25 @@
-import { Body, Controller, ForbiddenException, Get, Param, ParseUUIDPipe, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  ForbiddenException,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { Usuario } from '@prisma/client';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { ImoveisService } from '../imoveis/imoveis.service';
 import { AdminService } from './admin.service';
+import { DisparoAmareloCronService } from './disparo-amarelo.cron';
 
 @Controller('admin')
 export class AdminController {
   constructor(
     private admin: AdminService,
     private imoveisService: ImoveisService,
+    private disparoAmareloCron: DisparoAmareloCronService,
   ) {}
 
   @Post('limpar-para-producao')
@@ -44,5 +55,21 @@ export class AdminController {
   @Post('configurar-webhook-evolution')
   configurarWebhookEvolution(@CurrentUser() user: Usuario) {
     return this.admin.configurarWebhookEvolution(user);
+  }
+
+  /** Retorna a expressão cron atual do disparo amarelo (ex.: "0 9 * * *" = 9h diário). Apenas gestor. */
+  @Get('config/cron-disparo-amarelo')
+  getCronDisparoAmarelo(@CurrentUser() user: Usuario) {
+    return this.admin.getCronDisparoAmarelo(user);
+  }
+
+  /** Atualiza a expressão cron do disparo amarelo e reagenda o job. Apenas gestor. Ex.: "*/1 * * * *" = a cada 1 min (teste). */
+  @Put('config/cron-disparo-amarelo')
+  async setCronDisparoAmarelo(
+    @CurrentUser() user: Usuario,
+    @Body() body: { cronExpression: string },
+  ) {
+    await this.admin.setCronDisparoAmarelo(user, body?.cronExpression ?? '');
+    return this.disparoAmareloCron.reschedule();
   }
 }

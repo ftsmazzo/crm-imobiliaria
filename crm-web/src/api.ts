@@ -166,6 +166,22 @@ export async function configurarWebhookEvolution(): Promise<ConfigurarWebhookRes
   return handleRes(res);
 }
 
+export type CronDisparoAmareloConfig = { cronExpression: string };
+
+export async function getCronDisparoAmarelo(): Promise<CronDisparoAmareloConfig> {
+  const res = await fetch(`${API_URL}/admin/config/cron-disparo-amarelo`, { headers: authHeaders() });
+  return handleRes(res);
+}
+
+export async function setCronDisparoAmarelo(cronExpression: string): Promise<CronDisparoAmareloConfig> {
+  const res = await fetch(`${API_URL}/admin/config/cron-disparo-amarelo`, {
+    method: 'PUT',
+    headers: authHeaders(),
+    body: JSON.stringify({ cronExpression }),
+  });
+  return handleRes(res);
+}
+
 // Contatos
 export async function getContatos(estagio?: string, usuarioResponsavelId?: string): Promise<Contato[]> {
   const q = new URLSearchParams();
