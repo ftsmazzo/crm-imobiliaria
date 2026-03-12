@@ -126,7 +126,7 @@ export class AdminService {
     if (!base) {
       return {
         ok: false,
-        erro: 'Configure PUBLIC_BACKEND_URL no servidor (ex.: https://seu-backend.easypanel.host) e reinicie o backend.',
+        erro: 'Configure PUBLIC_BACKEND_URL no servidor com a URL pública do backend do CRM (a API NestJS), não da Evolution. Ex.: se seu backend no EasyPanel está em https://meu-backend.90qhxz.easypanel.host, use esse valor. Reinicie o backend após salvar.',
       };
     }
     const webhookUrl = base.replace(/\/$/, '') + '/imoveis/webhook/evolution-messages-upsert';

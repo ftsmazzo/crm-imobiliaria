@@ -94,19 +94,31 @@ export class EvolutionService {
       events: ['MESSAGES_UPSERT'],
     };
     try {
-      const res = await fetch(url, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(body),
-      });
-      const data = await res.json().catch(() => ({}));
+      let res = await fetch(url, { method: 'POST', headers, body: JSON.stringify(body) });
+      let data = await res.json().catch(() => ({}));
       if (res.ok || res.status === 201) {
         return { ok: true, message: 'Webhook configurado na Evolution. Ao responder no WhatsApp, o status será atualizado.' };
       }
-      return {
-        ok: false,
-        erro: (data as { message?: string })?.message || data?.error || `Evolution API retornou ${res.status}`,
-      };
+      if (res.status === 400) {
+        const bodyAlt = {
+          webhook: {
+            enabled: true,
+            url: webhookUrl.trim().replace(/\/$/, ''),
+            byEvents: false,
+            base64: false,
+            events: ['MESSAGES_UPSERT'],
+          },
+        };
+        res = await fetch(url, { method: 'POST', headers, body: JSON.stringify(bodyAlt) });
+        data = await res.json().catch(() => ({}));
+        if (res.ok || res.status === 201) {
+          return { ok: true, message: 'Webhook configurado na Evolution. Ao responder no WhatsApp, o status será atualizado.' };
+        }
+      }
+      const msg = (data as { message?: string })?.message || (data as { error?: string })?.error;
+      const detail = typeof (data as { cause?: unknown })?.cause === 'string' ? (data as { cause: string }).cause : '';
+      const full = msg ? (detail ? `${msg} (${detail})` : msg) : `Evolution API retornou ${res.status}`;
+      return { ok: false, erro: full };
     } catch (e) {
       return { ok: false, erro: e instanceof Error ? e.message : 'Erro ao chamar Evolution API' };
     }

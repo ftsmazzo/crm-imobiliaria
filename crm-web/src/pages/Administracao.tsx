@@ -148,9 +148,8 @@ export default function Administracao() {
             passa para verde e ele recebe “Status atualizado. Obrigado!”. Para isso, a Evolution precisa chamar nosso backend.
           </p>
           <p className="administracao-mantido">
-            <strong>Configure o webhook na Evolution:</strong> adicione no backend (EasyPanel) a variável{' '}
-            <code>PUBLIC_BACKEND_URL</code> = URL pública do seu backend (ex.:{' '}
-            <code>https://cmr-imobiliaria-backend.90qhxz.easypanel.host</code>). Depois clique no botão abaixo.
+            <strong>Configure o webhook na Evolution:</strong> no EasyPanel, no projeto do <strong>backend do CRM</strong>, adicione a variável{' '}
+            <code>PUBLIC_BACKEND_URL</code> = URL pública desse backend (ex.: <code>https://meu-backend.90qhxz.easypanel.host</code>). Não use a URL da Evolution; a Evolution já está em <code>EVOLUTION_API_URL</code>. Depois clique no botão abaixo.
           </p>
           <div className="administracao-disparo-actions">
             <button
