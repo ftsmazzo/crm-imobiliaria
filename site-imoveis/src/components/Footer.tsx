@@ -1,11 +1,14 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
 import { useSiteConfig } from '@/components/SiteConfigProvider';
 
 export default function Footer() {
   const config = useSiteConfig();
+  const [logoFailed, setLogoFailed] = useState(false);
   const whatsappLink = `https://wa.me/${config.whatsapp.replace(/\D/g, '')}`;
+  const showLogo = Boolean(config.logoUrl) && !logoFailed;
 
   return (
     <footer className="site-footer">
@@ -27,8 +30,15 @@ export default function Footer() {
       </div>
       <div className="container site-footer-inner">
         <div className="site-footer-col site-footer-brand">
-          {config.logoUrl ? (
-            <img src={config.logoUrl} alt="" className="site-footer-logo" />
+          {showLogo ? (
+            <div className="site-footer-logo-wrap">
+              <img
+                src={config.logoUrl!}
+                alt=""
+                className="site-footer-logo"
+                onError={() => setLogoFailed(true)}
+              />
+            </div>
           ) : (
             <strong className="site-footer-name">{config.nome}</strong>
           )}
