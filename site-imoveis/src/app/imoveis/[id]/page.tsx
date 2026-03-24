@@ -78,8 +78,10 @@ export default async function ImovelPage({ params }: { params: Promise<{ id: str
         </p>
       </div>
 
-      <div className="imovel-detalhe-galeria-wrap">
-        <ImovelDetalheCapaCarousel fotos={fotos} />
+      <div className="container imovel-detalhe-galeria-outer">
+        <div className="imovel-detalhe-galeria-wrap">
+          <ImovelDetalheCapaCarousel fotos={fotos} />
+        </div>
       </div>
 
       <div className="container container-detalhe">
