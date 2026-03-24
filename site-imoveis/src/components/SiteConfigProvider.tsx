@@ -7,6 +7,7 @@ import type { SiteConfigPublic } from '@/lib/api';
 export type SiteConfigContextValue = {
   logoUrl: string | null;
   heroImageUrl: string | null;
+  heroVideoUrl: string | null;
   nome: string;
   whatsapp: string;
   endereco: string;
@@ -16,6 +17,7 @@ export type SiteConfigContextValue = {
 const defaultContext: SiteConfigContextValue = {
   logoUrl: null,
   heroImageUrl: null,
+  heroVideoUrl: null,
   nome: SITE_CONFIG.nome,
   whatsapp: SITE_CONFIG.whatsapp,
   endereco: SITE_CONFIG.endereco,
@@ -29,6 +31,7 @@ function mergeConfig(api: SiteConfigPublic | null): SiteConfigContextValue {
   return {
     logoUrl: api.logoUrl ?? null,
     heroImageUrl: api.heroImageUrl ?? null,
+    heroVideoUrl: api.heroVideoUrl ?? null,
     nome: api.nome?.trim() || SITE_CONFIG.nome,
     whatsapp: api.whatsapp?.trim() || SITE_CONFIG.whatsapp,
     endereco: api.endereco?.trim() || SITE_CONFIG.endereco,

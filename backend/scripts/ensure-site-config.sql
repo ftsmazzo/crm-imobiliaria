@@ -15,3 +15,5 @@ CREATE TABLE IF NOT EXISTS "site_config" (
 INSERT INTO "site_config" ("id", "atualizado_em")
 SELECT gen_random_uuid(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM "site_config" LIMIT 1);
+
+ALTER TABLE "site_config" ADD COLUMN IF NOT EXISTS "hero_video_key" TEXT;

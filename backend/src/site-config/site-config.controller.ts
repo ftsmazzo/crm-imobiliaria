@@ -48,4 +48,19 @@ export class SiteConfigController {
   removeHero(@CurrentUser() user: Usuario) {
     return this.siteConfig.removeHero(user);
   }
+
+  @Post('hero-video')
+  @UseInterceptors(FileInterceptor('file', { limits: { fileSize: 25 * 1024 * 1024 } })) // 25MB
+  uploadHeroVideo(
+    @CurrentUser() user: Usuario,
+    @UploadedFile() file: { buffer: Buffer; mimetype: string; originalname?: string },
+  ) {
+    if (!file?.buffer) throw new Error('Arquivo não enviado');
+    return this.siteConfig.uploadHeroVideo(user, file);
+  }
+
+  @Delete('hero-video')
+  removeHeroVideo(@CurrentUser() user: Usuario) {
+    return this.siteConfig.removeHeroVideo(user);
+  }
 }

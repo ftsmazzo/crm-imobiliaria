@@ -1,4 +1,9 @@
-import { ForbiddenException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { Usuario } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { StorageService } from '../storage/storage.service';
@@ -9,6 +14,7 @@ const PRESIGNED_EXPIRY = 60 * 60 * 24; // 24h
 export interface SiteConfigPublic {
   logoUrl: string | null;
   heroImageUrl: string | null;
+  heroVideoUrl: string | null;
   nome: string | null;
   whatsapp: string | null;
   endereco: string | null;
@@ -19,6 +25,7 @@ export interface SiteConfigAdmin extends SiteConfigPublic {
   id: string;
   logoKey: string | null;
   heroImageKey: string | null;
+  heroVideoKey: string | null;
   atualizadoEm: Date;
 }
 
@@ -33,6 +40,7 @@ export class SiteConfigService {
     id: string;
     logoKey: string | null;
     heroImageKey: string | null;
+    heroVideoKey: string | null;
     nome: string | null;
     whatsapp: string | null;
     endereco: string | null;
@@ -56,6 +64,7 @@ export class SiteConfigService {
     return {
       logoUrl: null,
       heroImageUrl: null,
+      heroVideoUrl: null,
       nome: null,
       whatsapp: null,
       endereco: null,
@@ -66,13 +75,15 @@ export class SiteConfigService {
   async getPublic(): Promise<SiteConfigPublic> {
     const row = await this.getRow();
     if (!row) return this.emptyPublic();
-    const [logoUrl, heroImageUrl] = await Promise.all([
+    const [logoUrl, heroImageUrl, heroVideoUrl] = await Promise.all([
       row.logoKey ? this.storage.getPresignedUrl(row.logoKey, PRESIGNED_EXPIRY).catch(() => null) : null,
       row.heroImageKey ? this.storage.getPresignedUrl(row.heroImageKey, PRESIGNED_EXPIRY).catch(() => null) : null,
+      row.heroVideoKey ? this.storage.getPresignedUrl(row.heroVideoKey, PRESIGNED_EXPIRY).catch(() => null) : null,
     ]);
     return {
       logoUrl: logoUrl ?? null,
       heroImageUrl: heroImageUrl ?? null,
+      heroVideoUrl: heroVideoUrl ?? null,
       nome: row.nome ?? null,
       whatsapp: row.whatsapp ?? null,
       endereco: row.endereco ?? null,
@@ -90,8 +101,10 @@ export class SiteConfigService {
         id: '',
         logoUrl: null,
         heroImageUrl: null,
+        heroVideoUrl: null,
         logoKey: null,
         heroImageKey: null,
+        heroVideoKey: null,
         nome: null,
         whatsapp: null,
         endereco: null,
@@ -99,16 +112,19 @@ export class SiteConfigService {
         atualizadoEm: new Date(),
       };
     }
-    const [logoUrl, heroImageUrl] = await Promise.all([
+    const [logoUrl, heroImageUrl, heroVideoUrl] = await Promise.all([
       row.logoKey ? this.storage.getPresignedUrl(row.logoKey, PRESIGNED_EXPIRY).catch(() => null) : null,
       row.heroImageKey ? this.storage.getPresignedUrl(row.heroImageKey, PRESIGNED_EXPIRY).catch(() => null) : null,
+      row.heroVideoKey ? this.storage.getPresignedUrl(row.heroVideoKey, PRESIGNED_EXPIRY).catch(() => null) : null,
     ]);
     return {
       id: row.id,
       logoUrl: logoUrl ?? null,
       heroImageUrl: heroImageUrl ?? null,
+      heroVideoUrl: heroVideoUrl ?? null,
       logoKey: row.logoKey,
       heroImageKey: row.heroImageKey,
+      heroVideoKey: row.heroVideoKey,
       nome: row.nome,
       whatsapp: row.whatsapp,
       endereco: row.endereco,
@@ -144,6 +160,17 @@ export class SiteConfigService {
     if (mimetype?.includes('png')) return 'png';
     if (mimetype?.includes('webp')) return 'webp';
     return 'jpg';
+  }
+
+  private videoExt(name: string, mimetype: string): string {
+    if (mimetype?.includes('webm')) return 'webm';
+    if (mimetype?.includes('mp4')) return 'mp4';
+    const m = name?.match(/\.([a-zA-Z0-9]+)$/);
+    if (m) {
+      const e = m[1].toLowerCase();
+      if (e === 'webm' || e === 'mp4') return e;
+    }
+    return 'mp4';
   }
 
   async uploadLogo(
@@ -218,6 +245,50 @@ export class SiteConfigService {
     await this.prisma.siteConfig.update({
       where: { id: row.id },
       data: { heroImageKey: null },
+    });
+    return this.getForAdmin(user);
+  }
+
+  async uploadHeroVideo(
+    user: Usuario,
+    file: { buffer: Buffer; mimetype: string; originalname?: string },
+  ) {
+    if (user.role !== 'gestor') {
+      throw new ForbiddenException('Apenas gestor pode alterar a configuração do site');
+    }
+    const mt = (file.mimetype || '').toLowerCase();
+    if (!mt.includes('video/mp4') && !mt.includes('video/webm')) {
+      throw new BadRequestException('Envie um vídeo MP4 ou WebM.');
+    }
+    const row = await this.getRow();
+    if (!row) throw new InternalServerErrorException('Configuração do site indisponível.');
+    const ext = this.videoExt(file.originalname ?? '', file.mimetype);
+    const mime =
+      ext === 'webm' ? 'video/webm' : 'video/mp4';
+    const key = `${SITE_PREFIX}hero_video_${Date.now()}.${ext}`;
+    await this.storage.upload(key, file.buffer, mime);
+    if (row.heroVideoKey) {
+      await this.storage.remove(row.heroVideoKey).catch(() => {});
+    }
+    await this.prisma.siteConfig.update({
+      where: { id: row.id },
+      data: { heroVideoKey: key },
+    });
+    return this.getForAdmin(user);
+  }
+
+  async removeHeroVideo(user: Usuario): Promise<SiteConfigAdmin> {
+    if (user.role !== 'gestor') {
+      throw new ForbiddenException('Apenas gestor pode alterar a configuração do site');
+    }
+    const row = await this.getRow();
+    if (!row) throw new InternalServerErrorException('Configuração do site indisponível.');
+    if (row.heroVideoKey) {
+      await this.storage.remove(row.heroVideoKey).catch(() => {});
+    }
+    await this.prisma.siteConfig.update({
+      where: { id: row.id },
+      data: { heroVideoKey: null },
     });
     return this.getForAdmin(user);
   }

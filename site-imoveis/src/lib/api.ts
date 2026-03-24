@@ -3,6 +3,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 export type SiteConfigPublic = {
   logoUrl: string | null;
   heroImageUrl: string | null;
+  heroVideoUrl: string | null;
   nome: string | null;
   whatsapp: string | null;
   endereco: string | null;

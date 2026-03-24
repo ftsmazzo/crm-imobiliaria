@@ -5,8 +5,10 @@ import {
   updateSiteConfig,
   uploadSiteConfigLogo,
   uploadSiteConfigHero,
+  uploadSiteConfigHeroVideo,
   removeSiteConfigLogo,
   removeSiteConfigHero,
+  removeSiteConfigHeroVideo,
   type SiteConfigAdmin,
 } from '../api';
 import { getUser } from '../auth';
@@ -22,6 +24,7 @@ export default function PersonalizacaoSite() {
   const [form, setForm] = useState({ nome: '', whatsapp: '', endereco: '', creci: '' });
   const logoInputRef = useRef<HTMLInputElement>(null);
   const heroInputRef = useRef<HTMLInputElement>(null);
+  const heroVideoInputRef = useRef<HTMLInputElement>(null);
 
   const isGestor = user?.role === 'gestor';
 
@@ -125,6 +128,35 @@ export default function PersonalizacaoSite() {
     }
   }
 
+  async function handleHeroVideoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setErro('');
+    setSaving(true);
+    try {
+      const updated = await uploadSiteConfigHeroVideo(file);
+      setConfig(updated);
+    } catch (err) {
+      setErro(err instanceof Error ? err.message : 'Erro ao enviar vídeo');
+    } finally {
+      setSaving(false);
+      e.target.value = '';
+    }
+  }
+
+  async function handleRemoveHeroVideo() {
+    setErro('');
+    setSaving(true);
+    try {
+      const updated = await removeSiteConfigHeroVideo();
+      setConfig(updated);
+    } catch (e) {
+      setErro(e instanceof Error ? e.message : 'Erro ao remover vídeo');
+    } finally {
+      setSaving(false);
+    }
+  }
+
   if (!isGestor) {
     return <Navigate to="/" replace />;
   }
@@ -142,7 +174,7 @@ export default function PersonalizacaoSite() {
       <div className="personalizacao-site-page">
         <h1>Personalização do site</h1>
         <p className="personalizacao-site-lead">
-          Logo, imagem de fundo da busca e textos exibidos no site público. Apenas gestores podem alterar.
+          Logo, imagem ou vídeo de fundo da busca na home e textos exibidos no site público. Apenas gestores podem alterar.
         </p>
         {erro && <p className="personalizacao-site-erro">{erro}</p>}
 
@@ -221,6 +253,48 @@ export default function PersonalizacaoSite() {
                     disabled={saving}
                   >
                     Remover imagem
+                  </button>
+                )}
+              </div>
+            </div>
+            <div className="personalizacao-site-image-block personalizacao-site-image-block-full">
+              <label>Vídeo de fundo (home, em loop)</label>
+              <p className="personalizacao-site-hint">
+                MP4 ou WebM, até 25&nbsp;MB. Recomendado: poucos segundos, arquivo leve. No site o vídeo fica sem som, em repetição.
+                Se houver imagem de fundo, ela aparece como capa até o vídeo carregar.
+              </p>
+              <div className="personalizacao-site-preview personalizacao-site-preview-hero personalizacao-site-preview-video">
+                {config?.heroVideoUrl ? (
+                  <video src={config.heroVideoUrl} controls muted playsInline loop className="personalizacao-site-video-preview" />
+                ) : (
+                  <span>Nenhum vídeo (só imagem ou gradiente)</span>
+                )}
+              </div>
+              <input
+                ref={heroVideoInputRef}
+                type="file"
+                accept="video/mp4,video/webm,.mp4,.webm"
+                onChange={handleHeroVideoChange}
+                className="personalizacao-site-file-input"
+                aria-label="Enviar vídeo de fundo do hero"
+              />
+              <div className="personalizacao-site-buttons">
+                <button
+                  type="button"
+                  className="personalizacao-site-btn-upload"
+                  onClick={() => heroVideoInputRef.current?.click()}
+                  disabled={saving}
+                >
+                  {config?.heroVideoUrl ? 'Trocar vídeo' : 'Enviar vídeo'}
+                </button>
+                {config?.heroVideoUrl && (
+                  <button
+                    type="button"
+                    className="personalizacao-site-btn-remove"
+                    onClick={handleRemoveHeroVideo}
+                    disabled={saving}
+                  >
+                    Remover vídeo
                   </button>
                 )}
               </div>

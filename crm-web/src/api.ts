@@ -60,8 +60,10 @@ export type SiteConfigAdmin = {
   id: string;
   logoUrl: string | null;
   heroImageUrl: string | null;
+  heroVideoUrl: string | null;
   logoKey: string | null;
   heroImageKey: string | null;
+  heroVideoKey: string | null;
   nome: string | null;
   whatsapp: string | null;
   endereco: string | null;
@@ -117,6 +119,26 @@ export async function removeSiteConfigLogo(): Promise<SiteConfigAdmin> {
 
 export async function removeSiteConfigHero(): Promise<SiteConfigAdmin> {
   const res = await fetch(`${API_URL}/site-config/hero`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  });
+  return handleRes(res);
+}
+
+export async function uploadSiteConfigHeroVideo(file: File): Promise<SiteConfigAdmin> {
+  const token = getToken();
+  const form = new FormData();
+  form.append('file', file);
+  const res = await fetch(`${API_URL}/site-config/hero-video`, {
+    method: 'POST',
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    body: form,
+  });
+  return handleRes(res);
+}
+
+export async function removeSiteConfigHeroVideo(): Promise<SiteConfigAdmin> {
+  const res = await fetch(`${API_URL}/site-config/hero-video`, {
     method: 'DELETE',
     headers: authHeaders(),
   });

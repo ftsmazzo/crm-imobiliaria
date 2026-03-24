@@ -86,10 +86,35 @@
   grid-template-columns: 1fr 1fr;
 }
 
+.personalizacao-site-image-block-full {
+  grid-column: 1 / -1;
+}
+
 @media (max-width: 640px) {
   .personalizacao-site-images {
     grid-template-columns: 1fr;
   }
+  .personalizacao-site-image-block-full {
+    grid-column: auto;
+  }
+}
+
+.personalizacao-site-hint {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin: 0 0 0.5rem;
+  line-height: 1.45;
+}
+
+.personalizacao-site-preview-video {
+  min-height: 140px;
+}
+
+.personalizacao-site-video-preview {
+  width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  background: #0f172a;
 }
 
 .personalizacao-site-image-block label {
