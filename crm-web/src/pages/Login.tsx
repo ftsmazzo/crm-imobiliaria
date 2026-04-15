@@ -7,6 +7,7 @@ import './Login.css';
 
 export default function Login() {
   const navigate = useNavigate();
+  const { logoUrl } = useCrmBrand();
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [erro, setErro] = useState('');
