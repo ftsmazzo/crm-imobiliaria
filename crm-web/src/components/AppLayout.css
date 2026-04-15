@@ -24,16 +24,30 @@
   border-right: 1px solid var(--border-subtle);
 }
 
-.app-sidebar-logo {
-  padding: var(--space-5) var(--space-4);
+.app-sidebar-brand {
+  padding: var(--space-4) var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  min-height: 3.5rem;
+}
+
+.app-sidebar-brand-img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  max-height: 40px;
+  object-fit: contain;
+  object-position: left center;
+}
+
+.app-sidebar-brand-text {
   font-size: 1rem;
   font-weight: 700;
   font-family: var(--font-display);
   letter-spacing: -0.02em;
   color: var(--text-primary);
-  border-bottom: 1px solid var(--border-subtle);
-  white-space: nowrap;
-  overflow: hidden;
 }
 
 .app-sidebar-nav {

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../api';
 import { setAuth } from '../auth';
+import { useCrmBrand } from '../context/CrmBrandContext';
 import './Login.css';
 
 export default function Login() {
@@ -30,7 +31,11 @@ export default function Login() {
     <div className="login-page">
       <div className="login-card">
         <div className="login-logo">
-          <h1>CRM Imobiliário</h1>
+          {logoUrl ? (
+            <img src={logoUrl} alt="CRM ImoMiq" className="login-brand-img" />
+          ) : (
+            <h1 className="login-brand-fallback">CRM ImoMiq</h1>
+          )}
           <p>Entre com seu e-mail e senha</p>
         </div>
         <form onSubmit={handleSubmit} className="login-form">

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useCrmBrand } from '../context/CrmBrandContext';
 import { getUser, clearAuth } from '../auth';
 import './AppLayout.css';
 
@@ -9,6 +10,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const user = getUser();
+  const { logoUrl } = useCrmBrand();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   function handleSair() {
@@ -32,7 +34,13 @@ export default function AppLayout({ children }: AppLayoutProps) {
           className={`app-sidebar ${sidebarOpen ? 'is-open' : 'is-closed'}`}
           role="navigation"
         >
-          <div className="app-sidebar-logo">CRM Imobiliário</div>
+          <div className="app-sidebar-brand">
+            {logoUrl ? (
+              <img src={logoUrl} alt="CRM ImoMiq" className="app-sidebar-brand-img" />
+            ) : (
+              <span className="app-sidebar-brand-text">CRM ImoMiq</span>
+            )}
+          </div>
           <nav className="app-sidebar-nav">
             <Link to="/" onClick={closeSidebar} className={location.pathname === '/' ? 'active' : ''}>
               Início

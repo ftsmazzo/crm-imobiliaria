@@ -1,4 +1,5 @@
 import { Navigate, Route, BrowserRouter, Routes } from 'react-router-dom';
+import { CrmBrandProvider } from './context/CrmBrandContext';
 import { isLoggedIn } from './auth';
 import Administracao from './pages/Administracao';
 import Contatos from './pages/Contatos';
@@ -23,6 +24,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <BrowserRouter>
+      <CrmBrandProvider>
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
@@ -44,6 +46,7 @@ export default function App() {
         <Route path="/administracao" element={<PrivateRoute><Administracao /></PrivateRoute>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      </CrmBrandProvider>
     </BrowserRouter>
   );
 }

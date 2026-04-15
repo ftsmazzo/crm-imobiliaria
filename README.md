@@ -1,4 +1,4 @@
-# CRM Imobiliário
+# CRM ImoMiq
 
 Painel para corretores/gestores e site público de imóveis, compartilhando a mesma API. Deploy via **EasyPanel** (GitHub + Dockerfile). Variáveis de ambiente são configuradas no EasyPanel — ver [ENV-EASYPANEL.md](docs/ENV-EASYPANEL.md).
 

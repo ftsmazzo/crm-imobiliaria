@@ -55,6 +55,22 @@ export async function updateUsuario(id: string, dto: { nome?: string; email?: st
   return handleRes(res);
 }
 
+/** Config do site via API pública (sem auth) – logo com URL renovada pelo backend */
+export type SiteConfigPublic = {
+  logoUrl: string | null;
+  heroImageUrl: string | null;
+  heroVideoUrl: string | null;
+  nome: string | null;
+  whatsapp: string | null;
+  endereco: string | null;
+  creci: string | null;
+};
+
+export async function getPublicSiteConfig(): Promise<SiteConfigPublic> {
+  const res = await fetch(`${API_URL}/api/public/site-config`);
+  return handleRes(res);
+}
+
 // Site config (personalização do site público) – apenas gestor
 export type SiteConfigAdmin = {
   id: string;
