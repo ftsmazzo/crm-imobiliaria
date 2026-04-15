@@ -1,5 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="ImoMiq">
-  <rect width="32" height="32" rx="8" fill="#0f172a"/>
-  <path d="M16 5.5L5.5 14.2V26.5h21V14.2L16 5.5z" fill="#38bdf8"/>
-  <rect x="13" y="15.5" width="6" height="8" rx="0.5" fill="#0f172a"/>
+  <defs>
+    <linearGradient id="imobmiq-metal" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#e8eef2"/>
+      <stop offset="55%" stop-color="#9aa8b4"/>
+      <stop offset="100%" stop-color="#5c6b78"/>
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="7" fill="#0d1b24"/>
+  <!-- Monograma geométrico (referência IMOBMIQ), sem ícone de casa -->
+  <path
+    d="M7.5 23.5V9.5l4.2 7.2L16 10.2l4.3 6.5 4.2-7.2v14"
+    fill="none"
+    stroke="url(#imobmiq-metal)"
+    stroke-width="2.1"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
 </svg>

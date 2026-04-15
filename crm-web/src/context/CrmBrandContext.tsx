@@ -14,17 +14,7 @@ export function CrmBrandProvider({ children }: { children: React.ReactNode }) {
       .catch(() => {});
   }, []);
 
-  useEffect(() => {
-    if (!logoUrl) return;
-    let link = document.querySelector("link[rel='icon']") as HTMLLinkElement | null;
-    if (!link) {
-      link = document.createElement('link');
-      link.rel = 'icon';
-      document.head.appendChild(link);
-    }
-    link.href = logoUrl;
-    link.type = 'image/png';
-  }, [logoUrl]);
+  // Favicon fixo em /favicon.svg (monograma). Logo do MinIO é horizontal — ruim como ícone de aba.
 
   return <CrmBrandContext.Provider value={{ logoUrl }}>{children}</CrmBrandContext.Provider>;
 }
